@@ -1,0 +1,16 @@
+#!/bin/bash -e -x
+
+# Go to the appropriate directory
+cd src/main/webapp/app
+
+# Install missing NPM packages
+npm install
+
+# Generate the distribution bundle
+browserify main.js \
+    -t jstify \
+    -p \[minifyify --map prod-bundle.map --output dist/prod-bundle.map \] \
+    --debug \
+    -o dist/prod-bundle.js
+
+
