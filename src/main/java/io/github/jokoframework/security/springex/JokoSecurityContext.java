@@ -2,6 +2,7 @@ package io.github.jokoframework.security.springex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,7 +82,7 @@ public class JokoSecurityContext {
      */
 
     public static List<SimpleGrantedAuthority> determineAuthorizations(JokoJWTClaims claims) {
-        ArrayList<SimpleGrantedAuthority> list = new ArrayList<SimpleGrantedAuthority>();
+        ArrayList<SimpleGrantedAuthority> list = new ArrayList<>();
         JokoJWTExtension jokoExtension = claims.getJoko();
         if (jokoExtension.getType().equals(TOKEN_TYPE.REFRESH)
                 || jokoExtension.getType().equals(TOKEN_TYPE.REFRESH_C)) {
@@ -92,9 +93,7 @@ public class JokoSecurityContext {
             // Agrega todos los roles
             List<String> roles = claims.getJoko().getRoles();
             if (roles != null) {
-                for (String r : roles) {
-                    list.add(new SimpleGrantedAuthority(r));
-                }
+                list.addAll(roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
             }
         }
         if (jokoExtension.getType().equals(TOKEN_TYPE.REFRESH_C)) {

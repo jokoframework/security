@@ -9,19 +9,19 @@ import io.jsonwebtoken.JwtException;
 
 public interface ITokenService {
 
-    public void init();
+    void init();
 
-    public JokoTokenWrapper createAndStoreRefreshToken(String user, String appKey, TOKEN_TYPE tokenType,
-            String userAgent, String remoteIP, List<String> roles);
+    JokoTokenWrapper createAndStoreRefreshToken(String user, String appKey, TOKEN_TYPE tokenType,
+                                                String userAgent, String remoteIP, List<String> roles);
 
-    public JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,
-            String profileKey);
+    JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,
+                                 String profileKey);
 
-    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken);
+    JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken);
 
-    public JokoTokenWrapper refreshToken(JokoJWTClaims jokoToken, String userAgent, String remoteIP);
+    JokoTokenWrapper refreshToken(JokoJWTClaims jokoToken, String userAgent, String remoteIP);
 
-    public void revokeToken(String jti);
+    void revokeToken(String jti);
 
     /**
      * Devuelve false si el token no fue revocado, en cualquier otro caso
@@ -30,7 +30,7 @@ public interface ITokenService {
      * @param jti
      * @return
      */
-    public boolean hasBeenRevoked(String jti);
+    boolean hasBeenRevoked(String jti);
 
     /**
      * Realiza el parsing del token JWT. Este metodo tira un
@@ -40,7 +40,7 @@ public interface ITokenService {
      * @param token
      * @return
      */
-    public JokoJWTClaims parse(String token);
+    JokoJWTClaims parse(String token);
 
-    public int deleteExpiredTokens();
+    int deleteExpiredTokens();
 }

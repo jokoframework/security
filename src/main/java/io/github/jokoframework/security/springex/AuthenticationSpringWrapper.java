@@ -23,7 +23,7 @@ public class AuthenticationSpringWrapper implements JokoAuthentication {
 
     public AuthenticationSpringWrapper(AuthenticationRequest r) {
         this.request = r;
-        this.roles = new ArrayList<String>();
+        this.roles = new ArrayList<>();
     }
 
     @Override

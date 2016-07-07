@@ -8,5 +8,3 @@
     <!-- -->
     <include file="db-changelog-evolucion.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
-
-        g

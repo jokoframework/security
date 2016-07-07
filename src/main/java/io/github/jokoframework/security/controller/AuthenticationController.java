@@ -85,7 +85,7 @@ public class AuthenticationController {
         logger.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
                 + " didn't specify the cause of the unauhtentication");
 
-        return new ResponseEntity<JokoTokenResponse>(new JokoTokenResponse(SecurityConstants.ERROR_BAD_CREDENTIALS),
+        return new ResponseEntity<>(new JokoTokenResponse(SecurityConstants.ERROR_BAD_CREDENTIALS),
                 HttpStatus.UNAUTHORIZED);
 
     }
@@ -97,7 +97,6 @@ public class AuthenticationController {
      * @param httpRequest
      * @param jokoRequest
      * @param authenticate
-     * @param tokenResponse
      * @return
      */
     private ResponseEntity<JokoTokenResponse> processLoginSucessfull(HttpServletRequest httpRequest,
@@ -118,7 +117,7 @@ public class AuthenticationController {
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(authenticate.getName(), securityProfile,
                 TOKEN_TYPE.REFRESH, jokoRequest.getUserAgent(), httpRequest.getRemoteAddr(), roles);
 
-        return new ResponseEntity<JokoTokenResponse>(new JokoTokenResponse(token), HttpStatus.OK);
+        return new ResponseEntity<>(new JokoTokenResponse(token), HttpStatus.OK);
     }
 
     /**
@@ -142,7 +141,7 @@ public class AuthenticationController {
             // siguiente capa
             throw e;
         }
-        return new ResponseEntity<JokoTokenResponse>(new JokoTokenResponse(errorCode), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(new JokoTokenResponse(errorCode), HttpStatus.UNAUTHORIZED);
     }
 
     @ApiOperation(value = "Realiza un logout del usuario", notes = "Este metodo revoca el token (si es aún válido) que está siendo utilizado", position = 3)
@@ -153,7 +152,7 @@ public class AuthenticationController {
     public ResponseEntity<JokoBaseResponse> logout(HttpServletRequest request) {
 
         tokenService.revokeToken(JokoSecurityContext.getClaims().getId());
-        return new ResponseEntity<JokoBaseResponse>(new JokoBaseResponse(true), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new JokoBaseResponse(true), HttpStatus.ACCEPTED);
 
     }
 }

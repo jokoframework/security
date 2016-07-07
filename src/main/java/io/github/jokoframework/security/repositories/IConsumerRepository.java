@@ -6,7 +6,7 @@ import io.github.jokoframework.security.entities.ConsumerApiEntity;
 
 public interface IConsumerRepository extends JpaRepository<ConsumerApiEntity, Long> {
 
-    public ConsumerApiEntity getUserApiAccessByConsumerId(String consumerId);
-    public ConsumerApiEntity getUserApiAccessByName(String name);
+    ConsumerApiEntity getUserApiAccessByConsumerId(String consumerId);
+    ConsumerApiEntity getUserApiAccessByName(String name);
 
 }

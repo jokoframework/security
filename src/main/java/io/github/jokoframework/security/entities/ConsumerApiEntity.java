@@ -29,7 +29,7 @@ public class ConsumerApiEntity implements DTOConvertable {
     // DODO deprecar
     public enum ACCESS_LEVEL {
         PDV, BANK, ON_BEHALF_USER, ATM, ON_BEHALF_USER_LAZY, ADMIN, BACKOFFICE
-    };
+    }
 
     private Long id;
     private String documentNumber;

@@ -45,7 +45,7 @@ public class TokenServiceTest {
         SecurityProfile storedProfile = securityProfileService.getOrSaveProfile(securityProfile, profile);
         Assert.assertNotNull(storedProfile);
 
-        ArrayList<String> roles = new ArrayList<String>();
+        ArrayList<String> roles = new ArrayList<>();
         roles.add("boss");
         // Crea el token de refresh
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(user, securityProfile, TOKEN_TYPE.REFRESH,
@@ -65,7 +65,7 @@ public class TokenServiceTest {
 
         String user = "juan";
 
-        ArrayList<String> roles = new ArrayList<String>();
+        ArrayList<String> roles = new ArrayList<>();
         roles.add("boss");
         TOKEN_TYPE type = TOKEN_TYPE.REFRESH;
         int timeout = 60 * 5;// 5min
@@ -103,7 +103,7 @@ public class TokenServiceTest {
         SecurityProfile storedProfile = securityProfileService.getOrSaveProfile(securityProfile, profile);
         Assert.assertNotNull(storedProfile);
 
-        ArrayList<String> roles = new ArrayList<String>();
+        ArrayList<String> roles = new ArrayList<>();
         roles.add("boss");
         // Crea el token de refresh
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(user, securityProfile, TOKEN_TYPE.REFRESH,

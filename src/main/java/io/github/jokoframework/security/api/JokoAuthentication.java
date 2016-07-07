@@ -7,11 +7,11 @@ import org.springframework.security.core.Authentication;
 
 public interface JokoAuthentication extends Authentication {
 
-    public String getSecurityProfile();
+    String getSecurityProfile();
 
-    public String getPassword();
+    String getPassword();
 
-    public String getUsername();
+    String getUsername();
 
     /**
      * Devuelve una de las propiedades particulares del requet
@@ -19,7 +19,7 @@ public interface JokoAuthentication extends Authentication {
      * @param key
      * @return
      */
-    public Object getCustom(String key);
+    Object getCustom(String key);
 
     /**
      * Devuelve un mapa con las propiedades especializadas que se utilizaron en
@@ -27,9 +27,9 @@ public interface JokoAuthentication extends Authentication {
      * 
      * @return
      */
-    public Map<String, Object> getCustom();
+    Map<String, Object> getCustom();
 
-    public List<String> getRoles();
+    List<String> getRoles();
 
-    public void addRole(String role);
+    void addRole(String role);
 }

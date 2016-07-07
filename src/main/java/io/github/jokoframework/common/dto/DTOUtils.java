@@ -2,6 +2,7 @@ package io.github.jokoframework.common.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /***
  * Utilidades para trabajar con DTOs. Los DTOs deben implementar la interfaz
@@ -14,23 +15,21 @@ import java.util.List;
 public class DTOUtils {
 
     private DTOUtils() {
-    };
+    }
 
     /**
      * Recorre una lista de elemenos de tipo DTOConvertable, los conviente a DTO
      * y devuelve una lista de DTOs
      *
      * @param entities
-     * @param c
+     * @param pClass
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities, Class<T> c) {
-        List<T> list = new ArrayList<T>();
-        List<DTOConvertable> l = (List<DTOConvertable>) entities;
-        for (DTOConvertable o : l) {
-            list.add((T) o.toDTO());
-        }
+    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities, Class<T> pClass) {
+        List<T> list = new ArrayList<>();
+        List<DTOConvertable> dtoConvertables = (List<DTOConvertable>) entities;
+        list.addAll(dtoConvertables.stream().map(o -> (T) o.toDTO()).collect(Collectors.toList()));
         return list;
     }
 }

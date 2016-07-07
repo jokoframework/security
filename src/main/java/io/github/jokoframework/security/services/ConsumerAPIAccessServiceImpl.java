@@ -85,10 +85,7 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
     @Override
     public boolean isValid(String consumerId, String rawPassword) {
         ConsumerApiEntity entity = repository.getUserApiAccessByConsumerId(consumerId);
-        if (entity == null) {
-            return false;
-        }
-        return SecurityUtils.matchPassword(rawPassword, entity.getSecret());
+        return entity != null && SecurityUtils.matchPassword(rawPassword, entity.getSecret());
     }
 
     @Override

@@ -15,11 +15,12 @@ public interface JokoAuthorizationManager {
      * {@link WebSecurityConfigurerAdapter}, solamente que ya se incluyen
      * configuraciones por default y solamente debería de enfocarse en las
      * particularidades de los URL del sitio a definir.
+     * Se mantiene la forma de Spring que hace un throws de Exception genérico.
      * 
      * @param http
      * @throws Exception
      */
-    public void configure(HttpSecurity http) throws Exception;
+    void configure(HttpSecurity http) throws Exception;
 
     /**
      * <p>
@@ -39,7 +40,7 @@ public interface JokoAuthorizationManager {
      *            lista a retornar
      * @return
      */
-    public Collection<? extends GrantedAuthority> authorize(JokoJWTClaims claims,
-            Collection<? extends GrantedAuthority> authorization);
+    Collection<? extends GrantedAuthority> authorize(JokoJWTClaims claims,
+                                                     Collection<? extends GrantedAuthority> authorization);
 
 }

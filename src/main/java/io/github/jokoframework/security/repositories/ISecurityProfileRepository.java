@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ISecurityProfileRepository extends JpaRepository<SecurityProfile, Long> {
 
-    public List<SecurityProfile> getProfileByKeyOrderByIdDesc(String key);
+    List<SecurityProfile> getProfileByKeyOrderByIdDesc(String key);
 
 }

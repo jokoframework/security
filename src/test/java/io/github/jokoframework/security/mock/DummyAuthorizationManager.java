@@ -1,13 +1,11 @@
 package io.github.jokoframework.security.mock;
 
-import java.util.Collection;
-
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
-
 import io.github.jokoframework.security.JokoJWTClaims;
 import io.github.jokoframework.security.api.JokoAuthorizationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 //@Component
 public class DummyAuthorizationManager implements JokoAuthorizationManager {
@@ -19,7 +17,7 @@ public class DummyAuthorizationManager implements JokoAuthorizationManager {
 
     @Override
     public Collection<? extends GrantedAuthority> authorize(JokoJWTClaims claims,
-            Collection<? extends GrantedAuthority> authorization) {
+                                                            Collection<? extends GrantedAuthority> authorization) {
         return authorization;
     }
 

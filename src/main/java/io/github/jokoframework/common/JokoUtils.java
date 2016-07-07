@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -69,7 +70,7 @@ public class JokoUtils {
     }
 
     public static <T> String join(Collection<T> list, String separator) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         boolean first = true;
         for (Object o : list) {
             if (!first) {
@@ -103,23 +104,20 @@ public class JokoUtils {
      * y devuelve una lista de DTOs
      * 
      * @param entities
-     * @param c
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities, Class<T> c) {
-        ArrayList<T> list = new ArrayList<T>();
+    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities, Class<T> pClass) {
+        ArrayList<T> list = new ArrayList<>();
 
         List<DTOConvertable> l = (List<DTOConvertable>) entities;
-        for (DTOConvertable o : l) {
-            list.add((T) o.toDTO());
-        }
+        list.addAll(l.stream().map(o -> (T) o.toDTO()).collect(Collectors.toList()));
         return list;
     }
 
     public static String formatMap(String format, Map<String, Object> values) {
         StringBuilder formatter = new StringBuilder(format);
-        ArrayList<Object> valueList = new ArrayList<Object>();
+        ArrayList<Object> valueList = new ArrayList<>();
 
         Matcher matcher = interpolationPattern.matcher(format);
 

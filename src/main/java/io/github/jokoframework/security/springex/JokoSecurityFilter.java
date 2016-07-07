@@ -44,9 +44,8 @@ public class JokoSecurityFilter extends GenericFilterBean {
         this.jokoAuthorizationManager = jokoAuthorizationManager;
     }
 
-    public static String getTokenFromHeader(HttpServletRequest request) {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String token = httpRequest.getHeader(SecurityConstants.AUTH_HEADER_NAME);
+    public static String getTokenFromHeader(HttpServletRequest pRequest) {
+        String token = pRequest.getHeader(SecurityConstants.AUTH_HEADER_NAME);
         return token;
     }
 
@@ -107,15 +106,8 @@ public class JokoSecurityFilter extends GenericFilterBean {
             }
 
             return claims;
-        } catch (JwtException e) {
+        } catch (JwtException | IllegalArgumentException e) {
 
-            String uri = httpRequest.getRequestURI();
-            String userAgent = httpRequest.getHeader("User-Agent");
-            LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "
-                    + e.getMessage());
-            LOGGER.trace("Token received: " + token);
-            return null;
-        } catch (IllegalArgumentException e) {
             String uri = httpRequest.getRequestURI();
             String userAgent = httpRequest.getHeader("User-Agent");
             LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "

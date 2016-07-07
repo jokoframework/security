@@ -24,7 +24,7 @@ public class SecurityProfileImpl implements ISecurityProfileService {
 
     private TXUUIDGenerator appGenerator = new TXUUIDGenerator(UUID_LENGTH);
 
-    private ConcurrentHashMap<String, SecurityProfile> appCache = new ConcurrentHashMap<String, SecurityProfile>();
+    private ConcurrentHashMap<String, SecurityProfile> appCache = new ConcurrentHashMap<>();
 
     @Override
     public SecurityProfile getProfileByKey(String key) {

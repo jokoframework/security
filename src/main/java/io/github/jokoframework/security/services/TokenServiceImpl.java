@@ -232,7 +232,6 @@ public class TokenServiceImpl implements ITokenService {
      * @param type
      * 
      * @param timeout
-     * @param revocable
      * @return
      */
     public JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,

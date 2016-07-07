@@ -6,9 +6,8 @@ import io.github.jokoframework.common.JokoUtils;
  * Indica que es un error de logica de negocios. No corresponde a un fallo del
  * sistema sino a un problema en el procesamiento. en general debería ser
  * ocasionado por un dato mal proporcionado
- * 
- * @author danicricco
  *
+ * @author danicricco
  */
 public abstract class BusinessException extends Exception {
 
@@ -17,7 +16,7 @@ public abstract class BusinessException extends Exception {
     }
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 8943855572101122016L;
 
@@ -45,10 +44,10 @@ public abstract class BusinessException extends Exception {
             return message;
         }
         if (offendingField != null) {
-            if (fieldErrorType != null && fieldErrorType.equals(FIELDS_POSSIBLE_ERRORS.REQUIRED)) {
-                return "The field " + JokoUtils.formatLogString(offendingField) + " is required";
+            if (fieldErrorType != null && FIELDS_POSSIBLE_ERRORS.REQUIRED.equals(fieldErrorType)) {
+                message = "The field " + JokoUtils.formatLogString(offendingField) + " is required";
             } else {
-                return "The field " + JokoUtils.formatLogString(offendingField) + " is invalid";
+                message = "The field " + JokoUtils.formatLogString(offendingField) + " is invalid";
             }
         }
         return message;

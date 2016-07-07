@@ -20,13 +20,13 @@ Realizar las validaciones en memoria sin tener que tocar la base de datos permit
 Los *tokens* en Joko siguen el standard :abbr:`JWT (JSON Web Tokens)` [#]_ . Existen dos tipos de token:
 
 ### Refresh Token 
-Cuando un usuario se autentica al sistema recibe un `refresh token`. Este *token* permite al usuario acceder al sistema por un tiempo prolongado pero con pocos permisos de acceso. 
-* Un `refresh token` tiene información necesaria para obtener un nuevo `access token`. 
-* Un `access token` sirve para realizar operaciones.
+Cuando un usuario se autentica al sistema recibe un `refresh token`. Este *token* permite al usuario acceder al sistema por un tiempo prolongado pero con pocos permisos de acceso.
+#### Un `refresh token` tiene información necesaria para obtener un nuevo `access token`.
+#### Un `access token` sirve para realizar operaciones.
  
 Dependiendo del `security profile`  el sistema devolverá un *refresh token* con mayor o menor tiempo de vida. Por ejemplo si el usuario accede desde una aplicación web se podría dar un token de una semana, y si accede desde la web en términos de horas. Si el usuario no utiliza la aplicación por 1 (una) semana, entonces necesitará realizar un nuevo login (esto es aceptable desde el punto de vista UX). Los refresh token son especialmente útiles para las aplicaciones móviles en las cuales es molesto pedir el usuario en cada momento la autenticación.
 
-**Guardar el token de refresh de manera segura**
+##Guardar el token de refresh de manera segura**
 
 En el caso de una aplicación móvil se tendría que guardar en el *key store*, y en el caso de una aplicación Web en los :term:`cookies` (NO guardarlos en *WEB storage*)
 

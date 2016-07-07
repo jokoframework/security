@@ -18,7 +18,7 @@ public class JokoJWTExtension {
         ACCESS, // token de acceso. Dependiendo del accessLevel pueden
                 // ser mas o menos permisos
 
-    };
+    }
 
     /**
      * El tipo de token que se utiliza
@@ -36,7 +36,7 @@ public class JokoJWTExtension {
 
     }
 
-    public static final JokoJWTExtension fromMap(Map<String, Object> map) {
+    public static JokoJWTExtension fromMap(Map<String, Object> map) {
         String typeStr = (String) map.get("type");
         @SuppressWarnings("unchecked")
         List<String> roles = (List<String>) map.get("roles");

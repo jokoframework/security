@@ -25,7 +25,7 @@ public interface IConsumerAPIService {
      * @param username
      * @return
      */
-    public ConsumerAPIDTO getConsumer(String username);
+    ConsumerAPIDTO getConsumer(String username);
 
     /**
      * Genera API Keys para el usuario
@@ -33,9 +33,9 @@ public interface IConsumerAPIService {
      * @param user
      * @return
      */
-    public ConsumerAPIDTO generateAndStoreConsumer(ConsumerAPIDTO user) throws JokoConsumerException;
+    ConsumerAPIDTO generateAndStoreConsumer(ConsumerAPIDTO user) throws JokoConsumerException;
 
-    public List<ConsumerAPIDTO> list();
+    List<ConsumerAPIDTO> list();
 
     /**
      * Prueba si las credenciales son validas.
@@ -44,7 +44,7 @@ public interface IConsumerAPIService {
      * @param password
      * @return true si son validas, false en cualquier otro caso
      */
-    public boolean isValid(String consumerId, String password);
+    boolean isValid(String consumerId, String password);
 
     /**
      * Cambia el password el consumer. Genera un password nuevo y devuelve
@@ -52,5 +52,5 @@ public interface IConsumerAPIService {
      * @param consumerId
      * @return
      */
-    public ConsumerAPIDTO changePassword(String consumerId);
+    ConsumerAPIDTO changePassword(String consumerId);
 }

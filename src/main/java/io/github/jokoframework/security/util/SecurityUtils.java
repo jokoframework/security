@@ -217,7 +217,7 @@ public class SecurityUtils {
         org.apache.log4j.Logger.getLogger(categoria).setLevel(level);
     }
 
-    public static void setHibernateLogLevel(String categoria, Level level) {
+    public static void setHibernateLogLevel(Level level) {
         LOGGER.trace("Hibernate level a: " + level);
         setCategoriaLogLevel("org.hibernate.SQL", level);
         setCategoriaLogLevel("org.hibernate.type", level);

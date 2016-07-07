@@ -17,13 +17,13 @@ public class CommonErrorController {
     public ResponseEntity<JokoBaseResponse> handleError(JokoUnauthorizedException e) {
         JokoBaseResponse response = new JokoBaseResponse(SecurityConstants.ERROR_NOT_ALLOWED);
         response.setMessage(e.getMessage());
-        return new ResponseEntity<JokoBaseResponse>(response, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(JokoUnauthenticatedException.class)
     public ResponseEntity<JokoBaseResponse> handleError(JokoUnauthenticatedException e) {
         JokoBaseResponse response = new JokoBaseResponse(e.getErrorCode());
         response.setMessage(e.getMessage());
-        return new ResponseEntity<JokoBaseResponse>(response, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 }

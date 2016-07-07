@@ -36,7 +36,7 @@ public class TokenController {
     public ResponseEntity<JokoTokenResponse> createTokenUserAccess(HttpServletRequest request) {
 
         JokoTokenWrapper accessTokenWrapper = tokenService.createAccessToken(JokoSecurityContext.getClaims());
-        return new ResponseEntity<JokoTokenResponse>(new JokoTokenResponse(accessTokenWrapper), HttpStatus.OK);
+        return new ResponseEntity<>(new JokoTokenResponse(accessTokenWrapper), HttpStatus.OK);
 
     }
 
@@ -54,7 +54,7 @@ public class TokenController {
         JokoTokenWrapper refreshedToken = tokenService.refreshToken(JokoSecurityContext.getClaims(),
                 jokoRequest.getUserAgent(), httpRequest.getRemoteAddr());
 
-        return new ResponseEntity<JokoTokenResponse>(new JokoTokenResponse(refreshedToken), HttpStatus.OK);
+        return new ResponseEntity<>(new JokoTokenResponse(refreshedToken), HttpStatus.OK);
 
     }
 }
