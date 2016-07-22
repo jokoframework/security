@@ -15,6 +15,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Tokens de acceso al sistema
@@ -153,4 +156,57 @@ public class TokenEntity implements Serializable {
         this.tokenType = tokenType;
     }
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        TokenEntity rhs = (TokenEntity) obj;
+        return new EqualsBuilder()
+                .append(this.id, rhs.id)
+                .append(this.userId, rhs.userId)
+                .append(this.securityProfile, rhs.securityProfile)
+                .append(this.remoteIP, rhs.remoteIP)
+                .append(this.userAgent, rhs.userAgent)
+                .append(this.issuedAt, rhs.issuedAt)
+                .append(this.expiration, rhs.expiration)
+                .append(this.tokenType, rhs.tokenType)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(userId)
+                .append(securityProfile)
+                .append(remoteIP)
+                .append(userAgent)
+                .append(issuedAt)
+                .append(expiration)
+                .append(tokenType)
+                .toHashCode();
+    }
+
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("userId", userId)
+                .append("securityProfile", securityProfile)
+                .append("remoteIP", remoteIP)
+                .append("userAgent", userAgent)
+                .append("issuedAt", issuedAt)
+                .append("expiration", expiration)
+                .append("tokenType", tokenType)
+                .toString();
+    }
 }

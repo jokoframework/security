@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class SecurityProfileImpl implements ISecurityProfileService {
@@ -24,7 +25,7 @@ public class SecurityProfileImpl implements ISecurityProfileService {
 
     private TXUUIDGenerator appGenerator = new TXUUIDGenerator(UUID_LENGTH);
 
-    private ConcurrentHashMap<String, SecurityProfile> appCache = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, SecurityProfile> appCache = new ConcurrentHashMap<>();
 
     @Override
     public SecurityProfile getProfileByKey(String key) {

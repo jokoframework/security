@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
  * {@link DTOConvertable}
  *
  * @author danicricco
- *
  */
 public class DTOUtils {
 
@@ -22,11 +21,9 @@ public class DTOUtils {
      * y devuelve una lista de DTOs
      *
      * @param entities
-     * @param pClass
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities, Class<T> pClass) {
+    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities) {
         List<T> list = new ArrayList<>();
         List<DTOConvertable> dtoConvertables = (List<DTOConvertable>) entities;
         list.addAll(dtoConvertables.stream().map(o -> (T) o.toDTO()).collect(Collectors.toList()));

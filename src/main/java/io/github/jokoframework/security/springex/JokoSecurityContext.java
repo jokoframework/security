@@ -1,17 +1,16 @@
 package io.github.jokoframework.security.springex;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import io.github.jokoframework.security.JokoJWTClaims;
 import io.github.jokoframework.security.JokoJWTExtension;
 import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
 import io.github.jokoframework.security.controller.SecurityConstants;
 import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -22,11 +21,14 @@ import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
  * La clase es thread safe y permite acceder al contexto de seguridad que se
  * guarda dentro de un {@link ThreadLocal}
  * </p>
- * 
- * @author danicricco
  *
+ * @author danicricco
  */
 public class JokoSecurityContext {
+
+    private JokoSecurityContext () {
+
+    }
 
     public static JokoAuthenticated getPrincipal() {
         JokoAuthenticated auth = (JokoAuthenticated) SecurityContextHolder.getContext().getAuthentication();
@@ -45,7 +47,7 @@ public class JokoSecurityContext {
      * control extra para comprobar que el dato devuelto nunca sea null. En caso
      * que sea null lanza una excepcion del tipo
      * {@link JokoUnauthenticatedException}
-     * 
+     *
      * @return
      */
     public static JokoJWTClaims getSafetyClaims() throws JokoUnauthenticatedException {
@@ -76,13 +78,13 @@ public class JokoSecurityContext {
      * haya cargado</li>
      * </ul>
      * {@link JokoWebSecurityConfig}
-     * 
+     *
      * @param claims
      * @return
      */
 
     public static List<SimpleGrantedAuthority> determineAuthorizations(JokoJWTClaims claims) {
-        ArrayList<SimpleGrantedAuthority> list = new ArrayList<>();
+        List<SimpleGrantedAuthority> list = new ArrayList<>();
         JokoJWTExtension jokoExtension = claims.getJoko();
         if (jokoExtension.getType().equals(TOKEN_TYPE.REFRESH)
                 || jokoExtension.getType().equals(TOKEN_TYPE.REFRESH_C)) {

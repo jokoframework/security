@@ -33,7 +33,7 @@ public class TokenController {
             @ApiResponse(code = 403, message = "En caso de proveerse un refresh token inválido") })
     @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Refresh Token")
     @RequestMapping(value = ApiPaths.TOKEN_USER_ACCESS, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JokoTokenResponse> createTokenUserAccess(HttpServletRequest request) {
+    public ResponseEntity<JokoTokenResponse> createTokenUserAccess() {
 
         JokoTokenWrapper accessTokenWrapper = tokenService.createAccessToken(JokoSecurityContext.getClaims());
         return new ResponseEntity<>(new JokoTokenResponse(accessTokenWrapper), HttpStatus.OK);

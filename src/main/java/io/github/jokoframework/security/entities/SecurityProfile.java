@@ -1,5 +1,9 @@
 package io.github.jokoframework.security.entities;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -164,78 +168,60 @@ public class SecurityProfile implements Serializable {
 		this.maxAccessTokenRequests = maxAccessTokenRequests;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((accessTokenTimeoutSeconds == null) ? 0 : accessTokenTimeoutSeconds.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + ((maxAccessTokenRequests == null) ? 0 : maxAccessTokenRequests.hashCode());
-		result = prime * result + ((maxNumberOfConnections == null) ? 0 : maxNumberOfConnections.hashCode());
-		result = prime * result
-				+ ((maxNumberOfConnectionsPerUser == null) ? 0 : maxNumberOfConnectionsPerUser.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((refreshTokenTimeoutSeconds == null) ? 0 : refreshTokenTimeoutSeconds.hashCode());
-		result = prime * result + ((revocable == null) ? 0 : revocable.hashCode());
-		return result;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
 			return true;
-		if (obj == null)
+		}
+		if (obj.getClass() != getClass()) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SecurityProfile other = (SecurityProfile) obj;
-		if (accessTokenTimeoutSeconds == null) {
-			if (other.accessTokenTimeoutSeconds != null)
-				return false;
-		} else if (!accessTokenTimeoutSeconds.equals(other.accessTokenTimeoutSeconds))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (key == null) {
-			if (other.key != null)
-				return false;
-		} else if (!key.equals(other.key))
-			return false;
-		if (maxAccessTokenRequests == null) {
-			if (other.maxAccessTokenRequests != null)
-				return false;
-		} else if (!maxAccessTokenRequests.equals(other.maxAccessTokenRequests))
-			return false;
-		if (maxNumberOfConnections == null) {
-			if (other.maxNumberOfConnections != null)
-				return false;
-		} else if (!maxNumberOfConnections.equals(other.maxNumberOfConnections))
-			return false;
-		if (maxNumberOfConnectionsPerUser == null) {
-			if (other.maxNumberOfConnectionsPerUser != null)
-				return false;
-		} else if (!maxNumberOfConnectionsPerUser.equals(other.maxNumberOfConnectionsPerUser))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (refreshTokenTimeoutSeconds == null) {
-			if (other.refreshTokenTimeoutSeconds != null)
-				return false;
-		} else if (!refreshTokenTimeoutSeconds.equals(other.refreshTokenTimeoutSeconds))
-			return false;
-		if (revocable == null) {
-			if (other.revocable != null)
-				return false;
-		} else if (!revocable.equals(other.revocable))
-			return false;
-		return true;
+		}
+		SecurityProfile rhs = (SecurityProfile) obj;
+		return new EqualsBuilder()
+				.append(this.id, rhs.id)
+				.append(this.key, rhs.key)
+				.append(this.name, rhs.name)
+				.append(this.maxNumberOfConnectionsPerUser, rhs.maxNumberOfConnectionsPerUser)
+				.append(this.maxNumberOfConnections, rhs.maxNumberOfConnections)
+				.append(this.refreshTokenTimeoutSeconds, rhs.refreshTokenTimeoutSeconds)
+				.append(this.accessTokenTimeoutSeconds, rhs.accessTokenTimeoutSeconds)
+				.append(this.revocable, rhs.revocable)
+				.append(this.maxAccessTokenRequests, rhs.maxAccessTokenRequests)
+				.isEquals();
 	}
 
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.append(id)
+				.append(key)
+				.append(name)
+				.append(maxNumberOfConnectionsPerUser)
+				.append(maxNumberOfConnections)
+				.append(refreshTokenTimeoutSeconds)
+				.append(accessTokenTimeoutSeconds)
+				.append(revocable)
+				.append(maxAccessTokenRequests)
+				.toHashCode();
+	}
+
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("id", id)
+				.append("key", key)
+				.append("name", name)
+				.append("maxNumberOfConnectionsPerUser", maxNumberOfConnectionsPerUser)
+				.append("maxNumberOfConnections", maxNumberOfConnections)
+				.append("refreshTokenTimeoutSeconds", refreshTokenTimeoutSeconds)
+				.append("accessTokenTimeoutSeconds", accessTokenTimeoutSeconds)
+				.append("revocable", revocable)
+				.append("maxAccessTokenRequests", maxAccessTokenRequests)
+				.toString();
+	}
 }

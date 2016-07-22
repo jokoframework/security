@@ -1,25 +1,24 @@
 package io.github.jokoframework.security.springex;
 
+import io.github.jokoframework.security.api.JokoAuthentication;
+import io.github.jokoframework.security.dto.AuthenticationRequest;
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.security.core.GrantedAuthority;
-
-import io.github.jokoframework.security.api.JokoAuthentication;
-import io.github.jokoframework.security.dto.AuthenticationRequest;
-
 public class AuthenticationSpringWrapper implements JokoAuthentication {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -2794388179668965327L;
     private final AuthenticationRequest request;
     private boolean authenticated = false;
 
-    private ArrayList<String> roles;
+    private List<String> roles;
 
     public AuthenticationSpringWrapper(AuthenticationRequest r) {
         this.request = r;

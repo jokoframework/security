@@ -9,7 +9,6 @@ public class ConsumerAPIDTO implements BaseDTO {
     private String consumerId;
     private String accessLevel;
     private String secret;
-    private Long pdvId;
 
     public String getName() {
         return name;
@@ -49,14 +48,6 @@ public class ConsumerAPIDTO implements BaseDTO {
 
     public void setSecret(String secret) {
         this.secret = secret;
-    }
-
-    public Long getPdvId() {
-        return pdvId;
-    }
-
-    public void setPdvId(Long pdvId) {
-        this.pdvId = pdvId;
     }
 
 }

@@ -42,7 +42,7 @@ import io.github.jokoframework.security.util.JokoRequestContext;
 @RestController
 public class AuthenticationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired(required = false)
     private AuthenticationManager authenticationManager;
@@ -61,7 +61,7 @@ public class AuthenticationController {
     public ResponseEntity<JokoTokenResponse> login(@RequestBody @Valid AuthenticationRequest loginRequest,
             HttpServletRequest httpRequest) throws Exception {
 
-        logger.trace("Authenticating request for " + loginRequest.getUsername());
+        LOGGER.trace("Authenticating request for " + loginRequest.getUsername());
 
         JokoRequestContext jokoRequest = new JokoRequestContext(httpRequest);
 
@@ -82,7 +82,7 @@ public class AuthenticationController {
 
         // Si no excepciono y tampoco se indico como login exitoso entonces se
         // utiliza el default
-        logger.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
+        LOGGER.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
                 + " didn't specify the cause of the unauhtentication");
 
         return new ResponseEntity<>(new JokoTokenResponse(SecurityConstants.ERROR_BAD_CREDENTIALS),
@@ -109,7 +109,7 @@ public class AuthenticationController {
             roles = jokoAuthentication.getRoles();
         }
         if (securityProfile == null) {
-            logger.warn(
+            LOGGER.warn(
                     "Using default security profile. Please consider returning a securityProfile from your JokoAuthentication");
             securityProfile = SecurityConstants.DEFAULT_SECURITY_PROFILE;
         }
@@ -149,7 +149,7 @@ public class AuthenticationController {
             @ApiResponse(code = 409, message = "En caso de proveerse un parámetro inválido") })
     @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Refresh Token")
     @RequestMapping(value = ApiPaths.LOGOUT, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JokoBaseResponse> logout(HttpServletRequest request) {
+    public ResponseEntity<JokoBaseResponse> logout() {
 
         tokenService.revokeToken(JokoSecurityContext.getClaims().getId());
         return new ResponseEntity<>(new JokoBaseResponse(true), HttpStatus.ACCEPTED);

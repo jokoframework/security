@@ -1,30 +1,32 @@
 package io.github.jokoframework.security.util;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.Random;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-
+import io.github.jokoframework.security.JokoJWTClaims;
+import io.github.jokoframework.security.JokoJWTExtension;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import io.github.jokoframework.security.JokoJWTClaims;
-import io.github.jokoframework.security.JokoJWTExtension;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * @author afeltes
@@ -45,7 +47,7 @@ public class SecurityUtils {
     // que se guarden
     // encriptados con este algoritmo
     // 16 bytes
-    private static byte[] defaultKey = new byte[] { 19, 38, 27, 46, 65, 21, 73, 66, 91, 99, 98, 97, 19, 95, 94, 90 };
+    private static byte[] defaultKey = new byte[]{19, 38, 27, 46, 65, 21, 73, 66, 91, 99, 98, 97, 19, 95, 94, 90};
     /*
      * *********************************************************
      */
@@ -63,10 +65,8 @@ public class SecurityUtils {
     /**
      * Se encripta un string con una clave.
      *
-     * @param message
-     *            El string a encriptar.
-     * @param key
-     *            La clave en bytes con la que se quiere encriptar.
+     * @param message El string a encriptar.
+     * @param key     La clave en bytes con la que se quiere encriptar.
      * @return
      */
     public static String encryptarConPassword(String message, byte[] key) {
@@ -77,10 +77,10 @@ public class SecurityUtils {
             c.init(Cipher.ENCRYPT_MODE, k);
             byte[] encrypted = c.doFinal(message.getBytes(ENCODING));
             ret = byteToBase64(encrypted);
-        } catch (Exception e) {
-            LOGGER.error("No se pudo encriptar la cadena: " + e.getMessage());
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException
+                | UnsupportedEncodingException | IllegalBlockSizeException pE) {
+            LOGGER.error("No se pudo encriptar la cadena: " + pE.getMessage(), pE);
         }
-
         return ret;
     }
 
@@ -95,16 +95,13 @@ public class SecurityUtils {
     /**
      * Desencripta una cadena con un password.
      *
-     * @param encrypted
-     *            La cadena encriptada y codificada en Base64
-     * @param key
-     *            La clave en bytes que se utilizará para encriptar.
-     * @param quiet
-     *            Si se imprimirá o no errores de encriptado. Se puso este
-     *            parámetro, para tener compatibilidad hacia atrás de las
-     *            páginas que ya se tenía con encriptado, cuándo se implement en
-     *            Setiembre de 2011, la encriptación para todos los URLs de la
-     *            aplicación.
+     * @param encrypted La cadena encriptada y codificada en Base64
+     * @param key       La clave en bytes que se utilizará para encriptar.
+     * @param quiet     Si se imprimirá o no errores de encriptado. Se puso este
+     *                  parámetro, para tener compatibilidad hacia atrás de las
+     *                  páginas que ya se tenía con encriptado, cuándo se implement en
+     *                  Setiembre de 2011, la encriptación para todos los URLs de la
+     *                  aplicación.
      * @return
      */
     private static String desencriptarConKeyByte(String encrypted, byte[] key, boolean quiet) {
@@ -117,9 +114,10 @@ public class SecurityUtils {
             c.init(Cipher.DECRYPT_MODE, k);
             byte[] raw = c.doFinal(rawEnc);
             ret = new String(raw, ENCODING);
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException
+                | UnsupportedEncodingException | IllegalBlockSizeException exception) {
             if (!quiet)
-                LOGGER.error("No se pudo desencriptar la cadena: " + encrypted, e);
+                LOGGER.error("No se pudo desencriptar la cadena: " + encrypted, exception);
             if (LOGGER.isTraceEnabled()) {
                 if (quiet) // solo vuelvo a imprimir si es quiet, porque sino ya
                     // se imprime antes
@@ -141,8 +139,7 @@ public class SecurityUtils {
     /**
      * From a byte[] returns a base 64 representation
      *
-     * @param data
-     *            byte[]
+     * @param data byte[]
      * @return String
      * @throws IOException
      */
@@ -155,8 +152,7 @@ public class SecurityUtils {
     /**
      * From a base 64 representation, returns the corresponding byte[]
      *
-     * @param data
-     *            String The base64 representation
+     * @param data String The base64 representation
      * @return byte[]
      * @throws IOException
      */
@@ -187,9 +183,8 @@ public class SecurityUtils {
 
     /**
      * Realiza un cifrado simple del password
-     * 
-     * @param rawPassword
-     *            password plano
+     *
+     * @param rawPassword password plano
      * @return hash bcrypt
      */
     public static String hashPassword(String rawPassword) {
@@ -229,6 +224,7 @@ public class SecurityUtils {
             messageDigest.update(payload.getBytes("UTF-8"));
             return byteToBase64(messageDigest.digest());
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            LOGGER.error("No se pudo generar el string SHA-256", e);
             return null;
         }
     }
@@ -252,7 +248,7 @@ public class SecurityUtils {
     /**
      * Lee todos los bytes de un archivo en particular y lo convierte a un
      * string en Base64
-     * 
+     *
      * @param filePath
      * @return
      * @throws IOException

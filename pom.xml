@@ -22,6 +22,8 @@
         <httpclient.version>4.5.1</httpclient.version>
         <jjwt.version>0.6.0</jjwt.version>
         <spring-security-test.version>4.1.0.RELEASE</spring-security-test.version>
+        <commons-collections4.version>4.1</commons-collections4.version>
+
     </properties>
 
     <!--Dependencias -->
@@ -126,6 +128,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
+        </dependency>
 
     </dependencies>
 

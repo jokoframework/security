@@ -1,11 +1,5 @@
 package io.github.jokoframework.security.services;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.security.dto.ConsumerAPIDTO;
 import io.github.jokoframework.security.entities.ConsumerApiEntity;
@@ -13,6 +7,11 @@ import io.github.jokoframework.security.entities.ConsumerApiEntity.ACCESS_LEVEL;
 import io.github.jokoframework.security.errors.JokoConsumerException;
 import io.github.jokoframework.security.repositories.IConsumerRepository;
 import io.github.jokoframework.security.util.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -20,7 +19,6 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
 
     private static final int CONSUMER_ID_LENGTH = 15;
     private static final int CONSUMER_SECRET_LENGH = 60;
-    //private static final int BCRYPT_COMPLEXITY = 10;
 
     @Autowired
     private IConsumerRepository repository;
@@ -46,16 +44,10 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
         try {
             type = ACCESS_LEVEL.valueOf(consumer.getAccessLevel());
         } catch (IllegalArgumentException e) {
-            throw new JokoConsumerException(JokoConsumerException.INVALID_ACESS_LEVEL,
+            throw new JokoConsumerException(e, JokoConsumerException.INVALID_ACESS_LEVEL,
                     "Invalid access level. Use one of: PDV, BANK, ON_BEHALF_USER, ATM");
         }
-        if (type.equals(ACCESS_LEVEL.PDV)) {
-            if (consumer.getPdvId() == null) {
-                throw new JokoConsumerException(JokoConsumerException.MISSING_REQUIRED_DATA,
-                        "Missing required field \"pdvId\". pdvId is required if accessLevel is PDV");
-            }
-            pdvId = consumer.getPdvId();
-        }
+
         String consumerId = JokoUtils.generateRandomString(CONSUMER_ID_LENGTH);
         String secret = JokoUtils.generateRandomString(CONSUMER_SECRET_LENGH);
 
@@ -66,8 +58,6 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
         entity.setName(consumer.getName());
         entity.setContactName(consumer.getContactName());
         entity.setAccessLevel(ACCESS_LEVEL.valueOf(consumer.getAccessLevel()));
-        entity.setPdvId(pdvId);
-        // FIXME encriptar el secret
         ConsumerApiEntity storedUser = repository.save(entity);
         ConsumerAPIDTO dto = (ConsumerAPIDTO) storedUser.toDTO();
         // Devela el secret en el momento de generar
@@ -78,7 +68,7 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
     @Override
     public List<ConsumerAPIDTO> list() {
         List<ConsumerApiEntity> entities = repository.findAll();
-        List<ConsumerAPIDTO> list = JokoUtils.fromEntityToDTO(entities, ConsumerAPIDTO.class);
+        List<ConsumerAPIDTO> list = JokoUtils.fromEntityToDTO(entities);
         return list;
     }
 

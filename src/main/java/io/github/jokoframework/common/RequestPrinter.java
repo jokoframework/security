@@ -1,5 +1,9 @@
 package io.github.jokoframework.common;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -10,7 +14,12 @@ import java.util.List;
 
 public class RequestPrinter {
 
+    private static final Logger LOGGER = Logger.getLogger(RequestPrinter.class.getSimpleName());
+
     public static final String INDENT_UNIT = "\t";
+
+    private RequestPrinter() {
+    }
 
     // Private helper methods
 
@@ -46,12 +55,16 @@ public class RequestPrinter {
                 append(indentString).
                 append(INDENT_UNIT).
                 append("'").append(parameterName).append("': ");
-        if (parameterValues == null || parameterValues.length == 0) {
+        if (ArrayUtils.isEmpty(parameterValues)) {
             sb.append("None");
         } else {
-            if (parameterValues.length > 1) sb.append("[");
+            if (parameterValues.length > 1) {
+                sb.append("[");
+            }
             sb.append(RequestPrinter.join(parameterValues, ","));
-            if (parameterValues.length > 1) sb.append("]");
+            if (parameterValues.length > 1) {
+                sb.append("]");
+            }
         }
         return sb.toString();
     }
@@ -62,7 +75,7 @@ public class RequestPrinter {
                 append(indentString).
                 append(INDENT_UNIT).
                 append("'").append(headerName).append("': ");
-        if (headerValues == null || headerValues.size() == 0) {
+        if (CollectionUtils.isEmpty(headerValues)) {
             sb.append("None");
         } else {
             if (headerValues.size() > 1) sb.append("[");
@@ -80,7 +93,6 @@ public class RequestPrinter {
         while (parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
             String[] parameterValues = request.getParameterValues(parameterName);
-            //List<String> headerValuesList = new ArrayList<String>();
             sb.
                     append(RequestPrinter.debugStringParameter(indentString, parameterName, parameterValues)).
                     append(",\n");
@@ -90,7 +102,9 @@ public class RequestPrinter {
     }
 
     private static String debugStringCookie(Cookie cookie, String indentString) {
-        if (cookie == null) return "";
+        if (cookie == null) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(indentString).append("{ \n");
         sb.append(indentString).append(INDENT_UNIT).append("'name': '").append(cookie.getName()).append("', \n");
@@ -106,8 +120,9 @@ public class RequestPrinter {
     }
 
     private static String debugStringCookies(HttpServletRequest request, int indent) {
-        if (request.getCookies() == null)
+        if (request.getCookies() == null) {
             return "";
+        }
         String indentString = RequestPrinter.repeat(INDENT_UNIT, indent);
         StringBuilder sb = new StringBuilder();
         sb.append(indentString).append("[\n");
@@ -230,10 +245,6 @@ public class RequestPrinter {
         // GENERAL INFO
         sb.append(debugStringGeneralInfo(request));
 
-
-        //sb.append("PATH INFO: ").append(request.getPathInfo()).append("\n");
-        //sb.append("PATH TRANSLATED: ").append(request.getPathTranslated()).append("\n");
-
         // COOKIES
         sb.append("COOKIES:\n");
         sb.append("-------\n");
@@ -288,9 +299,7 @@ public class RequestPrinter {
     public static void main(String[] args) {
         List<String> strs = new ArrayList<>();
         strs.add("Hello");
-        //strs.add("Constant");
-        //strs.add("Concept");
-        System.out.println(RequestPrinter.join(strs, ",\n"));
+        LOGGER.debug(RequestPrinter.join(strs, ",\n"));
     }
 
 }

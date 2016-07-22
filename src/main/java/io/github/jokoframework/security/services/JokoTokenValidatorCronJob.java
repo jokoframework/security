@@ -12,7 +12,7 @@ import io.github.jokoframework.security.controller.SecurityConstants;
 @Component
 public class JokoTokenValidatorCronJob {
 
-    private static final Logger logger = LoggerFactory.getLogger(JokoTokenValidatorCronJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JokoTokenValidatorCronJob.class);
 
     @Autowired
     private ITokenService tokenService;
@@ -24,7 +24,7 @@ public class JokoTokenValidatorCronJob {
         int deleteExpiredTokens = tokenService.deleteExpiredTokens();
 
         if (deleteExpiredTokens > 0) {
-            logger.info("Removed {} exipired tokens", JokoUtils.formatLogString(deleteExpiredTokens));
+            LOGGER.info("Removed {} exipired tokens", JokoUtils.formatLogString(deleteExpiredTokens));
         }
 
     }

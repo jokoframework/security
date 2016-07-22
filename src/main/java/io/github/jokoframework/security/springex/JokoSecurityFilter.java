@@ -113,6 +113,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
             LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "
                     + e.getMessage());
             LOGGER.trace("Token received: " + token);
+            LOGGER.error("Error validando el token.", e);
             return null;
         }
     }

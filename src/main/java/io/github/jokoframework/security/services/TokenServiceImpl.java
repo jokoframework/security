@@ -110,7 +110,7 @@ public class TokenServiceImpl implements ITokenService {
             String userAgent, String remoteIP, List<String> roles) {
         SecurityProfile securityProfile = appService.getProfileByKey(profileKey);
         if (securityProfile == null) {
-            throw new RuntimeException("Unable to create refresh token without a valid security profile. The profile "
+            throw new JokoApplicationException("Unable to create refresh token without a valid security profile. The profile "
                     + profileKey + " does not exists");
         }
         // Busca los token previos que hayan sido emitidos con el mismo tipo de
@@ -147,7 +147,7 @@ public class TokenServiceImpl implements ITokenService {
             JokoJWTExtension jokoClaims = refreshToken.getJoko();
             SecurityProfile securityProfile = appService.getProfileByKey(jokoClaims.getProfile());
             if (securityProfile == null) {
-                throw new RuntimeException("Unable to obtain a security profile. The profile " + jokoClaims.getProfile()
+                throw new JokoApplicationException("Unable to obtain a security profile. The profile " + jokoClaims.getProfile()
                         + " does not exists");
             }
             Integer timeOut = securityProfile.getAccessTokenTimeoutSeconds();

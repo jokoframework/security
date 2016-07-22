@@ -3,8 +3,11 @@ package io.github.jokoframework.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.impl.DefaultClaims;
 
-public class JokoJWTClaims extends DefaultClaims {
+import java.io.Serializable;
 
+public class JokoJWTClaims extends DefaultClaims implements Serializable{
+
+    private static final long serialVersionUID = -8574310592676951264L;
     private JokoJWTExtension joko;
 
     public JokoJWTClaims(Claims claims) {

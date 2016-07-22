@@ -35,7 +35,6 @@ public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
         error.setErrorCode(JokoUnauthenticatedException.ERROR_CODE_WRONG_CREDENTIALS);
         error.setMessage("You shall not pass!!");
 
-        // throw new JokoUnauthenticatedException();
         ObjectMapper mapper = new ObjectMapper();
 
         response.setHeader("Content-type", "application/json");

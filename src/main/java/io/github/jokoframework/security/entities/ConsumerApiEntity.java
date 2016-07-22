@@ -1,23 +1,18 @@
 package io.github.jokoframework.security.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import io.github.jokoframework.common.dto.BaseDTO;
 import io.github.jokoframework.common.dto.DTOConvertable;
 import io.github.jokoframework.security.dto.ConsumerAPIDTO;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import javax.persistence.*;
 
 /**
  * Usuarios con acceso a nivel de API
- * 
- * @author danicricco
  *
+ * @author danicricco
  */
 
 @Entity
@@ -28,7 +23,7 @@ public class ConsumerApiEntity implements DTOConvertable {
     // FIXME podriamos llevar a otro lugar
     // DODO deprecar
     public enum ACCESS_LEVEL {
-        PDV, BANK, ON_BEHALF_USER, ATM, ON_BEHALF_USER_LAZY, ADMIN, BACKOFFICE
+        ON_BEHALF_USER, ON_BEHALF_USER_LAZY, ADMIN
     }
 
     private Long id;
@@ -39,7 +34,6 @@ public class ConsumerApiEntity implements DTOConvertable {
     private String secret;
     private ACCESS_LEVEL accessLevel;
 
-    private Long pdvId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "consumer_api_id_seq")
@@ -100,13 +94,6 @@ public class ConsumerApiEntity implements DTOConvertable {
         this.accessLevel = accessLevel;
     }
 
-    public Long getPdvId() {
-        return pdvId;
-    }
-
-    public void setPdvId(Long pdvId) {
-        this.pdvId = pdvId;
-    }
 
     @Override
     public BaseDTO toDTO() {
@@ -115,9 +102,58 @@ public class ConsumerApiEntity implements DTOConvertable {
         dto.setName(getName());
         dto.setConsumerId(getConsumerId());
         dto.setContactName(getContactName());
-        dto.setPdvId(getPdvId());
         // No se expone el secret al convertir a DTO.
         return dto;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        ConsumerApiEntity rhs = (ConsumerApiEntity) obj;
+        return new EqualsBuilder()
+                .append(this.id, rhs.id)
+                .append(this.documentNumber, rhs.documentNumber)
+                .append(this.name, rhs.name)
+                .append(this.contactName, rhs.contactName)
+                .append(this.consumerId, rhs.consumerId)
+                .append(this.secret, rhs.secret)
+                .append(this.accessLevel, rhs.accessLevel)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(documentNumber)
+                .append(name)
+                .append(contactName)
+                .append(consumerId)
+                .append(secret)
+                .append(accessLevel)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("documentNumber", documentNumber)
+                .append("name", name)
+                .append("contactName", contactName)
+                .append("consumerId", consumerId)
+                .append("secret", secret)
+                .append("accessLevel", accessLevel)
+                .toString();
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package io.github.jokoframework.security.springex;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import io.github.jokoframework.common.errors.JokoApplicationException;
 import io.github.jokoframework.security.JokoJWTClaims;
 import io.github.jokoframework.security.api.JokoAuthentication;
 
-public class JokoAuthenticated implements JokoAuthentication {
+public class JokoAuthenticated implements JokoAuthentication, Serializable {
 
     /**
      * 
@@ -19,7 +20,9 @@ public class JokoAuthenticated implements JokoAuthentication {
 
     private final JokoJWTClaims claims;
 
+    //BEGIN-IGNORE-SONARQUBE
     private Collection<? extends GrantedAuthority> authorities;
+    //END-IGNORE-SONARQUBE
 
     public JokoAuthenticated(JokoJWTClaims claims, Collection<? extends GrantedAuthority> authorities) {
         this.claims = claims;

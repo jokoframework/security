@@ -20,21 +20,30 @@ public abstract class BusinessException extends Exception {
      */
     private static final long serialVersionUID = 8943855572101122016L;
 
-    private final String errorCode;
+    private String errorCode;
 
     protected String offendingField;
     protected FIELDS_POSSIBLE_ERRORS fieldErrorType;
 
     public BusinessException(String errorCode, String message) {
-        super(message);
-        this.errorCode = errorCode;
+        this(null, errorCode, message);
         this.offendingField = null;
         this.fieldErrorType = null;
 
     }
 
+    public BusinessException(Throwable pCause, String pErrorCode, String pMessage) {
+        super(pMessage, pCause);
+        setErrorCode(pErrorCode);
+    }
+
+
     public String getErrorCode() {
         return errorCode;
+    }
+
+    public void setErrorCode(String pErrorCode) {
+        errorCode = pErrorCode;
     }
 
     @Override

@@ -35,6 +35,7 @@ public class SecurityConstants {
 
     public static final String SECRET_MODE_FILE = "FILE";
     public static final String SECRET_MODE_BD = "BD";
-    
-    
+
+    private SecurityConstants() {
+    }
 }

@@ -1,42 +1,35 @@
 package io.github.jokoframework.common;
 
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.jokoframework.common.dto.DTOConvertable;
+import io.github.jokoframework.common.errors.JokoApplicationException;
+import io.github.jokoframework.security.controller.SecurityConstants;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.github.jokoframework.common.dto.DTOConvertable;
-import io.github.jokoframework.common.errors.JokoApplicationException;
-import io.github.jokoframework.security.controller.SecurityConstants;
+import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
- * 
+ *
  */
 // TODO evaluar los metodos de esta clase vs SecurityUtils
 public class JokoUtils {
 
+    public static final String UNKNOWN = "unknown";
     private static Pattern interpolationPattern = Pattern.compile("\\{(\\w+)(.*?)\\}");
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private JokoUtils() {
 
@@ -50,23 +43,23 @@ public class JokoUtils {
      * @return
      */
     public static String getClientIpAddr(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
+        List<String> headers = Arrays.asList("X-Forwarded-For","Proxy-Client-IP", "WL-Proxy-Client-IP",
+                "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR");
+        String ip = UNKNOWN;
+        for (String header : headers) {
+            ip = request.getHeader(header);
+            if (!isEmtpyOrUnknown(ip)) {
+                break;
+            }
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (isEmtpyOrUnknown(ip)) {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    private static boolean isEmtpyOrUnknown(String pIp) {
+        return StringUtils.isEmpty(pIp) || UNKNOWN.equalsIgnoreCase(pIp);
     }
 
     public static <T> String join(Collection<T> list, String separator) {
@@ -102,13 +95,12 @@ public class JokoUtils {
     /**
      * Recorre una lista de elemenos de tipo DTOConvertable, los conviente a DTO
      * y devuelve una lista de DTOs
-     * 
+     *
      * @param entities
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities, Class<T> pClass) {
-        ArrayList<T> list = new ArrayList<>();
+    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities) {
+        List<T> list = new ArrayList<>();
 
         List<DTOConvertable> l = (List<DTOConvertable>) entities;
         list.addAll(l.stream().map(o -> (T) o.toDTO()).collect(Collectors.toList()));
@@ -117,7 +109,7 @@ public class JokoUtils {
 
     public static String formatMap(String format, Map<String, Object> values) {
         StringBuilder formatter = new StringBuilder(format);
-        ArrayList<Object> valueList = new ArrayList<>();
+        List<Object> valueList = new ArrayList<>();
 
         Matcher matcher = interpolationPattern.matcher(format);
 
@@ -157,14 +149,13 @@ public class JokoUtils {
     /**
      * Serializa un objeto a un string en formato JSON.
      *
-     * @param jsonObject
-     *            el objeto a ser serializado
+     * @param jsonObject el objeto a ser serializado
      * @return la representación JSON del objeto
      */
     public static String toJSON(Object jsonObject) {
         String json = null;
         try {
-            json = mapper.writeValueAsString(jsonObject);
+            json = MAPPER.writeValueAsString(jsonObject);
         } catch (JsonProcessingException e) {
             throw new JokoApplicationException(e);
         }

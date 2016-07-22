@@ -16,6 +16,7 @@ public interface JokoAuthorizationManager {
      * configuraciones por default y solamente debería de enfocarse en las
      * particularidades de los URL del sitio a definir.
      * Se mantiene la forma de Spring que hace un throws de Exception genérico.
+     * #SonarQubeIssueAware
      * 
      * @param http
      * @throws Exception

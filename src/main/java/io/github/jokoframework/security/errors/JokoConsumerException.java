@@ -17,4 +17,7 @@ public class JokoConsumerException extends BusinessException {
 
     }
 
+    public JokoConsumerException(IllegalArgumentException pE, String pInvalidAcessLevel, String pS) {
+        super(pE, pInvalidAcessLevel, pS);
+    }
 }
