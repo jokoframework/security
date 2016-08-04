@@ -1,0 +1,14 @@
+.classpath
+.idea/*
+.project
+.settings
+.settings/*
+target/
+*.iml
+**/*.iml
+/build/
+out.txt
+*.lck
+*.log
+*.script
+*.out

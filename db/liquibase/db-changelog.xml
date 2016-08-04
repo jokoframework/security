@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <include file="db-changelog-inicial.xml" relativeToChangelogFile="true"/>
+    <!-- -->
+    <!-- Colocar aquí todos los cambios que se hagan desde el setup del proyecto -->
+    <!-- -->
+    <include file="db-changelog-evolucion.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
