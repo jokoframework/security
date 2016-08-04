@@ -70,3 +70,14 @@ Se listan a continuación las configuraciones básicas y funcionalidades proveí
 - La configuración del tiempo de vida de los tokens es en base al security profile
 - Los tokens de refresh se pueden revocar
 - Configuracion de spring-security especializada para aplicaciones stateless 
+
+# Unit Tests
+joko-security cuenta con una clase que contiene tests unitarios, para las funcionalidades principales de módulo: 
+
+- Creación de tokens
+- Parseo
+- Refresh
+
+Se puede correr los tests mediante maven
+
+	mvn -Dspring.config.location=file:///opt/joko/development/application.properties test
