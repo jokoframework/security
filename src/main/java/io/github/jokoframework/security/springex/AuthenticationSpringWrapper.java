@@ -1,7 +1,7 @@
 package io.github.jokoframework.security.springex;
 
 import io.github.jokoframework.security.api.JokoAuthentication;
-import io.github.jokoframework.security.dto.AuthenticationRequest;
+import io.github.jokoframework.security.dto.request.AuthenticationRequest;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;

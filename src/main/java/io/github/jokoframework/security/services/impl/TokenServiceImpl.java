@@ -1,4 +1,4 @@
-package io.github.jokoframework.security.services;
+package io.github.jokoframework.security.services.impl;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import io.github.jokoframework.security.services.ISecurityProfileService;
+import io.github.jokoframework.security.services.ITokenService;
+import io.github.jokoframework.security.services.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

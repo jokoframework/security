@@ -69,7 +69,10 @@ public class JokoWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(ApiPaths.TOKEN_REFRESH + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
                 // logout
                 .antMatchers(ApiPaths.LOGOUT).hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
-                .antMatchers(ApiPaths.LOGOUT + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH);
+                .antMatchers(ApiPaths.LOGOUT + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
+                //sessions
+                .antMatchers(ApiPaths.SESSIONS).hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
+                .antMatchers(ApiPaths.SESSIONS + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH);
 
         if (jokoAuthorizationManager != null) {
             // Configuracion de URL particular para la aplicacion

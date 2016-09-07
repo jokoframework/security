@@ -1,9 +1,10 @@
-package io.github.jokoframework.security.services;
+package io.github.jokoframework.security.services.impl;
 
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.security.entities.SecurityProfile;
 import io.github.jokoframework.security.errors.JokoUnauthorizedException;
 import io.github.jokoframework.security.repositories.ISecurityProfileRepository;
+import io.github.jokoframework.security.services.ISecurityProfileService;
 import io.github.jokoframework.security.util.TXUUIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -32,7 +32,7 @@ import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
 import io.github.jokoframework.security.JokoTokenWrapper;
 import io.github.jokoframework.security.api.JokoAuthentication;
 import io.github.jokoframework.security.api.JokoAuthenticationManager;
-import io.github.jokoframework.security.dto.AuthenticationRequest;
+import io.github.jokoframework.security.dto.request.AuthenticationRequest;
 import io.github.jokoframework.security.dto.JokoTokenResponse;
 import io.github.jokoframework.security.services.ITokenService;
 import io.github.jokoframework.security.springex.AuthenticationSpringWrapper;

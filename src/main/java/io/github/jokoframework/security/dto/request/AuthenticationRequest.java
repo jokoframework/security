@@ -1,4 +1,4 @@
-package io.github.jokoframework.security.dto;
+package io.github.jokoframework.security.dto.request;
 
 import java.util.Map;
 
