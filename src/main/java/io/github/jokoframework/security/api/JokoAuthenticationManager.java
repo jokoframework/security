@@ -23,11 +23,11 @@ public interface JokoAuthenticationManager {
 	 * Un <code>JokoAuthenticationManager</code> tiene que honrar el mismo
 	 * contrato de errores que un {@link AuthenticationManager}:
 	 * <ul>
-	 * <li>A {@link DisabledException} must be thrown if an account is disabled
+	 * <li>A {@link org.springframework.security.authentication.DisabledException} must be thrown if an account is disabled
 	 * and the <code>AuthenticationManager</code> can test for this state.</li>
-	 * <li>A {@link LockedException} must be thrown if an account is locked and
+	 * <li>A {@link org.springframework.security.authentication.LockedException} must be thrown if an account is locked and
 	 * the <code>AuthenticationManager</code> can test for account locking.</li>
-	 * <li>A {@link BadCredentialsException} must be thrown if incorrect
+	 * <li>A {@link org.springframework.security.authentication.BadCredentialsException} must be thrown if incorrect
 	 * credentials are presented. Whilst the above exceptions are optional, an
 	 * <code>AuthenticationManager</code> must <B>always</B> test credentials.
 	 * </li>

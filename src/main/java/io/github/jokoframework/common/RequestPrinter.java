@@ -225,8 +225,8 @@ public class RequestPrinter {
     }
 
     /**
-     * @param session
-     * @return
+     * @param session La sesión HTTP para obtener los parámetros
+     * @return El string que se obtiene de la sesión para depurar el estado.
      */
     public static String debugStringSession(HttpSession session) {
         return RequestPrinter.debugStringSession(session, 0);

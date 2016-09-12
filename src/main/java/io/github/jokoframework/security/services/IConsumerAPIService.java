@@ -8,7 +8,7 @@ import io.github.jokoframework.security.errors.JokoConsumerException;
 /**
  * <p>
  * Maneja el storage de usuarios que tienen acceso a nivel de API.
- * <p/>
+ * </p>
  * <p>
  * Un consumer NO es una persona sino una aplicacion que posee accesos de mayor
  * nivel

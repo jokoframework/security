@@ -17,7 +17,7 @@ public interface JokoAuthentication extends Authentication {
      * Devuelve una de las propiedades particulares del requet
      * 
      * @param key
-     * @return
+     * @return la propiedad
      */
     Object getCustom(String key);
 

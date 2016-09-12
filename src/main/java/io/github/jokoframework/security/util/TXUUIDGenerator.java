@@ -14,7 +14,7 @@ import java.util.UUID;
  * </p>
  * <p>
  * El largo en las transacciones es de 96bits. <b>20 caracteres por 5 bits cada
- * uno nos da 100, pero necesitamos que sea multiplo de 8 )
+ * uno nos da 100, pero necesitamos que sea multiplo de 8 )</b>
  * </p>
  * <p>
  * Máximo de números posibles
@@ -23,87 +23,83 @@ import java.util.UUID;
  * Con 96 bits tenemos 2^96 numeros posibles. Si tenemos un pico de 50 TPS
  * (transacciones por segundo) y asumimos que esto se mantiene constante
  * podríamos utilizar este numero por los siguientes 5*10^19 años. (Obs.:Seguir
- * leyendo para ver el analisis de colisiones)
- * <p>
- * <p>
- * <p>
+ * leyendo para ver el analisis de colisiones)</p>
+ * <p></p>
+ * <p></p>
+ * <p></p>
  * <blockquote>
- * <p>
+ * <p></p>
  * <pre>
  * (2 ^ 96) / (50 * 24 * 60 * 60 * 365)
  * </pre>
- * <p>
- * </blockquote> Calculo en <a href=
+ * </blockquote>
+ * <p>Calculo en <a href=
  * "http://www.wolframalpha.com/input/?i=2%5E96%2F%2850*24*60*60*365%29" >
  * Wolfram Alpha</a>
- * <p>
- * <p>
+ * </p>
+ * <p></p>
  * <p>
  * Codificacion en Base32
  * </p>
  * <p>
  * La codificación en Base32 provee la ventaja de ser muy legible para humanos,
  * generando "pretty URLs". http://www.crockford.com/wrmg/base32.html. Por este
- * motivo elegimos Base32 para la codificación.
+ * motivo elegimos Base32 para la codificación.</p>
  * <p>
  * JCARD tiene un largo de maximo 12 caracteres (va a cambiar a 20). Teniendo en
  * cuenta que Base32 necesita 5bits para cada caracter, entonces esto nos da
  * como maximo 100bits (12*5) Para llegar al primer multiplo mas cercano de 8
  * bits (1 byte) nos quedamos en 96 bits, es decir 12 bytes.
  * </p>
- * <p>
+ * <p></p>
  * <blockquote>
- * <p>
+ * <p></p>
  * <pre>
- * 	12^62 (jcard limit) >> 12^32 (limite con base 32) >> 2^64 (limite del id generado) > 2^56
+ * 	12^62 (jcard limit) &gt;&gt; 12^32 (limite con base 32) &gt;&gt; 2^64 (limite del id generado) &gt; 2^56
  * </pre>
- * <p>
  * </blockquote>
- * <p>
- * <p>
- * </p>
+ * <p></p>
  * <p>
  * Probabilidad de colisión
  * </p>
  * <p>
  * Si pensamos tener un alto TPS como 8, y lo mantenemos constante por los
  * proximos 20 años nos da un total de :
- * <p>
  * </p>
- * <p>
+ * <p></p>
  * <blockquote>
- * <p>
+ * <p></p>
  * <pre>
  * 8*24*60*60*365*20= 5.045.760.000
  * </pre>
- * <p>
+ * <p></p>
  * </blockquote> Llamamos a este valor "n"
- * </p>
+ * <p>
  * <p>
  * Aplicando la formula para UUID generados de manera random. <b>Fuente
  * https://en.wikipedia.org/wiki/Universally_unique_identifier#
- * Random_UUID_probability_of_duplicates https://tools.ietf.org/html/rfc4122
+ * Random_UUID_probability_of_duplicates https://tools.ietf.org/html/rfc4122</b>
+ * </p>
  * <blockquote>
- * <p>
+ * <p></p>
  * <pre>
  * P(n) = 1- e ^ ( -n^2 / 2x)
  * </pre>
- * <p>
  * </blockquote>
- * </p>
  * <p>
  * En la formula x es la cantidad de valores que puede tener un id, en nuestro
  * caso 2^96. n es la cantidad de IDs que pensamos generar (5.045.760.000). Esto
  * da como resultado 1.
- * <p>
  * </p>
+ * <p>
  * <a href=
  * "http://www.wolframalpha.com/input/?i=1-e%5E%28+%28-5045760000%5E2%29%2F%282*2%5E96%29%29"
  * >Link a Wolfram Alpha</a>
+ * </p>
  * <p>
  * Esta clase fue inicialmente pensada para generar UUIDs de transacciones pero
  * perfectamente se puede acomodar a UUIDs de otros recursos
- * </p>
+ * <p>
  *
  * @author danicricco
  */
@@ -124,7 +120,7 @@ public class TXUUIDGenerator {
     /**
      * Como maximo se producen UUIDs de characterLength
      *
-     * @param characterLength
+     * @param characterLength la cantidad de caracteres para el UUID
      */
     public TXUUIDGenerator(int characterLength) {
         this.characterLength = characterLength;

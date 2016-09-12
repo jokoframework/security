@@ -39,8 +39,8 @@ public class JokoUtils {
      * Retorna el IP del cliente asumiendo que el Web Server está detras de un
      * proxy
      *
-     * @param request
-     * @return
+     * @param request El request de donde quiere obtenerse el clientIpAddr
+     * @return el Nro. de IP del cliente, o "UNKWON" si no se pudo obtenerlo
      */
     public static String getClientIpAddr(HttpServletRequest request) {
         List<String> headers = Arrays.asList("X-Forwarded-For","Proxy-Client-IP", "WL-Proxy-Client-IP",
@@ -96,8 +96,9 @@ public class JokoUtils {
      * Recorre una lista de elemenos de tipo DTOConvertable, los conviente a DTO
      * y devuelve una lista de DTOs
      *
-     * @param entities
-     * @return
+     * @param entities la lista de Entities que se desea convertir
+     * @param <T> El tipo de dato que se espera, se deduce de la asignación donde se almacena el retorno
+     * @return la lista de DTOs generados.
      */
     public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities) {
         List<T> list = new ArrayList<>();

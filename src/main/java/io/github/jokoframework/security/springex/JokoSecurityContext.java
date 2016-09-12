@@ -71,9 +71,9 @@ public class JokoSecurityContext {
      * por Spring-security.
      * <ul>
      * <li>Type REFRESH o REFRESH_C se traduce a:
-     * {@link SecurityConstants.AUTHORIZATION_REFRESH}</li>
+     * {@link SecurityConstants#AUTHORIZATION_REFRESH}</li>
      * <li>Type REFRESH_C se traduce a:
-     * {@link SecurityConstants.AUTHORIZATION_REFRESH_CONSUMER}</li>
+     * {@link SecurityConstants#AUTHORIZATION_REFRESH_CONSUMER}</li>
      * <li>Type ACCESS se traduce a una autorizacion por cada rol que el usuario
      * haya cargado</li>
      * </ul>

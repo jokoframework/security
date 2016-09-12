@@ -67,7 +67,7 @@ public class SecurityUtils {
      *
      * @param message El string a encriptar.
      * @param key     La clave en bytes con la que se quiere encriptar.
-     * @return
+     * @return la cadena encriptada codificada en Base64
      */
     public static String encryptarConPassword(String message, byte[] key) {
         String ret = null;
@@ -93,16 +93,12 @@ public class SecurityUtils {
     }
 
     /**
-     * Desencripta una cadena con un password.
-     *
      * @param encrypted La cadena encriptada y codificada en Base64
      * @param key       La clave en bytes que se utilizará para encriptar.
      * @param quiet     Si se imprimirá o no errores de encriptado. Se puso este
      *                  parámetro, para tener compatibilidad hacia atrás de las
-     *                  páginas que ya se tenía con encriptado, cuándo se implement en
-     *                  Setiembre de 2011, la encriptación para todos los URLs de la
-     *                  aplicación.
-     * @return
+     *                  páginas que ya se tenía con encriptado.
+     * @return la cadena desencriptada, codificada en Base64
      */
     private static String desencriptarConKeyByte(String encrypted, byte[] key, boolean quiet) {
         String ret = null;
@@ -139,9 +135,8 @@ public class SecurityUtils {
     /**
      * From a byte[] returns a base 64 representation
      *
-     * @param data byte[]
-     * @return String
-     * @throws IOException
+     * @param data los datos a codificar
+     * @return la representación en Base64 del array de bytes
      */
     public static String byteToBase64(byte[] data) {
 
@@ -152,9 +147,8 @@ public class SecurityUtils {
     /**
      * From a base 64 representation, returns the corresponding byte[]
      *
-     * @param data String The base64 representation
-     * @return byte[]
-     * @throws IOException
+     * @param data The base64 representation
+     * @return el array binario
      */
     public static byte[] base64ToByte(String data) {
 
@@ -164,18 +158,18 @@ public class SecurityUtils {
     /**
      * Encripta una cadena con el defaultKey
      *
-     * @param message
-     * @return
+     * @param message la cadena a encriptar
+     * @return la cadena encriptada, codificada en base64
      */
     public static String encrypt(String message) {
         return encryptarConPassword(message, SecurityUtils.defaultKey);
     }
 
     /**
-     * Desencripta una cadena que se encript� con el defaultKey
+     * Desencripta una cadena que se encriptó con el defaultKey
      *
-     * @param encrypted
-     * @return
+     * @param encrypted la cadena encriptada
+     * @return la cadena desencriptada, codificada en base 64
      */
     public static String decrypt(String encrypted) {
         return desencryptarConPassword(encrypted, SecurityUtils.defaultKey);
@@ -185,7 +179,7 @@ public class SecurityUtils {
      * Realiza un cifrado simple del password
      *
      * @param rawPassword password plano
-     * @return hash bcrypt
+     * @return hash bcrypt en Base64
      */
     public static String hashPassword(String rawPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(BCRYPT_COMPLEXITY);
@@ -250,8 +244,8 @@ public class SecurityUtils {
      * string en Base64
      *
      * @param filePath
-     * @return
-     * @throws IOException
+     * @return el contenido del archivo, codificado en Base64
+     * @throws IOException en caso de que ocurra un problema de IO
      */
     public static String readFileToBase64(String filePath) throws IOException {
         Path path = FileSystems.getDefault().getPath(filePath);
