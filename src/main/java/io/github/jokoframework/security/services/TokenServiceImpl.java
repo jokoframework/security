@@ -343,7 +343,6 @@ public class TokenServiceImpl implements ITokenService {
      * una excepcion
      * 
      * @param jti
-     * @return
      */
     public void failIfRevoked(String jti) {
 

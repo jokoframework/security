@@ -1,22 +1,5 @@
 package io.github.jokoframework.security.services.impl;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import io.github.jokoframework.security.services.ISecurityProfileService;
-import io.github.jokoframework.security.services.ITokenService;
-import io.github.jokoframework.security.services.TokenUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.common.errors.JokoApplicationException;
 import io.github.jokoframework.security.JokoJWTClaims;
@@ -31,11 +14,26 @@ import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
 import io.github.jokoframework.security.errors.JokoUnauthorizedException;
 import io.github.jokoframework.security.repositories.IKeychainRepository;
 import io.github.jokoframework.security.repositories.ITokenRepository;
+import io.github.jokoframework.security.services.ISecurityProfileService;
+import io.github.jokoframework.security.services.ITokenService;
+import io.github.jokoframework.security.services.TokenUtils;
 import io.github.jokoframework.security.util.SecurityUtils;
 import io.github.jokoframework.security.util.TXUUIDGenerator;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -110,7 +108,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public JokoTokenWrapper createAndStoreRefreshToken(String user, String profileKey, TOKEN_TYPE tokenType,
-            String userAgent, String remoteIP, List<String> roles) {
+                                                       String userAgent, String remoteIP, List<String> roles) {
         SecurityProfile securityProfile = appService.getProfileByKey(profileKey);
         if (securityProfile == null) {
             throw new JokoApplicationException("Unable to create refresh token without a valid security profile. The profile "
@@ -139,7 +137,7 @@ public class TokenServiceImpl implements ITokenService {
     /**
      * Crea un token de acceso basado en el refresh token proveido como
      * parametro
-     * 
+     *
      * @param refreshToken
      * @return
      */
@@ -181,11 +179,9 @@ public class TokenServiceImpl implements ITokenService {
      * puede tener como maximo 1 usuario, entonces el usuario no podra usar una
      * apliccion android y iphone a la vez.
      * </p>
-     * 
-     * @param user
-     *            usuario registrado
-     * @param app
-     *            entidad de aplicacion
+     *
+     * @param user usuario registrado
+     * @param app  entidad de aplicacion
      */
     private void revokePreviousTokenIfNeccesary(String user, SecurityProfile app) {
         List<TokenEntity> tokensRegistered = tokenRepository.findByUser(user);
@@ -203,7 +199,7 @@ public class TokenServiceImpl implements ITokenService {
             LOGGER.warn("User {} has {} tokens, and it should only have {} for application {}. Revoking {} tokens",
                     JokoUtils.formatLogString(user), tokensRegistered.size(), maxNumberOfDevicesPerUser,
                     JokoUtils.formatLogString(appId), numberOfTokensToRevoke);
-                    // revoca todos los tokens anteriores de la misma aplicacion
+            // revoca todos los tokens anteriores de la misma aplicacion
 
             // Puede que un usuario tenga
             for (int i = 0; i < tokensRegistered.size() && i < numberOfTokensToRevoke; i++) {
@@ -225,20 +221,16 @@ public class TokenServiceImpl implements ITokenService {
 
     /**
      * Crea un token JWT firmado por este servidor con los parametros asignados
-     * 
-     * @param user
-     *            El usuario dueño del token
-     * @param roles
-     *            La lista de roles que se le concederá al usuario para este
-     *            token en particular
-     * 
+     *
+     * @param user    El usuario dueño del token
+     * @param roles   La lista de roles que se le concederá al usuario para este
+     *                token en particular
      * @param type
-     * 
      * @param timeout
      * @return
      */
     public JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,
-            String securityProfile) {
+                                        String securityProfile) {
         if (timeout < 0) {
             throw new IllegalArgumentException("Unable to create a token with an expired timeout");
         }
@@ -287,14 +279,10 @@ public class TokenServiceImpl implements ITokenService {
     /**
      * Guarda el token dentro de la BD
      *
-     * @param token
-     *            token generado
-     * @param app
-     *            aplicacion
-     * @param userAgent
-     *            tipo de navegador
-     * @param remoteIP
-     *            direccion remota
+     * @param token     token generado
+     * @param app       aplicacion
+     * @param userAgent tipo de navegador
+     * @param remoteIP  direccion remota
      */
     private void storeToken(JokoTokenWrapper token, SecurityProfile app, String userAgent, String remoteIP) {
         TokenEntity entity = TokenUtils.toEntity(token, app);
@@ -344,7 +332,7 @@ public class TokenServiceImpl implements ITokenService {
     /**
      * Prueba si un jti ha sido revocado. En caso de haber sido revodado tira
      * una excepcion
-     * 
+     *
      * @param jti
      */
     public void failIfRevoked(String jti) {
