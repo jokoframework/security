@@ -1,4 +1,4 @@
-package io.github.jokoframework.security.services;
+package io.github.jokoframework.security.services.impl;
 
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.security.dto.ConsumerAPIDTO;
@@ -6,6 +6,7 @@ import io.github.jokoframework.security.entities.ConsumerApiEntity;
 import io.github.jokoframework.security.entities.ConsumerApiEntity.ACCESS_LEVEL;
 import io.github.jokoframework.security.errors.JokoConsumerException;
 import io.github.jokoframework.security.repositories.IConsumerRepository;
+import io.github.jokoframework.security.services.IConsumerAPIService;
 import io.github.jokoframework.security.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
