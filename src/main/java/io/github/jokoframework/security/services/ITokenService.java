@@ -1,5 +1,6 @@
 package io.github.jokoframework.security.services;
 
+import java.util.Date;
 import java.util.List;
 
 import io.github.jokoframework.security.JokoJWTClaims;
@@ -26,7 +27,7 @@ public interface ITokenService {
     /**
      * Devuelve false si el token no fue revocado, en cualquier otro caso
      * devuelve true
-     * 
+     *
      * @param jti
      * @return
      */
@@ -36,11 +37,13 @@ public interface ITokenService {
      * Realiza el parsing del token JWT. Este metodo tira un
      * {@link JwtException} si no se pudo comprobar la firma o el certificado
      * expiro
-     * 
+     *
      * @param token
      * @return
      */
     JokoJWTClaims parse(String token);
 
     int deleteExpiredTokens();
+
+    void revokeTokensUntil(Date date);
 }

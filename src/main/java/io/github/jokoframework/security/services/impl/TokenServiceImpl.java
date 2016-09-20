@@ -324,6 +324,11 @@ public class TokenServiceImpl implements ITokenService {
     }
 
     @Override
+    public void revokeTokensUntil(Date date) {
+    	tokenRepository.deleteTokensFromDate(date);
+    }
+
+    @Override
     public int deleteExpiredTokens() {
         Date now = new Date();
         return tokenRepository.deleteExpiredTokens(now);

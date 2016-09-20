@@ -41,5 +41,7 @@ public interface ITokenRepository extends JpaRepository<TokenEntity, String> {
     @Query("DELETE from TokenEntity t WHERE t.expiration <= :fromDate")
     int deleteExpiredTokens(@Param("fromDate") Date fromDate);
 
-
+    @Modifying
+    @Query("DELETE from TokenEntity t WHERE t.issuedAt <= :fromDate")
+    int deleteTokensFromDate(@Param("fromDate") Date fromDate);
 }
