@@ -12,3 +12,5 @@ out.txt
 *.log
 *.script
 *.out
+conf/*
+db/*.db

@@ -23,11 +23,11 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "security_profile", schema = "sys")
+@Table(name = "security_profile")
 public class SecurityProfile implements Serializable {
 	// Solo existe esta variable para poner referencias externas en mensajes de
 	// log
-	public static final String TABLE_NAME = "sys.security_profile";
+	public static final String TABLE_NAME = "security_profile";
 	private static final long serialVersionUID = 9134112281157665429L;
 	private Long id;
 	private String key;
@@ -47,7 +47,7 @@ public class SecurityProfile implements Serializable {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "security_profile_id_seq")
-	@SequenceGenerator(name = "security_profile_id_seq", sequenceName = "sys.security_profile_id_seq", schema = "sys", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name = "security_profile_id_seq", sequenceName = "security_profile_id_seq", initialValue = 1, allocationSize = 1)
 	public Long getId() {
 		return id;
 	}
@@ -89,7 +89,7 @@ public class SecurityProfile implements Serializable {
 	 *
 	 * @return maxNumberOfDevicePerUser
 	 */
-	@Column(name = "max_number_of_connections_per_user")
+	@Column(name = "max_number_of_connections_user")
 	public Integer getMaxNumberOfDevicesPerUser() {
 		return maxNumberOfConnectionsPerUser;
 	}

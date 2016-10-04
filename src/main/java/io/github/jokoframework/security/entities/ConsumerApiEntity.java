@@ -16,8 +16,8 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "consumer_api", schema = "profile")
-@SequenceGenerator(name = "consumer_api_id_seq", sequenceName = "profile.consumer_api_id_seq", schema = "profile", initialValue = 1, allocationSize = 1)
+@Table(name = "consumer_api")
+@SequenceGenerator(name = "consumer_api_id_seq", sequenceName = "consumer_api_id_seq", initialValue = 1, allocationSize = 1)
 public class ConsumerApiEntity implements DTOConvertable {
 
     // FIXME podriamos llevar a otro lugar

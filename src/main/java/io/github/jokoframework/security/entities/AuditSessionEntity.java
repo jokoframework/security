@@ -1,19 +1,28 @@
 package io.github.jokoframework.security.entities;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import javax.persistence.*;
-import javax.persistence.metamodel.Attribute;
-import java.util.Date;
 
 /**
  * Created by afeltes on 07/09/16.
  */
 @Entity
-@Table(name = "audit_session", schema = "sys")
-@SequenceGenerator(name = "audit_session_id_seq", sequenceName = "sys.audit_session_id_seq", schema = "sys", initialValue = 1, allocationSize = 1)
+@Table(name = "audit_session")
+@SequenceGenerator(name = "audit_session_id_seq", sequenceName = "audit_session_id_seq", initialValue = 1, allocationSize = 1)
 public class AuditSessionEntity {
 
     public static final String USER_DATE = "userDate";
