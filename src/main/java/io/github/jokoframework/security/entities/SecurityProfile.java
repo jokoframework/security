@@ -89,7 +89,7 @@ public class SecurityProfile implements Serializable {
 	 *
 	 * @return maxNumberOfDevicePerUser
 	 */
-	@Column(name = "max_number_of_connections_user")
+	@Column(name = "max_number_devices_user")
 	public Integer getMaxNumberOfDevicesPerUser() {
 		return maxNumberOfConnectionsPerUser;
 	}
