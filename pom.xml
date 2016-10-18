@@ -23,6 +23,7 @@
         <jjwt.version>0.6.0</jjwt.version>
         <spring-security-test.version>4.1.0.RELEASE</spring-security-test.version>
         <commons-collections4.version>4.1</commons-collections4.version>
+        <flywaydb.version>4.0.3</flywaydb.version>
 
     </properties>
 
@@ -133,6 +134,12 @@
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
         </dependency>
+        
+        <dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>${flywaydb.version}</version>
+		</dependency>
 
     </dependencies>
 
