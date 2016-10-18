@@ -53,6 +53,7 @@ public class ConsumerApiEntity implements DTOConvertable {
         this.documentNumber = documentNumber;
     }
 
+    @Column(name = "name")
     public String getName() {
         return name;
     }
