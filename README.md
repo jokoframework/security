@@ -9,6 +9,8 @@ Joko Security es una extensión de spring-security que permite trabajar con toke
 Joko-security necesita un repositorio de datos en el cual se almacenan datos para que permiten realizar el proceso de autorización. 
 El sistema utiliza JPA de una manera bastante agnóstica a la BD. Sin embargo, actualmente solamente está probado con PostgreSQL 9.3
 
+** *Observación* **: Favor referir a la [guia de upgrade](docs/migration.md) **para actualizar desde la versión 0.1.4**. Y primero leer [los cambios](CHANGELOG.md) que se introdujeron a partir de la versión 0.1.5.
+
 #### Inicio desde .sql
 El inicio mas sencillo es correr el script .sql correspondiente a la BD que utiliza. Estos scripts se encuentran en /db/sql-initialization
  
