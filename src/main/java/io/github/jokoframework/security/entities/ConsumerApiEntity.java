@@ -36,7 +36,7 @@ public class ConsumerApiEntity implements DTOConvertable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "consumer_api_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consumer_api_id_seq")
     public Long getId() {
         return id;
     }

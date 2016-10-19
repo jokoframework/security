@@ -27,7 +27,7 @@ public class AuditSessionEntity {
 
     public static final String USER_DATE = "userDate";
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "audit_session_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "audit_session_id_seq")
     private Long id;
 
     @Column(name = "user_agent")
