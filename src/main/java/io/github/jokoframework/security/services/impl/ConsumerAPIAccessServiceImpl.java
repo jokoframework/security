@@ -40,10 +40,9 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
             throw new JokoConsumerException(JokoConsumerException.MISSING_REQUIRED_DATA,
                     "Missing required field \"name\" ");
         }
-        ACCESS_LEVEL type;
-        Long pdvId = null;
+        
         try {
-            type = ACCESS_LEVEL.valueOf(consumer.getAccessLevel());
+        	ACCESS_LEVEL.valueOf(consumer.getAccessLevel());
         } catch (IllegalArgumentException e) {
             throw new JokoConsumerException(e, JokoConsumerException.INVALID_ACESS_LEVEL,
                     "Invalid access level. Use one of: PDV, BANK, ON_BEHALF_USER, ATM");
@@ -65,7 +64,7 @@ public class ConsumerAPIAccessServiceImpl implements IConsumerAPIService {
         dto.setSecret(secret);
         return dto;
     }
-
+    
     @Override
     public List<ConsumerAPIDTO> list() {
         List<ConsumerApiEntity> entities = repository.findAll();

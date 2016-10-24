@@ -1,8 +1,5 @@
 package io.github.jokoframework.security.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Date;
 
 /**
@@ -13,6 +10,8 @@ public class AuditSessionDTO {
     private String userAgent;
     private Date userDate;
     private String remoteIp;
+    
+    private PrincipalSessionDTO principal;
 
     public Long getId() {
         return id;
@@ -45,4 +44,12 @@ public class AuditSessionDTO {
     public void setRemoteIp(String pRemoteIp) {
         remoteIp = pRemoteIp;
     }
+
+	public PrincipalSessionDTO getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(PrincipalSessionDTO principal) {
+		this.principal = principal;
+	}
 }

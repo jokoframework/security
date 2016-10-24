@@ -100,7 +100,8 @@ public class JokoUtils {
      * @param <T> El tipo de dato que se espera, se deduce de la asignación donde se almacena el retorno
      * @return la lista de DTOs generados.
      */
-    public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities) {
+    @SuppressWarnings("unchecked")
+	public static <T> List<T> fromEntityToDTO(List<? extends DTOConvertable> entities) {
         List<T> list = new ArrayList<>();
 
         List<DTOConvertable> l = (List<DTOConvertable>) entities;

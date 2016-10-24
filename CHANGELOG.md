@@ -2,6 +2,9 @@
 
 Archivo para documentar cambios más importantes de la librería.
 
+### [v0.1.6]
+- Auditoria de sesión por usuario y aplicación
+
 ### [v0.1.5] 
 Para upgrade a esta versión referir al [documento de migración](docs/migration.md)
 - Soporte para base de datos Oracle con mejor manejo de esquemas y nombres de columnas

@@ -2,11 +2,14 @@ package io.github.jokoframework.security.entities;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -37,6 +40,14 @@ public class AuditSessionEntity {
     private Date userDate;
     @Column(name = "remote_ip")
     private String remoteIp;
+    
+    @Column(name = "creation_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+    
+    @ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "id_principal")
+	private PrincipalSessionEntity principal;
 
     public Long getId() {
         return id;
@@ -71,7 +82,23 @@ public class AuditSessionEntity {
     }
 
 
-    @Override
+    public PrincipalSessionEntity getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(PrincipalSessionEntity principal) {
+		this.principal = principal;
+	}
+	
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	@Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -88,6 +115,7 @@ public class AuditSessionEntity {
                 .append(this.userAgent, rhs.userAgent)
                 .append(this.userDate, rhs.userDate)
                 .append(this.remoteIp, rhs.remoteIp)
+                .append(this.creationDate, rhs.creationDate)
                 .isEquals();
     }
 
@@ -98,6 +126,7 @@ public class AuditSessionEntity {
                 .append(userAgent)
                 .append(userDate)
                 .append(remoteIp)
+                .append(creationDate)
                 .toHashCode();
     }
 
@@ -109,6 +138,7 @@ public class AuditSessionEntity {
                 .append("userAgent", userAgent)
                 .append("userDate", userDate)
                 .append("remoteIp", remoteIp)
+                .append("creationDate", creationDate)
                 .toString();
     }
 
