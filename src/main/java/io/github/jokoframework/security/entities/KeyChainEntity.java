@@ -4,12 +4,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "keychain", schema = "sys")
+@Table(name = "keychain")
 public class KeyChainEntity {
 
     public static final int JOKO_TOKEN_SECRET = 1;
@@ -25,6 +26,7 @@ public class KeyChainEntity {
         this.id = id;
     }
 
+    @Column( name = "value", length = 500 )
     public String getValue() {
         return value;
     }

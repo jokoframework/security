@@ -9,12 +9,21 @@
 # Database configuration
 ##
 #Base de datos de joko_security. Mayor documentacion al respecto en joko_security
-spring.datasource.url=jdbc\:postgresql\://localhost\:5432/db_sec_mod
+spring.datasource.url=jdbc\:postgresql\://localhost\:5432/db_joko_security
 spring.datasource.username=postgres
 spring.datasource.password=postgres
 spring.datasource.driver-class-name=org.postgresql.Driver
 
+#spring.datasource.url=jdbc\:oracle\:thin\:@oracle.hq.sodep.com.py\:1521\:orcl12c
+#spring.datasource.username=sodep
+#spring.datasource.password=sopeda2016
+#spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
 spring.jpa.show-sql=true
+
+#spring.jpa.generate-ddl=true
+#spring.jpa.hibernate.ddl-auto=update
+#spring.jpa.database=postgresql
 
 spring.jackson.serialization.write-dates-as-timestamps:false
 #imprime formateado los json. En produccion esto probablemente vaya a false

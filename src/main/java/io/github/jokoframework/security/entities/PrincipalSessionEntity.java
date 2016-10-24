@@ -15,14 +15,14 @@ import javax.persistence.UniqueConstraint;
  *
  */
 @Entity
-@Table(name = "principal_session", schema = "sys",
+@Table(name = "principal_session",
 	uniqueConstraints={
 			@UniqueConstraint(columnNames = {"app_id", "user_id"})
 	})
-@SequenceGenerator(name = "principal_session_id_seq", sequenceName = "sys.principal_session_id_seq", schema = "sys", initialValue = 1, allocationSize = 1)
 public class PrincipalSessionEntity {
 
     @Id
+    @SequenceGenerator(name = "principal_session_id_seq", sequenceName = "principal_session_id_seq", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "principal_session_id_seq")
     private Long id;
 
