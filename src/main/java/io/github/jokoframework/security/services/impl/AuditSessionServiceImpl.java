@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import io.github.jokoframework.security.dto.AuditSessionDTO;
+import io.github.jokoframework.security.dto.PrincipalSessionDTO;
 import io.github.jokoframework.security.dto.request.AuditSessionRequestDTO;
 import io.github.jokoframework.security.dto.request.PrincipalSessionRequestDTO;
 import io.github.jokoframework.security.dto.response.AuditSessionResponseDTO;
@@ -42,6 +43,9 @@ public class AuditSessionServiceImpl implements IAuditSessionService {
         for (AuditSessionEntity entity : sessions) {
             AuditSessionResponseDTO dto = new AuditSessionResponseDTO();
             BeanUtils.copyProperties(entity, dto);
+            PrincipalSessionDTO principal = new PrincipalSessionDTO();
+            BeanUtils.copyProperties(entity.getPrincipal(), principal);
+            dto.setPrincipal(principal);
             sessionsPage.add(dto);
         }
         return sessionsPage;

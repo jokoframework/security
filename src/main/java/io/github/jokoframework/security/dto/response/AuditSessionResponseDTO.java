@@ -1,8 +1,10 @@
 package io.github.jokoframework.security.dto.response;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.Date;
+import io.github.jokoframework.security.dto.PrincipalSessionDTO;
 
 /**
  * Created by afeltes on 07/09/16.
@@ -11,6 +13,7 @@ public class AuditSessionResponseDTO {
     private String userAgent;
     private Date userDate;
     private String remoteIp;
+    private PrincipalSessionDTO principal;
 
     public AuditSessionResponseDTO() {
     }
@@ -44,13 +47,19 @@ public class AuditSessionResponseDTO {
         remoteIp = pRemoteIp;
     }
 
+	public PrincipalSessionDTO getPrincipal() {
+		return principal;
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("userAgent", userAgent)
-                .append("userDate", userDate)
-                .append("remoteIp", remoteIp)
-                .toString();
-    }
+	public void setPrincipal(PrincipalSessionDTO principal) {
+		this.principal = principal;
+	}
+
+	@Override
+	public String toString() {
+		ToStringBuilder builder = new ToStringBuilder(this);
+		builder.append("userAgent", userAgent).append("userDate", userDate).append("remoteIp", remoteIp)
+				.append("principal", principal);
+		return builder.toString();
+	}
 }

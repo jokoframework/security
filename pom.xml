@@ -5,7 +5,7 @@
 
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-security</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7.SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -23,7 +23,6 @@
         <jjwt.version>0.6.0</jjwt.version>
         <spring-security-test.version>4.1.0.RELEASE</spring-security-test.version>
         <commons-collections4.version>4.1</commons-collections4.version>
-
     </properties>
 
     <!--Dependencias -->
@@ -60,7 +59,6 @@
 			<version>1.4.192</version>
 			<scope>test</scope>
 		</dependency>
-
 
         <!-- Swagger -->
         <dependency>
