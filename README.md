@@ -1,5 +1,5 @@
 # Joko Security
-Joko Security provee la capacidad de realizar autenticacion y autorizacion por medio de Tokens JWT.
+Joko Security provee la capacidad de realizar autenticación y autorización por medio de Tokens JWT.
 Se puede utilizar de dos maneras, como un componente separado que emite tokens o embebido como una librería dentro de otra aplicación Web.
 Joko Security es una extensión de spring-security que permite trabajar con token de refresh, y acceso utilizando como formato de tokens JWT.
 
