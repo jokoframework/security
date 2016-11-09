@@ -25,9 +25,13 @@ import io.github.jokoframework.security.util.JokoRequestContext;
 @RestController
 public class TokenController {
 
-    @Autowired
-    private ITokenService tokenService;
+	private ITokenService tokenService;
 
+    @Autowired
+    public TokenController(ITokenService tokenService) {
+    	this.tokenService = tokenService;
+    }
+    
     @ApiOperation(value = "Crea un token de acceso de usuario", notes = "Dependiendo del security profile utilizado el token se creara con mayor o menor tiempo de expiración. ", position = 4)
     @ApiResponses(value = { @ApiResponse(code = 202, message = "El token se ha creado exitosamente."),
             @ApiResponse(code = 403, message = "En caso de proveerse un refresh token inválido") })

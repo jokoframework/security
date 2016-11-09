@@ -3,6 +3,7 @@ package io.github.jokoframework.security.services;
 import java.util.Date;
 import java.util.List;
 
+import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.JokoJWTClaims;
 import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
 import io.github.jokoframework.security.JokoTokenWrapper;
@@ -46,4 +47,6 @@ public interface ITokenService {
     int deleteExpiredTokens();
 
     void revokeTokensUntil(Date date);
+
+	JokoTokenInfoResponse tokenInfo(String accessToken);
 }

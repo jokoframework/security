@@ -1,6 +1,7 @@
 package io.github.jokoframework.security.services.impl;
 
 import io.github.jokoframework.common.JokoUtils;
+import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.common.errors.JokoApplicationException;
 import io.github.jokoframework.security.JokoJWTClaims;
 import io.github.jokoframework.security.JokoJWTExtension;
@@ -363,4 +364,10 @@ public class TokenServiceImpl implements ITokenService {
                 jokoToken.getJoko().getRoles());
         return tokenWrapper;
     }
+
+	@Override
+	public JokoTokenInfoResponse tokenInfo(String accessToken) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
