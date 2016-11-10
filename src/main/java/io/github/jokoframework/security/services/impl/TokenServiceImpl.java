@@ -23,12 +23,14 @@ import io.github.jokoframework.security.util.TXUUIDGenerator;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -367,7 +369,38 @@ public class TokenServiceImpl implements ITokenService {
 
 	@Override
 	public JokoTokenInfoResponse tokenInfo(String accessToken) {
-		// TODO Auto-generated method stub
-		return null;
+		Assert.notNull(accessToken, "El token es requerido");
+		JokoJWTClaims claims = this.tokenInfoAsClaims(accessToken);
+		
+		JokoTokenInfoResponse response = new JokoTokenInfoResponse.Builder()
+				.audience(claims.getAudience())
+		        .userId(claims.getSubject())
+		        .expiresIn(secondsFromNow(claims.getExpiration()))
+		        .revoked(claims == null)
+		        .build();
+		return response;
 	}
+	
+	private Long secondsFromNow(Date expiration) {
+		Date now = new Date();
+		long seconds = (expiration.getTime() - now.getTime()) / 1000;
+		return seconds;
+	}
+
+	@Override
+	public JokoJWTClaims tokenInfoAsClaims(String token) {
+		JokoJWTClaims claims = this.parse(token);
+		// En este punto el token ya es valido sino habria tirado una
+		// excepcion JwtException
+		JokoJWTExtension jokoClaims = claims.getJoko();
+		if (jokoClaims.getType().equals(JokoJWTExtension.TOKEN_TYPE.REFRESH)) {
+		    // Solamente los tokens de refresh se pueden revocar
+		    if (this.hasBeenRevoked(claims.getId())) {
+		        return new JokoJWTClaims(claims, true);
+		    }
+		}
+
+		return new JokoJWTClaims(claims);
+	}
+
 }

@@ -29,7 +29,7 @@ public class JokoWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     private JokoAuthorizationManager jokoAuthorizationManager;
 
-    @Value("${joko.authentication.enable}")
+    @Value("${joko.authentication.enable:true}")
     private Boolean authenticationEnable = true;
 
     public JokoWebSecurityConfig() {

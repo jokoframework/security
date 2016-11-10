@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wordnik.swagger.annotations.ApiImplicitParam;
@@ -15,6 +16,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
+import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.ApiPaths;
 import io.github.jokoframework.security.JokoTokenWrapper;
 import io.github.jokoframework.security.dto.JokoTokenResponse;
@@ -60,5 +62,12 @@ public class TokenController {
 
         return new ResponseEntity<>(new JokoTokenResponse(refreshedToken), HttpStatus.OK);
 
+    }
+    
+    @RequestMapping(value = ApiPaths.TOKEN_INFO, method = RequestMethod.GET)
+    public ResponseEntity<JokoTokenInfoResponse> tokenInfo(@RequestParam("accessToken") String accessToken) {
+    	
+    	JokoTokenInfoResponse response = tokenService.tokenInfo(accessToken);
+    	return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

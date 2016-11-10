@@ -49,4 +49,6 @@ public interface ITokenService {
     void revokeTokensUntil(Date date);
 
 	JokoTokenInfoResponse tokenInfo(String accessToken);
+
+	JokoJWTClaims tokenInfoAsClaims(String token);
 }

@@ -17,6 +17,7 @@ public final class ApiPaths {
     public static final String TOKEN_REFRESH = "/api/token/refresh";
     public static final String TOKEN_REFRESH_CODE = "/api/token/refresh/code";
     public static final String TOKEN_USER_ACCESS = "/api/token/user-access";
+    public static final String TOKEN_INFO = "/api/token/info";
     public static final String TOKEN_USER_ACCESS_ON_BEHALF_USER = "/api/token/on-behalf-user";
     public static final String SESSIONS = "/api/sessions";
 

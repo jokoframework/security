@@ -1,24 +1,36 @@
 package io.github.jokoframework.security;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
+import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
 import io.github.jokoframework.security.entities.SecurityProfile;
 import io.github.jokoframework.security.services.ISecurityProfileService;
 import io.github.jokoframework.security.services.ITokenService;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { Application.class })
-@WebAppConfiguration
+@Transactional
 public class TokenServiceTest {
 
     private static final long ACCEPTED_DATE_DELTA = 1000;// 1 segundo de
@@ -29,33 +41,40 @@ public class TokenServiceTest {
 
     @Autowired
     private ISecurityProfileService securityProfileService;
+	
+	private static String USER = "juan";
+    
+	private static String SECURITY_PROFILE = "profileV1";
+    
+    private static String USER_AGENT = "mozilla";
+    
+    private static String REMOTE_IP = "10.0.3.3";
 
+    private static List<String> ROLES = Arrays.asList("boss");
+   
+    @Before
+    public void setup() {
+
+    }
+    
     @Test
     /**
      * Comprueba que se cree un token en la BD
      */
     public void testCreateRefreshToken() {
-        String user = "juan";
-        String securityProfile = "profileV1";
-        String userAgent = "mozilla";
-        String remoteIP = "10.0.3.3";
-
-        // Guarda la configuración de seguridad
-        SecurityProfile profile = SecurityMockObjects.getSecurityProfile(securityProfile);
-        SecurityProfile storedProfile = securityProfileService.getOrSaveProfile(securityProfile, profile);
-        Assert.assertNotNull(storedProfile);
-
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("boss");
+        
+        saveSecurityProfile();
         // Crea el token de refresh
-        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(user, securityProfile, TOKEN_TYPE.REFRESH,
-                userAgent, remoteIP, roles);
+        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+                USER_AGENT, REMOTE_IP, ROLES);
 
         // Comprueba que no esta revocado
         boolean hasBeenRevoked = tokenService.hasBeenRevoked(token.getClaims().getId());
-        Assert.assertFalse(hasBeenRevoked);
+        assertFalse(hasBeenRevoked);
 
     }
+
+	
 
     @Test
     /**
@@ -63,56 +82,73 @@ public class TokenServiceTest {
      */
     public void testParseToken() {
 
-        String user = "juan";
-
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("boss");
         TOKEN_TYPE type = TOKEN_TYPE.REFRESH;
         int timeout = 60 * 5;// 5min
         String profile = "p1";
 
         Date initTimestamp = new Date();
-        JokoTokenWrapper tokenWrapper = tokenService.createToken(user, roles, type, timeout, profile);
+        JokoTokenWrapper tokenWrapper = tokenService.createToken(USER, ROLES, type, timeout, profile);
         JokoJWTClaims parsedToken = tokenService.parse(tokenWrapper.getToken());
 
         // Comprueba que la fecha de expiracion este cerca de la esperada
         long expectedTimeOut = initTimestamp.getTime() + timeout * 1000;
-        Assert.assertTrue(
+        assertTrue(
                 "Se esperaba la fecha de expiracion sea cerca de " + new Date(expectedTimeOut) + " con diferencia de "
                         + ACCEPTED_DATE_DELTA + " ms.",
                 parsedToken.getExpiration().getTime() - expectedTimeOut <= ACCEPTED_DATE_DELTA);
 
         JokoJWTClaims originalClaims = tokenWrapper.getClaims();
         // El id se mantiene
-        Assert.assertEquals(originalClaims.getId(), parsedToken.getId());
-        Assert.assertEquals(originalClaims.getJoko().getType(), parsedToken.getJoko().getType());
-        Assert.assertEquals(originalClaims.getJoko().getRoles(), parsedToken.getJoko().getRoles());
-        Assert.assertEquals(originalClaims.getSubject(), parsedToken.getSubject());
-
+        assertEquals(originalClaims.getId(), parsedToken.getId());
+        assertEquals(originalClaims.getJoko().getType(), parsedToken.getJoko().getType());
+        assertEquals(originalClaims.getJoko().getRoles(), parsedToken.getJoko().getRoles());
+        assertEquals(originalClaims.getSubject(), parsedToken.getSubject());
+      
     }
 
     @Test
     public void testCreateAccessToken() {
-        String user = "juan";
-        String securityProfile = "profileV1";
-        String userAgent = "mozilla";
-        String remoteIP = "10.0.3.3";
+        
+        saveSecurityProfile();
 
-        // Guarda la configuración de seguridad
-        SecurityProfile profile = SecurityMockObjects.getSecurityProfile(securityProfile);
-        SecurityProfile storedProfile = securityProfileService.getOrSaveProfile(securityProfile, profile);
-        Assert.assertNotNull(storedProfile);
-
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("boss");
+        
         // Crea el token de refresh
-        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(user, securityProfile, TOKEN_TYPE.REFRESH,
-                userAgent, remoteIP, roles);
+        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+                USER_AGENT, REMOTE_IP, ROLES);
         JokoJWTClaims refreshToken = token.getClaims();
         JokoTokenWrapper accessToken = tokenService.createAccessToken(refreshToken);
         JokoJWTClaims jwtClaims = accessToken.getClaims();
-        Assert.assertEquals(TOKEN_TYPE.ACCESS, jwtClaims.getJoko().getType());
-        Assert.assertEquals(refreshToken.getJoko().getRoles(), jwtClaims.getJoko().getRoles());
-        Assert.assertEquals(refreshToken.getSubject(), jwtClaims.getSubject());
+        assertEquals(TOKEN_TYPE.ACCESS, jwtClaims.getJoko().getType());
+        assertEquals(refreshToken.getJoko().getRoles(), jwtClaims.getJoko().getRoles());
+        assertEquals(refreshToken.getSubject(), jwtClaims.getSubject());
     }
+    
+    @Test
+    public void gettingTokenInfoShouldReturnInfo() {
+    	
+    	// 1. Creamos el refresh token
+    	saveSecurityProfile();
+        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+                USER_AGENT, REMOTE_IP, ROLES);
+        
+        // 2. Lo revocamos
+    	//tokenService.revokeToken(token.getClaims().getId());
+    	
+    	// 3. Obtenemos su información
+    	JokoTokenInfoResponse response = tokenService.tokenInfo(token.getToken());
+    	
+    	assertNotNull(response);
+    	assertEquals(Boolean.FALSE, response.getRevoked());
+    	assertEquals(USER, response.getUserId());
+    	assertThat(response.getExpiresIn(), greaterThan(0L));
+    	
+    }
+
+	private void saveSecurityProfile() {
+		// Guarda la configuración de seguridad
+        SecurityProfile profile = SecurityMockObjects.getSecurityProfile(SECURITY_PROFILE);
+        SecurityProfile storedProfile = securityProfileService.getOrSaveProfile(SECURITY_PROFILE, profile);
+        assertNotNull(storedProfile);
+        
+	}
 }

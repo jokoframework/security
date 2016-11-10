@@ -53,7 +53,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         JokoJWTClaims claims = validateToken(request);
-        if (claims != null) {
+        if (claims != null && !claims.getRevoked()) {
 
             Collection<? extends GrantedAuthority> baseAuthorizations = JokoSecurityContext
                     .determineAuthorizations(claims);
@@ -94,18 +94,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
         }
 
         try {
-            JokoJWTClaims claims = tokenService.parse(token);
-            // En este punto el token ya es valido sino habria tirado una
-            // excepcion JwtException
-            JokoJWTExtension jokoClaims = claims.getJoko();
-            if (jokoClaims.getType().equals(JokoJWTExtension.TOKEN_TYPE.REFRESH)) {
-                // Solamente los tokens de refresh se pueden revocar
-                if (tokenService.hasBeenRevoked(claims.getId())) {
-                    return null;
-                }
-            }
-
-            return claims;
+            return tokenService.tokenInfoAsClaims(token);
         } catch (JwtException | IllegalArgumentException e) {
 
             String uri = httpRequest.getRequestURI();
@@ -118,4 +107,5 @@ public class JokoSecurityFilter extends GenericFilterBean {
         }
     }
 
+	
 }

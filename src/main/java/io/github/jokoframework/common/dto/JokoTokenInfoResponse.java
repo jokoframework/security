@@ -4,7 +4,7 @@ public class JokoTokenInfoResponse {
 
 	private String userId;
 	private String audiencie;
-	private Integer expiresIn;
+	private Long expiresIn;
 	private Boolean revoked;
 
 	public String getAudiencie() {
@@ -19,7 +19,7 @@ public class JokoTokenInfoResponse {
 		return userId;
 	}
 
-	public Integer getExpiresIn() {
+	public Long getExpiresIn() {
 		return expiresIn;
 	}
 
@@ -39,14 +39,14 @@ public class JokoTokenInfoResponse {
 		this.revoked = revoked;
 	}
 
-	private void setExpiresIn(Integer expiresIn) {
+	private void setExpiresIn(Long expiresIn) {
 		this.expiresIn = expiresIn;
 	}
 
 	public static class Builder {
 		private String userId;
 		private String audience;
-		private Integer expiresIn;
+		private Long expiresIn;
 		private Boolean revoked;
 	
 	
@@ -59,13 +59,8 @@ public class JokoTokenInfoResponse {
 			this.audience = audience;	
 			return this;
 		}
-
-		public Builder expiresIn(String audience) {
-			this.audience = audience;	
-			return this;
-		}
 		
-		public Builder expiresIn(Integer expiresIn) {
+		public Builder expiresIn(Long expiresIn) {
 			this.expiresIn = expiresIn;	
 			return this;
 		}
@@ -92,6 +87,12 @@ public class JokoTokenInfoResponse {
 
 	public static Builder builder() {
 		return new Builder();
+	}
+
+	@Override
+	public String toString() {
+		return "JokoTokenInfoResponse [userId=" + userId + ", audiencie=" + audiencie + ", expiresIn=" + expiresIn
+				+ ", revoked=" + revoked + "]";
 	}
 
 }
