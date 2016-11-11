@@ -46,7 +46,6 @@ public class TokenControllerTest {
 				.audience("some audience")
 		        .userId("some user")
 		        .expiresIn(123L)
-		        .revoked(false)
 		        .build();
 	    String accessToken = NOT_VALID_TOKEN;
 		when(tokenService.tokenInfo(accessToken)).thenReturn(response);

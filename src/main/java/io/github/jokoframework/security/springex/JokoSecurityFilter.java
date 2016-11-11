@@ -2,6 +2,7 @@ package io.github.jokoframework.security.springex;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -53,7 +54,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         JokoJWTClaims claims = validateToken(request);
-        if (claims != null && !claims.getRevoked()) {
+        if (claims != null) {
 
             Collection<? extends GrantedAuthority> baseAuthorizations = JokoSecurityContext
                     .determineAuthorizations(claims);
@@ -94,7 +95,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
         }
 
         try {
-            return tokenService.tokenInfoAsClaims(token);
+        	return tokenService.tokenInfoAsClaims(token).orElse(null);
         } catch (JwtException | IllegalArgumentException e) {
 
             String uri = httpRequest.getRequestURI();

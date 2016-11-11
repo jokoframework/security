@@ -1,17 +1,22 @@
 package io.github.jokoframework.security;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-
-import org.junit.Before;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -21,10 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
 import io.github.jokoframework.security.entities.SecurityProfile;
+import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
 import io.github.jokoframework.security.services.ISecurityProfileService;
 import io.github.jokoframework.security.services.ITokenService;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.MatcherAssert.assertThat;
+import io.jsonwebtoken.SignatureException;
 
 
 
@@ -44,7 +49,9 @@ public class TokenServiceTest {
 	
 	private static String USER = "juan";
     
-	private static String SECURITY_PROFILE = "profileV1";
+	private static String SECURITY_PROFILE = "DEFAULT";
+	
+	private static String EXPIRATION_SECURITY_PROFILE = "EXPIRATION_SECURITY_PROFILE";
     
     private static String USER_AGENT = "mozilla";
     
@@ -52,10 +59,8 @@ public class TokenServiceTest {
 
     private static List<String> ROLES = Arrays.asList("boss");
    
-    @Before
-    public void setup() {
-
-    }
+    @Rule
+    public ExpectedException error = ExpectedException.none();
     
     @Test
     /**
@@ -124,7 +129,24 @@ public class TokenServiceTest {
     }
     
     @Test
-    public void gettingTokenInfoShouldReturnInfo() {
+    public void gettingTokenShouldReturnInfo() {
+    	
+    	// 1. Creamos el refresh token
+    	saveSecurityProfile();
+        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+                USER_AGENT, REMOTE_IP, ROLES);
+        
+        // 2. Obtenemos su información
+    	JokoTokenInfoResponse response = tokenService.tokenInfo(token.getToken());
+    	
+    	assertNotNull(response);
+    	assertEquals(USER, response.getUserId());
+    	assertThat(response.getExpiresIn(), greaterThan(0L));
+    	
+    }
+
+    @Test
+    public void gettingRevokedTokenShouldThrowException() {
     	
     	// 1. Creamos el refresh token
     	saveSecurityProfile();
@@ -132,18 +154,44 @@ public class TokenServiceTest {
                 USER_AGENT, REMOTE_IP, ROLES);
         
         // 2. Lo revocamos
-    	//tokenService.revokeToken(token.getClaims().getId());
+    	tokenService.revokeToken(token.getClaims().getId());
     	
     	// 3. Obtenemos su información
-    	JokoTokenInfoResponse response = tokenService.tokenInfo(token.getToken());
-    	
-    	assertNotNull(response);
-    	assertEquals(Boolean.FALSE, response.getRevoked());
-    	assertEquals(USER, response.getUserId());
-    	assertThat(response.getExpiresIn(), greaterThan(0L));
+    	try {
+    		tokenService.tokenInfo(token.getToken());
+    	} catch(Throwable e) {
+    		assertThat(e, instanceOf(JokoUnauthenticatedException.class));
+    		JokoUnauthenticatedException je = (JokoUnauthenticatedException) e;
+    		assertEquals(je.getErrorCode(), JokoUnauthenticatedException.ERROR_REVOKED_TOKEN);
+    	}
     	
     }
 
+    @Test
+    public void gettingExpiredTokenShouldThrowException() {
+    	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, EXPIRATION_SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+                USER_AGENT, REMOTE_IP, ROLES);
+    	try {
+    		// 2. Obtenemos su información
+    		tokenService.tokenInfo(token.getToken());
+    		Assert.fail("tokenInfo() call should not have succeeded");
+    	} catch (RuntimeException e) {
+    		assertThat(e, instanceOf(JokoUnauthenticatedException.class));
+    		JokoUnauthenticatedException je = (JokoUnauthenticatedException) e;
+    		assertEquals(je.getErrorCode(), JokoUnauthenticatedException.ERROR_EXPIRED_TOKEN);
+    	}
+    }
+    
+    @Test
+    public void gettingTamperedTokenShouldThrowException() {
+    	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE , TOKEN_TYPE.REFRESH,
+                USER_AGENT, REMOTE_IP, ROLES);
+    	
+    	error.expect(SignatureException.class);
+    	
+    	tokenService.tokenInfo(token.getToken() + "tampered");
+    }
+    
 	private void saveSecurityProfile() {
 		// Guarda la configuración de seguridad
         SecurityProfile profile = SecurityMockObjects.getSecurityProfile(SECURITY_PROFILE);

@@ -6,11 +6,17 @@ public class JokoUnauthenticatedException extends RuntimeException {
      *
      */
     private static final long serialVersionUID = -8391234267775404037L;
+    
     public static final String ERROR_CODE_WRONG_CREDENTIALS = "joko.wrongCredentials";
+    
     public static final String ERROR_TOO_MANY_OPEN_APPS = "joko.tooManyOpenApplications";
+    
     public static final String ERROR_REVOKED_TOKEN = "joko.revokedToken";
 
+	public static final String ERROR_EXPIRED_TOKEN = "joko.expiredToken";
+
     private final String username;
+    
     public final String role;
 
     private final String errorCode;

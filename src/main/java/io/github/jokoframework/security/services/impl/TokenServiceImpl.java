@@ -1,5 +1,21 @@
 package io.github.jokoframework.security.services.impl;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.common.errors.JokoApplicationException;
@@ -20,29 +36,17 @@ import io.github.jokoframework.security.services.ITokenService;
 import io.github.jokoframework.security.services.TokenUtils;
 import io.github.jokoframework.security.util.SecurityUtils;
 import io.github.jokoframework.security.util.TXUUIDGenerator;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 @Service
 @Transactional
 public class TokenServiceImpl implements ITokenService {
 
     private static final int DEFAULT_TOKEN_LENGTH = 20;
+
     private static final int SECRET_LENGTH = 250;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenServiceImpl.class);
@@ -370,15 +374,20 @@ public class TokenServiceImpl implements ITokenService {
 	@Override
 	public JokoTokenInfoResponse tokenInfo(String accessToken) {
 		Assert.notNull(accessToken, "El token es requerido");
-		JokoJWTClaims claims = this.tokenInfoAsClaims(accessToken);
-		
-		JokoTokenInfoResponse response = new JokoTokenInfoResponse.Builder()
-				.audience(claims.getAudience())
-		        .userId(claims.getSubject())
-		        .expiresIn(secondsFromNow(claims.getExpiration()))
-		        .revoked(claims == null)
-		        .build();
-		return response;
+		try {
+			JokoJWTClaims claims =  this
+					.tokenInfoAsClaims(accessToken)
+					.orElseThrow(() -> new JokoUnauthenticatedException(JokoUnauthenticatedException.ERROR_REVOKED_TOKEN));
+			JokoTokenInfoResponse response = new JokoTokenInfoResponse.Builder()
+					.audience(claims.getAudience())
+			        .userId(claims.getSubject())
+			        .expiresIn(secondsFromNow(claims.getExpiration()))
+			        .build();
+			return response;
+		} catch (ExpiredJwtException ex) {
+			LOGGER.error(ex.getMessage(), ex);
+			throw new JokoUnauthenticatedException(JokoUnauthenticatedException.ERROR_EXPIRED_TOKEN);
+		}
 	}
 	
 	private Long secondsFromNow(Date expiration) {
@@ -388,7 +397,7 @@ public class TokenServiceImpl implements ITokenService {
 	}
 
 	@Override
-	public JokoJWTClaims tokenInfoAsClaims(String token) {
+	public Optional<JokoJWTClaims> tokenInfoAsClaims(String token) {
 		JokoJWTClaims claims = this.parse(token);
 		// En este punto el token ya es valido sino habria tirado una
 		// excepcion JwtException
@@ -396,11 +405,11 @@ public class TokenServiceImpl implements ITokenService {
 		if (jokoClaims.getType().equals(JokoJWTExtension.TOKEN_TYPE.REFRESH)) {
 		    // Solamente los tokens de refresh se pueden revocar
 		    if (this.hasBeenRevoked(claims.getId())) {
-		        return new JokoJWTClaims(claims, true);
+		        return Optional.empty();
 		    }
 		}
 
-		return new JokoJWTClaims(claims);
+		return Optional.of(new JokoJWTClaims(claims));
 	}
 
 }

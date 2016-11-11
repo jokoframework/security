@@ -2,6 +2,7 @@ package io.github.jokoframework.security.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.JokoJWTClaims;
@@ -50,5 +51,5 @@ public interface ITokenService {
 
 	JokoTokenInfoResponse tokenInfo(String accessToken);
 
-	JokoJWTClaims tokenInfoAsClaims(String token);
+	Optional<JokoJWTClaims> tokenInfoAsClaims(String token);
 }

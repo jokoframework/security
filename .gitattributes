@@ -1,0 +1,3 @@
+# Declare files that will always have CRLF line endings on checkout.
+*.key text eol=lf
+src/main/resources/db/migration/*.sql text eol=lf

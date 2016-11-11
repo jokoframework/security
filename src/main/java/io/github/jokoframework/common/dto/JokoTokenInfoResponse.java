@@ -5,7 +5,6 @@ public class JokoTokenInfoResponse {
 	private String userId;
 	private String audiencie;
 	private Long expiresIn;
-	private Boolean revoked;
 
 	public String getAudiencie() {
 		return audiencie;
@@ -23,9 +22,6 @@ public class JokoTokenInfoResponse {
 		return expiresIn;
 	}
 
-	public Boolean getRevoked() {
-		return revoked;
-	}
 
 	private void setUserId(String userId) {
 		this.userId = userId;
@@ -33,10 +29,6 @@ public class JokoTokenInfoResponse {
 
 	private void setAudience(String audience) {
 		this.audiencie = audience;
-	}
-
-	private void setRevoked(Boolean revoked) {
-		this.revoked = revoked;
 	}
 
 	private void setExpiresIn(Long expiresIn) {
@@ -47,7 +39,6 @@ public class JokoTokenInfoResponse {
 		private String userId;
 		private String audience;
 		private Long expiresIn;
-		private Boolean revoked;
 	
 	
 		public Builder userId(String userId) {
@@ -65,10 +56,6 @@ public class JokoTokenInfoResponse {
 			return this;
 		}
 		
-		public Builder revoked(Boolean revoked) {
-			this.revoked = revoked;	
-			return this;
-		}
 		
 		public JokoTokenInfoResponse build() {
 			return new JokoTokenInfoResponse(this);
@@ -76,9 +63,7 @@ public class JokoTokenInfoResponse {
 	}
 	
 	public JokoTokenInfoResponse(Builder builder) {
-		// TODO Auto-generated constructor stub
 		this.setExpiresIn(builder.expiresIn);
-		this.setRevoked(builder.revoked);
 		this.setAudience(builder.audience);
 		this.setUserId(builder.userId);
 		
@@ -92,7 +77,7 @@ public class JokoTokenInfoResponse {
 	@Override
 	public String toString() {
 		return "JokoTokenInfoResponse [userId=" + userId + ", audiencie=" + audiencie + ", expiresIn=" + expiresIn
-				+ ", revoked=" + revoked + "]";
+				+ "]";
 	}
 
 }
