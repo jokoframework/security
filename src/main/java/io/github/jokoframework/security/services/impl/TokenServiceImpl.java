@@ -223,15 +223,7 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public void revokeToken(String jti) {
         LOGGER.trace("Revoking token {} ", JokoUtils.formatLogString(jti));
-        TokenEntity entity = tokenRepository.getTokenById(jti);
-        if (entity == null) {
-        	LOGGER.trace("Token has already been revoked");
-        	return;
-        }
         tokenRepository.delete(jti);
-        
-        entity = tokenRepository.getTokenById(jti);
-        
         LOGGER.trace("Token revoked: {}", jti);
     }
 
