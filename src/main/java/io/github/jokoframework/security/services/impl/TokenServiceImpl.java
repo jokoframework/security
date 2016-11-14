@@ -223,7 +223,16 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public void revokeToken(String jti) {
         LOGGER.trace("Revoking token {} ", JokoUtils.formatLogString(jti));
+        TokenEntity entity = tokenRepository.getTokenById(jti);
+        if (entity == null) {
+        	LOGGER.trace("Token has already been revoked");
+        	return;
+        }
         tokenRepository.delete(jti);
+        
+        entity = tokenRepository.getTokenById(jti);
+        
+        LOGGER.trace("Token revoked: {}", jti);
     }
 
     /**
@@ -314,7 +323,8 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public boolean hasBeenRevoked(String jti) {
-        TokenEntity token = tokenRepository.getTokenById(jti);
+        LOGGER.trace("Verifying if token was revoked: {}", jti);
+    	TokenEntity token = tokenRepository.getTokenById(jti);
         if (token == null) {
             // Si el token no está en la BD entonces se asume que fue revocado
             // (o
@@ -382,6 +392,7 @@ public class TokenServiceImpl implements ITokenService {
 					.audience(claims.getAudience())
 			        .userId(claims.getSubject())
 			        .expiresIn(secondsFromNow(claims.getExpiration()))
+			        .success(Boolean.TRUE)
 			        .build();
 			return response;
 		} catch (ExpiredJwtException ex) {
@@ -409,7 +420,7 @@ public class TokenServiceImpl implements ITokenService {
 		    }
 		}
 
-		return Optional.of(new JokoJWTClaims(claims));
+		return Optional.of(new JokoJWTClaims(claims, jokoClaims));
 	}
 
 }

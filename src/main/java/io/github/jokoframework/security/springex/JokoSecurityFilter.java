@@ -56,9 +56,9 @@ public class JokoSecurityFilter extends GenericFilterBean {
         JokoJWTClaims claims = validateToken(request);
         if (claims != null) {
 
-            Collection<? extends GrantedAuthority> baseAuthorizations = JokoSecurityContext
-                    .determineAuthorizations(claims);
-            Collection<? extends GrantedAuthority> authorities = jokoAuthorizationManager.authorize(claims,
+            Collection<? extends GrantedAuthority> baseAuthorizations = JokoSecurityContext.determineAuthorizations(claims);
+            Collection<? extends GrantedAuthority> authorities = jokoAuthorizationManager.authorize(
+            		claims,
                     baseAuthorizations);
 
             JokoAuthenticated authentication = new JokoAuthenticated(claims, authorities);
@@ -69,7 +69,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
                 String uri = httpRequest.getRequestURI();
                 LOGGER.trace("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
-                        + JokoUtils.join(authorities, ",") + " Request-URI " + uri);
+                        + JokoUtils.join(authorities, ",") + ". Request-URI " + uri);
             }
 
         } else {

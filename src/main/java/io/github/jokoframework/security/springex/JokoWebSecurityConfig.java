@@ -56,6 +56,8 @@ public class JokoWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Se tiene acceso al login para que cualquiera pueda intentarp
                 // un login
                 .antMatchers(ApiPaths.LOGIN).permitAll().antMatchers(ApiPaths.LOGIN + "/").permitAll()
+                .antMatchers(ApiPaths.TOKEN_INFO).permitAll().antMatchers(ApiPaths.TOKEN_INFO + "/").permitAll()
+                
 
         /*
          * Solo teniendo acceso a un refresh token se puede pedir un access

@@ -1,17 +1,20 @@
 package io.github.jokoframework.security;
 
+import static io.github.jokoframework.security.SecurityTestConstants.EXPIRATION_SECURITY_PROFILE;
+import static io.github.jokoframework.security.SecurityTestConstants.REMOTE_IP;
+import static io.github.jokoframework.security.SecurityTestConstants.ROLES;
+import static io.github.jokoframework.security.SecurityTestConstants.SECURITY_PROFILE;
+import static io.github.jokoframework.security.SecurityTestConstants.USER;
+import static io.github.jokoframework.security.SecurityTestConstants.USER_AGENT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -25,14 +28,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.JokoJWTExtension.TOKEN_TYPE;
-import io.github.jokoframework.security.entities.SecurityProfile;
 import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
-import io.github.jokoframework.security.services.ISecurityProfileService;
 import io.github.jokoframework.security.services.ITokenService;
 import io.jsonwebtoken.SignatureException;
 
 
 
+/**
+ * Data for this test is loaded from <code>src/test/resources/data.sql</code>
+ * when the Application Context is started.
+ * 
+ * 
+ * @author rodrigovillalba
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { Application.class })
 @Transactional
@@ -44,23 +53,11 @@ public class TokenServiceTest {
     @Autowired
     private ITokenService tokenService;
 
-    @Autowired
-    private ISecurityProfileService securityProfileService;
-	
-	private static String USER = "juan";
     
-	private static String SECURITY_PROFILE = "DEFAULT";
-	
-	private static String EXPIRATION_SECURITY_PROFILE = "EXPIRATION_SECURITY_PROFILE";
-    
-    private static String USER_AGENT = "mozilla";
-    
-    private static String REMOTE_IP = "10.0.3.3";
-
-    private static List<String> ROLES = Arrays.asList("boss");
    
     @Rule
     public ExpectedException error = ExpectedException.none();
+    
     
     @Test
     /**
@@ -68,8 +65,7 @@ public class TokenServiceTest {
      */
     public void testCreateRefreshToken() {
         
-        saveSecurityProfile();
-        // Crea el token de refresh
+    	// Crea el token de refresh
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
                 USER_AGENT, REMOTE_IP, ROLES);
 
@@ -78,13 +74,12 @@ public class TokenServiceTest {
         assertFalse(hasBeenRevoked);
 
     }
-
 	
 
-    @Test
     /**
      * Comprueba que puede crear un token y volver a parsearlo
      */
+    @Test
     public void testParseToken() {
 
         TOKEN_TYPE type = TOKEN_TYPE.REFRESH;
@@ -103,6 +98,7 @@ public class TokenServiceTest {
                 parsedToken.getExpiration().getTime() - expectedTimeOut <= ACCEPTED_DATE_DELTA);
 
         JokoJWTClaims originalClaims = tokenWrapper.getClaims();
+        
         // El id se mantiene
         assertEquals(originalClaims.getId(), parsedToken.getId());
         assertEquals(originalClaims.getJoko().getType(), parsedToken.getJoko().getType());
@@ -114,15 +110,14 @@ public class TokenServiceTest {
     @Test
     public void testCreateAccessToken() {
         
-        saveSecurityProfile();
-
-        
         // Crea el token de refresh
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
                 USER_AGENT, REMOTE_IP, ROLES);
+        
         JokoJWTClaims refreshToken = token.getClaims();
         JokoTokenWrapper accessToken = tokenService.createAccessToken(refreshToken);
         JokoJWTClaims jwtClaims = accessToken.getClaims();
+        
         assertEquals(TOKEN_TYPE.ACCESS, jwtClaims.getJoko().getType());
         assertEquals(refreshToken.getJoko().getRoles(), jwtClaims.getJoko().getRoles());
         assertEquals(refreshToken.getSubject(), jwtClaims.getSubject());
@@ -130,10 +125,8 @@ public class TokenServiceTest {
     
     @Test
     public void gettingTokenShouldReturnInfo() {
-    	
     	// 1. Creamos el refresh token
-    	saveSecurityProfile();
-        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+    	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
                 USER_AGENT, REMOTE_IP, ROLES);
         
         // 2. Obtenemos su información
@@ -147,10 +140,8 @@ public class TokenServiceTest {
 
     @Test
     public void gettingRevokedTokenShouldThrowException() {
-    	
     	// 1. Creamos el refresh token
-    	saveSecurityProfile();
-        JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
+    	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
                 USER_AGENT, REMOTE_IP, ROLES);
         
         // 2. Lo revocamos
@@ -172,7 +163,6 @@ public class TokenServiceTest {
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, EXPIRATION_SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
                 USER_AGENT, REMOTE_IP, ROLES);
     	try {
-    		// 2. Obtenemos su información
     		tokenService.tokenInfo(token.getToken());
     		Assert.fail("tokenInfo() call should not have succeeded");
     	} catch (RuntimeException e) {
@@ -192,11 +182,4 @@ public class TokenServiceTest {
     	tokenService.tokenInfo(token.getToken() + "tampered");
     }
     
-	private void saveSecurityProfile() {
-		// Guarda la configuración de seguridad
-        SecurityProfile profile = SecurityMockObjects.getSecurityProfile(SECURITY_PROFILE);
-        SecurityProfile storedProfile = securityProfileService.getOrSaveProfile(SECURITY_PROFILE, profile);
-        assertNotNull(storedProfile);
-        
-	}
 }

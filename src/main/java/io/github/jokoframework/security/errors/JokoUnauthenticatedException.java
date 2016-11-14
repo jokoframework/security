@@ -15,6 +15,8 @@ public class JokoUnauthenticatedException extends RuntimeException {
 
 	public static final String ERROR_EXPIRED_TOKEN = "joko.expiredToken";
 
+	public static final String DEFAULT_ERROR_MSG = "You shall not pass";
+
     private final String username;
     
     public final String role;
@@ -53,7 +55,7 @@ public class JokoUnauthenticatedException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "You shall not pass";
+    	return DEFAULT_ERROR_MSG;
     }
 
 }

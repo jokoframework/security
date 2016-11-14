@@ -1,9 +1,11 @@
 package io.github.jokoframework.common.dto;
 
-public class JokoTokenInfoResponse {
+public class JokoTokenInfoResponse extends JokoBaseResponse {
 
 	private String userId;
+	
 	private String audiencie;
+	
 	private Long expiresIn;
 
 	public String getAudiencie() {
@@ -39,6 +41,7 @@ public class JokoTokenInfoResponse {
 		private String userId;
 		private String audience;
 		private Long expiresIn;
+		private Boolean success;
 	
 	
 		public Builder userId(String userId) {
@@ -56,6 +59,11 @@ public class JokoTokenInfoResponse {
 			return this;
 		}
 		
+
+		public Builder success(Boolean success) {
+			this.success = success;
+			return this;
+		}
 		
 		public JokoTokenInfoResponse build() {
 			return new JokoTokenInfoResponse(this);
@@ -66,6 +74,7 @@ public class JokoTokenInfoResponse {
 		this.setExpiresIn(builder.expiresIn);
 		this.setAudience(builder.audience);
 		this.setUserId(builder.userId);
+		this.setSuccess(builder.success);
 		
 	}
 

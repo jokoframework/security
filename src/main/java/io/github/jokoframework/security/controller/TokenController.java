@@ -1,5 +1,7 @@
 package io.github.jokoframework.security.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import com.wordnik.swagger.annotations.ApiResponses;
 
 import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.ApiPaths;
+import io.github.jokoframework.security.JokoJWTClaims;
 import io.github.jokoframework.security.JokoTokenWrapper;
 import io.github.jokoframework.security.dto.JokoTokenResponse;
 import io.github.jokoframework.security.services.ITokenService;
@@ -66,7 +69,8 @@ public class TokenController {
     
     @RequestMapping(value = ApiPaths.TOKEN_INFO, method = RequestMethod.GET)
     public ResponseEntity<JokoTokenInfoResponse> tokenInfo(@RequestParam("accessToken") String accessToken) {
-    	
+    	JokoJWTClaims claims = tokenService.parse(accessToken);
+    	tokenService.revokeToken(claims.getId());
     	JokoTokenInfoResponse response = tokenService.tokenInfo(accessToken);
     	return new ResponseEntity<>(response, HttpStatus.OK);
     }
