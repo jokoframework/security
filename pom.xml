@@ -5,7 +5,7 @@
 
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-security</artifactId>
-    <version>0.1.8-SNAPSHOT</version>
+    <version>0.1.8</version>
     <packaging>jar</packaging>
 
     <properties>

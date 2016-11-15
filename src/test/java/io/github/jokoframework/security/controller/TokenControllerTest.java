@@ -43,6 +43,7 @@ public class TokenControllerTest extends AbstractControllerTest {
 				.audience("some audience")
 		        .userId("some user")
 		        .expiresIn(123L)
+		        .success(Boolean.TRUE)
 		        .build();
 	    String accessToken = NOT_VALID_TOKEN;
 		when(tokenService.tokenInfo(accessToken)).thenReturn(response);
