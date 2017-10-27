@@ -83,3 +83,18 @@ joko-security cuenta con una clase que contiene tests unitarios, para las funcio
 Se puede correr los tests mediante maven
 
 	mvn -Dspring.config.location=file:///opt/joko/development/application.properties test
+
+# Configuraciones Complementarias
+Algunas configuraciones extras que fueron necesarias durante la implementacion en ciertos proyectos.
+
+## Configuraciones Basicas
+Es necesario tener un directorio /conf/secret.key para que los test que se realicen no tengan problema al encontrar el archivo de la clave. Sin esto es probable que 10 de los 11 test le den un problemas de Exception, al no encontrar dicho directorio. Observacion: este archivo tampoco puede ser nulo o vacio!
+
+## Configuraciones del POM file
+Asegurese que las versiones de las dependencias en los archivos pom.xml tengan la misma version, esto le generara problemas a la hora de querer levantar el servicio.
+
+## Configuraciones del application.properties
+Tenga en cuenta los valores que deben tomar las variables en el archivo de configuracion del application.properties, que es el encargado de obtener los valores de las configuraciones que usteded asigno a su DB.
+
+
+

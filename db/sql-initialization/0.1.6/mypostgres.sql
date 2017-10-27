@@ -1,4 +1,4 @@
---
+﻿--
 -- PostgreSQL database dump
 --
 
@@ -41,15 +41,6 @@ SET default_with_oids = false;
 -- Name: audit_session; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE audit_session (
-    id bigint NOT NULL,
-    creation_date timestamp without time zone,
-    remote_ip character varying(255),
-    user_agent character varying(255),
-    user_date timestamp without time zone,
-    id_principal bigint
-);
-
 
 ALTER TABLE audit_session OWNER TO postgres;
 
@@ -57,13 +48,6 @@ ALTER TABLE audit_session OWNER TO postgres;
 -- TOC entry 178 (class 1259 OID 16647)
 -- Name: audit_session_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
-
-CREATE SEQUENCE audit_session_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 
 ALTER TABLE audit_session_id_seq OWNER TO postgres;
@@ -205,10 +189,6 @@ ALTER TABLE tokens OWNER TO postgres;
 -- Data for Name: audit_session; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY audit_session (id, creation_date, remote_ip, user_agent, user_date, id_principal) FROM stdin;
-\.
-
-
 --
 -- TOC entry 2093 (class 0 OID 0)
 -- Dependencies: 178
@@ -223,10 +203,6 @@ SELECT pg_catalog.setval('audit_session_id_seq', 1, false);
 -- Dependencies: 173
 -- Data for Name: consumer_api; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-
-COPY consumer_api (id, access_level, consumer_id, contact_name, document_number, name, secret) FROM stdin;
-\.
-
 
 --
 -- TOC entry 2094 (class 0 OID 0)
@@ -243,19 +219,12 @@ SELECT pg_catalog.setval('consumer_api_id_seq', 1, false);
 -- Data for Name: keychain; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY keychain (id, value) FROM stdin;
-1	pA6ZmuAe3HQw94qvQqCeJEoSc5zYH4XEBcyvzxpQdxahw6k4flsIjgw1HFlOE9uyTaqGN6GNZHsJ9GOkMQzbl-jGrC1QxNdg1eB9hrzzMFKKxdNH-yyaSkmx69Ay0kPRWd7Q8_oCu9O59mzy2IwA4zfWFLTaFm15GVfLUh5z7J-WCXctDdq0oi8baN7FsQGcUfkeK6jyepP1q-sqBjd50DLOrTTM2aASV7QoRHBgOfJcuHtug3IKsUTnKgKLMlf-N9fhwUEPPImwfEbnVAUnxYnjHlp6NtNFzP6tPUSZHGqI9g7qG6oKcWW7NzNW1Z3_oCvFofRaNIzqRQ
-\.
-
-
 --
 -- TOC entry 2078 (class 0 OID 16611)
 -- Dependencies: 175
 -- Data for Name: principal_session; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY principal_session (id, app_description, app_id, user_description, user_id) FROM stdin;
-\.
 
 
 --
@@ -273,9 +242,6 @@ SELECT pg_catalog.setval('principal_session_id_seq', 1, false);
 -- Data for Name: security_profile; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY security_profile (id, access_token_timeout_seconds, key, max_access_token_requests, max_number_of_connections, max_number_devices_user, name, refresh_token_timeout_seconds, revocable) FROM stdin;
-\.
-
 
 --
 -- TOC entry 2096 (class 0 OID 0)
@@ -291,9 +257,6 @@ SELECT pg_catalog.setval('security_profile_id_seq', 1, false);
 -- Dependencies: 177
 -- Data for Name: tokens; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-
-COPY tokens (id, expiration, issued_at, remote_ip, token_type, user_agent, user_id, security_profile_id) FROM stdin;
-\.
 
 
 --
@@ -394,4 +357,3 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- PostgreSQL database dump complete
 --
-
