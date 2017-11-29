@@ -63,12 +63,12 @@ public class JokoSecurityFilter extends GenericFilterBean {
             JokoAuthenticated authentication = new JokoAuthenticated(claims, authorities);
             JokoSecurityContext.setAuthentication(authentication);
 
-            if (LOGGER.isTraceEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
 
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
                 String uri = httpRequest.getRequestURI();
-                LOGGER.trace("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
-                        + JokoUtils.join(authorities, ",") + " Request-URI " + uri);
+                LOGGER.debug("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
+                        + JokoUtils.join(authorities, ",") + " Request-URI " + uri + "jti " + claims.getId());
             }
 
         } else {
