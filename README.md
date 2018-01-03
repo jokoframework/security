@@ -1,4 +1,7 @@
 # Joko Security
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/959a1567f7484130b3943bbf7760186c)](https://www.codacy.com/app/alefq/security?utm_source=github.com&utm_medium=referral&utm_content=jokoframework/security&utm_campaign=badger)
+
 Joko Security provee la capacidad de realizar autenticación y autorización por medio de Tokens JWT.
 Se puede utilizar de dos maneras, como un componente separado que emite tokens o embebido como una librería dentro de otra aplicación Web.
 Joko Security es una extensión de spring-security que permite trabajar con token de refresh, y acceso utilizando como formato de tokens JWT.
