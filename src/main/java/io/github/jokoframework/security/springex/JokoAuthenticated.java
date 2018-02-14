@@ -104,4 +104,9 @@ public class JokoAuthenticated implements JokoAuthentication, Serializable {
         throw new JokoApplicationException("Should NOT modify an authenticated principal");
     }
 
+    @Override
+    public void setSubject(String subject) {
+        throw new JokoApplicationException("Should NOT modify an authenticated principal");
+    }
+
 }
