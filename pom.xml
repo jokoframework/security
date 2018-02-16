@@ -16,8 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-boot.version>1.3.0.RELEASE</spring-boot.version>
-        <spring-release.version>4.3.0.RELEASE</spring-release.version>
+        <spring-boot.version>1.5.10.RELEASE</spring-boot.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <commons-io.version>2.4</commons-io.version>
         <httpclient.version>4.5.1</httpclient.version>
@@ -37,12 +36,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Agrega la dependencia para el manejo de errores -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring-release.version}</version>
-        </dependency>
+
 
         <!-- Spring Data y JPA -->
         <dependency>
