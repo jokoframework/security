@@ -1,0 +1,25 @@
+#!/bin/bash
+
+. scripts/lib/common.sh
+
+[ -z "${ENV_VARS}" ] && echo "ERROR: No environment variable ENV_VARS defined. Aborting" && exit 1
+[ ! -f "${ENV_VARS}" ] && echo "ERROR: The ENV_VARS does not exist or is not a file. Aborting." && exit 1
+type mvn >/dev/null 2>&1 || { echo >&2 "ERROR: I require 'mvn' but it's not installed. Aborting."; exit 1; }
+
+source ${ENV_VARS}
+
+[ -z "$PROFILE_DIR" ] && echo "ERROR: PROFILE_DIR not defined in ${ENV_VARS}. Aborting" && exit 1
+
+[ $# -eq 0 ] && echo "ERROR: No parameter provided" && exit 2
+
+OPTS="";
+if [ ! -z "${MVN_SETTINGS}" ]; then
+    OPTS="-s ${MVN_SETTINGS}"
+fi
+
+mvn $OPTS -Dlog4j.configuration=$LOG4J_FILE \
+	-Dext.prop.dir=$PROFILE_DIR \
+	org.codehaus.mojo:properties-maven-plugin:read-project-properties \
+	$@
+check_status $?
+

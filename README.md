@@ -8,21 +8,107 @@ separado que emite tokens o embebido como una librería dentro de otra aplicaci�
 Web.  Joko Security es una extensión de spring-security que permite trabajar con
 token de refresh, y acceso utilizando como formato de tokens JWT.
 
-## Configuración Inicial
+## Configuración embebido en otra App
 
 ### Configuracion de la Base de Datos
 Joko-security necesita un repositorio de datos en el cual se almacenan datos que
 permiten realizar el proceso de autorización. El sistema utiliza JPA de una manera bastante agnóstica a la
-BD. Sin embargo, actualmente solamente está probado con PostgreSQL 9.3
+BD. Sin embargo, actualmente solamente está probado con PostgreSQL 9.4
 
-** *Observación* **: 
-Favor referir a la [guia de upgrade](docs/migration.md) para actualizar desde la versión 0.1.4**. Y primero leer [los
-    cambios](CHANGELOG.md) que se introdujeron a partir de la versión 0.1.5.
-
+#### Escenario embebido en otra aplicacion
+Una opción es utilizar Joko-security embebido dentro de otra aplicacion. En 
+este caso el repositorio de datos debe tener la estructura de tablas que Joko
+ esta esperando.
+ Si el repositorio de datos se inicializa con liquibase, entonces todo el 
+ contenido para la creacion de la estructura necesaria se encuentra en:
+ ./db/liquidbase/db-changelog-evolucion.xml
+ 
+ Este archivo puede ser referenciado dentro del ciclo de actualizacion de la 
+ BD en el proyecto que incluya a joko-security como librería.
+ 
+ 
 #### Inicio desde .sql 
 El inicio mas sencillo es correr el script .sql
-correspondiente a la BD que utiliza. Estos scripts se encuentran en
+correspondiente a la BD que utiliza. Estos scripts se encuentran en:
+```shell
 /db/sql-initialization
+```
+
+## Configuracion de su propia BD
+
+En Joko poseemos un conjunto de scripts que nos permiten automatizar el ciclo
+ de vida de una aplicación. Con esto se puede crear facilmente toda la BD 
+ desde la linea de comandos. Para actualizar hay que seguir los siguientes 
+ pasos:
+
+### Step 1) Crear el directorio PROFILE_DIR
+El directorio de profile contiene el archivo application.properties con la 
+configuracion necesaria para lanzar la aplicacion spring-boot.
+
+La convencion utilizada es tener un directorio, dentro del cual existan 
+varios PROFILE_DIR segun se requiera. Por ejemplo:
+```shell
+/opt/joko-demo/dev
+/opt/joko-demo/qa
+```
+
+En el anterior ejemplo existen dos PROFILE_DIR dentro del joko-demo, el 
+primero para development y el segundo con datos de quality assurance.
+
+### Step 2) Configuración del archivo "development.vars"
+
+Se debe configurar el archivo "development.vars", que servirá para la 
+ejecucion de liquibase. Este es un archivo bash que debe tener dos variables: 
+
+- MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
+ el Artifactory interno, sería el recien descargado. Ej. $HOME/.m2/settings.xml
+- PROFILE_DIR: Directorio de perfil creado en el punto inicial. Ej. /opt/joko
+
+Un ejemplo de este archivo se encuenta en `src/main/resources/development.vars`.
+
+Se recomienda que este archivo esté fuera del workspsace en el directorio 
+padre de los PROFILE_DIR. Ejemplo: ``/opt/joko-security/``.
+Este directorio es lo que se llama "ext.prop.dir" en las siguientes secciones.
+
+### Step 3) Configuración de variables de entorno
+Exportar variable, desde la terminal:
+```shell
+  $ export ENV_VARS="/opt/joko-security/development.vars"
+```
+Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
+ un PROFILE_DIR diferente. 
+ 
+### Step 4) Ejecutar Liquibase.
+
+1. Crea la schema de cero.
+```shell
+  $ ./scripts/updater fresh
+```
+2. (Re)Inicializa datos básicos
+```shell
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
+  $ ./scripts/updater seed src/main/resources/db/sql/dev-config.sql
+```
+**OJO**:
+  * El parámetro "fresh" elimina la base de datos que está configurada en el application.properties
+    y la vuelve a crear desde cero con la última versión del schema
+
+  * El parámetro "seed <file>" carga datos indicados en el archivo <file>, para los casos en que se
+    ejecute "fresh" siempre debe ir seguido de un "seed" con el archivo que (re)inicializa los datos
+    básicos del sistema 
+
+  * Los datos básicos del sistema estan en dos archivos:
+    ** seed-data.sql: Todos la configuracion base que es independiente al 
+    ambiente
+    ** [ambiente]-config. Por ejemplo: dev-config.sql . Posee los parametros 
+    de configuracion adecuados  para el ambiente de
+  desarrollo. Tambien existe qa-config y prod-config
+
+3. Para correr el liquibase en modo de actualización ejecute:
+```shell
+  $ ./scripts/updater update
+```
+
  
 ## Conceptos de token 
 Un token es un permiso particular que garantiza al
@@ -103,7 +189,8 @@ Dentro del directorio "samples" se puede observar ejemplos que muestran
 ## Obtener el jar
 El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar.
 
-	mvn -Dspring.config.location=file:///opt/joko/development/application.properties install
+	mvn -Dspring.config.location=file:///opt/joko-security/dev
+	/application.properties install
 
 Un archivo de ejemplo de application.properties puede obtenerse en src/main/resources/application.properties.example	
 ## Funcionalidades proveídas por Joko

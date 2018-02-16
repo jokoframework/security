@@ -14,3 +14,4 @@ export PGPASSWORD=$PASSWORD
 set -x
 psql -h $HOST -p $PORT -U $USERNAME -d $DB -f $SEED_FILE
 check_status $?
+
