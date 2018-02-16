@@ -24,8 +24,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * Created by afeltes on 07/09/16.
  */
 @Entity
-@Table(name = "audit_session")
-@SequenceGenerator(name = "audit_session_id_seq", sequenceName = "audit_session_id_seq", initialValue = 1, allocationSize = 1)
+@Table(name = "audit_session",schema = "joko_security")
+@SequenceGenerator(name = "audit_session_id_seq", sequenceName =
+        "joko_security.audit_session_id_seq", initialValue = 1, allocationSize = 1)
 public class AuditSessionEntity {
 
     public static final String USER_DATE = "userDate";

@@ -23,8 +23,9 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "security_profile")
-@SequenceGenerator(name = "security_profile_id_seq", sequenceName = "security_profile_id_seq", initialValue = 1, allocationSize = 1)
+@Table(name = "security_profile",schema = "joko_security")
+@SequenceGenerator(name = "security_profile_id_seq", sequenceName =
+		"joko_security.security_profile_id_seq", initialValue = 1, allocationSize = 1)
 public class SecurityProfile implements Serializable {
 	// Solo existe esta variable para poner referencias externas en mensajes de
 	// log
