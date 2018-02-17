@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,8 @@ public class TokenControllerIntegrationTest extends AbstractControllerTest {
 	}
 	
 	@Test
+	@Ignore
+	//FIXME ver issue https://github.com/jokoframework/security/issues/15
 	public void requestingTokenInfoShouldReturnOk() throws Exception {
 		// 1. Creamos el refresh token
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
