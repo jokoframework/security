@@ -1,5 +1,8 @@
 package io.github.jokoframework.security.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,9 +22,18 @@ import javax.persistence.UniqueConstraint;
 	uniqueConstraints={
 			@UniqueConstraint(columnNames = {"app_id", "user_id"})
 	})
-@SequenceGenerator(name = "principal_session_id_seq", sequenceName = "principal_session_id_seq", initialValue = 1, allocationSize = 1)
+
 public class PrincipalSessionEntity {
 
+	@GenericGenerator(
+			name = "principal_session_id_seq",
+			strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+			parameters = {
+					@Parameter(name = "sequence_name", value =
+							"joko_security.principal_session_id_seq"),
+					@Parameter(name = "increment_size", value = "1")
+			}
+	)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "principal_session_id_seq")
     private Long id;

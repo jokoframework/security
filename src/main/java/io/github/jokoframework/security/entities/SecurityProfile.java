@@ -3,6 +3,8 @@ package io.github.jokoframework.security.entities;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import java.io.Serializable;
 
@@ -24,8 +26,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "security_profile",schema = "joko_security")
-@SequenceGenerator(name = "security_profile_id_seq", sequenceName =
-		"joko_security.security_profile_id_seq", initialValue = 1, allocationSize = 1)
+
 public class SecurityProfile implements Serializable {
 	// Solo existe esta variable para poner referencias externas en mensajes de
 	// log
@@ -47,6 +48,15 @@ public class SecurityProfile implements Serializable {
 	 * 
 	 * @return id
 	 */
+	@GenericGenerator(
+			name = "security_profile_id_seq",
+			strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+			parameters = {
+					@Parameter(name = "sequence_name", value =
+							"joko_security.security_profile_id_seq"),
+					@Parameter(name = "increment_size", value = "1")
+			}
+	)
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "security_profile_id_seq")
 	public Long getId() {
