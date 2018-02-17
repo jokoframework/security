@@ -3,7 +3,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/959a1567f7484130b3943bbf7760186c)](https://www.codacy.com/app/alefq/security?utm_source=github.com&utm_medium=referral&utm_content=jokoframework/security&utm_campaign=badger)
 
 Joko Security provee la capacidad de realizar autenticación y autorización por
-medio de Tokens JWT.  Se puede utilizar de dos maneras, como un componente
+.medio de Tokens JWT.  Se puede utilizar de dos maneras, como un componente
 separado que emite tokens o embebido como una librería dentro de otra aplicación
 Web.  Joko Security es una extensión de spring-security que permite trabajar con
 token de refresh, y acceso utilizando como formato de tokens JWT.
@@ -140,7 +140,7 @@ vista UX). Los refresh token son especialmente útiles para las aplicaciones
 móviles en las cuales es molesto pedir el usuario en cada momento la
 autenticación.
 
-##Guardar el token de refresh de manera segura**
+##Guardar el token de refresh de manera segura
 
 En el caso de una aplicación móvil se tendría que guardar en el *key store*, y
 en el caso de una aplicación Web en los :term:`cookies` (NO guardarlos en *WEB
@@ -234,5 +234,7 @@ deben tomar las variables en el archivo de configuracion del
 application.properties, que es el encargado de obtener los valores de las
 configuraciones que usteded asigno a su DB.
 
+# Changelog
+Para una descripcion detallada de las versiones ver el archivo de [Changelog](CHANGELOG.md)
 
 
