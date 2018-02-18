@@ -55,6 +55,9 @@ varios PROFILE_DIR segun se requiera. Por ejemplo:
 En el anterior ejemplo existen dos PROFILE_DIR dentro del joko-demo, el 
 primero para development y el segundo con datos de quality assurance.
 
+Obs.: Un archivo de ejemplo para el application.properties se encuentra en 
+`src/main/resources/application.properties`
+
 ### Step 2) Configuración del archivo "development.vars"
 
 Se debe configurar el archivo "development.vars", que servirá para la 
@@ -184,13 +187,13 @@ Se debe implementar esta interfaz para:
 	realiza las configuraciones básicas requeridas en proyectos de este tipo.
  
 ## Ejemplos
-Dentro del directorio "samples" se puede observar ejemplos que muestran
+Dentro del directorio "samples" se puede observar ejemplos que muestran como 
+utilizar joko-security
 
 ## Obtener el jar
 El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar.
 
-	mvn -Dspring.config.location=file:///opt/joko-security/dev
-	/application.properties install
+	mvn -Dext.prop.dir=/opt/joko-security/test -Dspring.config.location=file:///opt/joko-security/dev/application.properties install
 
 Un archivo de ejemplo de application.properties puede obtenerse en src/main/resources/application.properties.example	
 ## Funcionalidades proveídas por Joko
@@ -216,23 +219,34 @@ Se puede correr los tests mediante maven
 
 	mvn -Dspring.config.location=file:///opt/joko/development/application.properties test
 
-# Configuraciones Complementarias
-Algunas configuraciones extras que fueron necesarias durante la implementacion en ciertos proyectos.
+# Configuraciones
+En esta sección describimos la configuracion que se debería de tener en 
+cuenta para que funcione correctamente joko-security
+
+Toda la configuración se realiza en el archivo application.properties y el 
+archivo `src/main/resources/application.properties` contiene un ejemplo 
+comentado con las opciones 
 
 ## Configuraciones Basicas 
-Es necesario tener un directorio /conf/secret.key para que los test que se
-realicen no tengan problema al encontrar el archivo de la clave. Sin esto es
-probable que 10 de los 11 test le den un problemas de Exception, al no encontrar
-dicho directorio. Observacion: este archivo tampoco puede ser nulo o vacio!
+El sistema necesita un secreto para firmar los tokens. Este secreto puede ser
+ guradado en dos lugares:
+ * BD: Si se guarda en la Base de datos va a la tabla joko_security.keychain
+ * FILE: Si va al filesystem se debe configurar la propiedad joko.secret.file
+
+ATENCIÓN: Es MUY importante que este secreto no sea accedido por terceras 
+personas. La recomendacion para esto es:
+* BD: En este caso asigne permisos a la tabla con solo lectura y solamente 
+para el usuario que se utiliza en la aplicacion
+* FILE: Asigne permisos de lecutra y solo para el usuario que se utiliza al 
+momento de levantar la aplicacion.
+
+Obs.:En modo BD puede dejarse sin crear un archivo y el sistema va a crear 
+un secreto la primera vez que se levanta.
 
 ## Configuraciones del POM file Asegurese que las versiones de las dependencias
 en los archivos pom.xml tengan la misma version, esto le generara problemas a la
 hora de querer levantar el servicio.
 
-## Configuraciones del application.properties Tenga en cuenta los valores que
-deben tomar las variables en el archivo de configuracion del
-application.properties, que es el encargado de obtener los valores de las
-configuraciones que usteded asigno a su DB.
 
 # Changelog
 Para una descripcion detallada de las versiones ver el archivo de [Changelog](CHANGELOG.md)
