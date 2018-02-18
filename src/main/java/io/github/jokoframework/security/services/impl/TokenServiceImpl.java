@@ -83,7 +83,8 @@ public class TokenServiceImpl implements ITokenService {
             initSecretFromFile();
         } else {
             throw new IllegalThreadStateException("Unrecognized property value for joko.secret.mode. Please use "
-                    + SecurityConstants.SECRET_MODE_BD + " or SecurityConstants.SECRET_MODE_FILE");
+                    + SecurityConstants.SECRET_MODE_BD + " or " +
+                    SecurityConstants.SECRET_MODE_FILE);
         }
 
     }
