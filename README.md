@@ -189,8 +189,8 @@ Dentro del directorio "samples" se puede observar ejemplos que muestran
 ## Obtener el jar
 El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar.
 
-	mvn -Dspring.config.location=file:///opt/joko-security/dev
-	/application.properties install
+	mvn -Dspring.config.location=file:///opt/joko/development/application
+	.properties install
 
 Un archivo de ejemplo de application.properties puede obtenerse en src/main/resources/application.properties.example	
 ## Funcionalidades proveídas por Joko
@@ -214,8 +214,8 @@ joko-security cuenta con una clase que contiene tests unitarios, para las funcio
 
 Se puede correr los tests mediante maven
 
-	mvn -Dspring.config.location=file:///opt/joko/development/application.properties test
-
+	mvn -Dext.prop.dir=/opt/joko-security/dev -Dspring.config.location=file:///opt/joko-security/dev/application.properties test
+	
 # Configuraciones Complementarias
 Algunas configuraciones extras que fueron necesarias durante la implementacion en ciertos proyectos.
 
