@@ -1,8 +1,0 @@
-#!/bin/bash
-. scripts/lib/common.sh
-
-echo "[LIQUIBASE] Update"
-bash scripts/lib/mvn org.liquibase:liquibase-maven-plugin:3.2.0:update
-check_status $?
-
-
