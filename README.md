@@ -7,7 +7,7 @@ Joko Security provee la capacidad de realizar autenticación y autorización por
 separado que emite tokens o embebido como una librería dentro de otra aplicación
 Web.  Joko Security es una extensión de spring-security que permite trabajar con
 token de refresh, y acceso utilizando como formato de tokens JWT.
-
+eed
 ## Configuración embebido en otra App
 
 ### Configuracion de la Base de Datos
@@ -213,6 +213,11 @@ joko-security cuenta con una clase que contiene tests unitarios, para las funcio
 
 Se puede correr los tests mediante maven
 
+   1) Actualizar los datos de una BD fresca con: 
+
+      $ ./scripts/updater seed src/main/resources/db/sql/seed-test.sql
+     
+     2) Correr MVN	
 	mvn -Dext.prop.dir=/opt/joko-security/dev -Dspring.config.location=file:///opt/joko-security/dev/application.properties test
 	
 # Configuraciones Complementarias
