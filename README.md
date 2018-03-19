@@ -87,7 +87,6 @@ Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
 2. (Re)Inicializa datos básicos
 ```shell
   $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
-  $ ./scripts/updater seed src/main/resources/db/sql/dev-config.sql
 ```
 **OJO**:
   * El parámetro "fresh" elimina la base de datos que está configurada en el application.properties
