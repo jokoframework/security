@@ -1,5 +1,5 @@
 
-INSERT INTO security_profile(id,
+INSERT INTO joko_security.security_profile(id,
             key, 
             name, 
             max_number_devices_user, 
@@ -18,7 +18,7 @@ INSERT INTO security_profile(id,
             false, 
             2);
             
-INSERT INTO security_profile(id,
+INSERT INTO joko_security.security_profile(id,
             key, name, max_number_devices_user, max_number_of_connections, 
             refresh_token_timeout_seconds, access_token_timeout_seconds, 
             revocable, max_access_token_requests)

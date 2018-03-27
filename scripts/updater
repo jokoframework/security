@@ -15,7 +15,7 @@ source ${ENV_VARS}
 
 function seed_db
 {
-    scripts/lib/seed-db
+    scripts/lib/seed-db $@
 }
 
 function liquibase_update {
@@ -51,10 +51,9 @@ case "$1" in
 	check_status $?
 	liquibase_update
 	check_status $?
-	seed_db
 	;;
     'seed')
-	seed_db
+	seed_db $@
 	;;
     'help')
 	show_help

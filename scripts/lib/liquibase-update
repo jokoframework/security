@@ -1,28 +1,8 @@
 #!/bin/bash
 . scripts/lib/common.sh
 
-#
-# corremos el seed mínimo siempre (parámetros y cia.)
-#
-SEED_MINIMUN=db/seed-data-minimum_testing.sql
-
 echo "[LIQUIBASE] Update"
 bash scripts/lib/mvn org.liquibase:liquibase-maven-plugin:3.2.0:update
 check_status $?
 
-if [  "$SODEP" == "si" ] ; then
-        echo "Estoy en SODEP"
-        SEED_MINIMUN=db/seed-data-minimum_at_sodep.sql
-else
-	echo "NO estoy en Sodep $MY_IP"
-    if [ $MY_IP == "10.9.10.4" ]; then
-        SEED_MINIMUN=db/seed-data-minimum_stagging.sql
-    fi
-fi
-
-[ ! -f $SEED_MINIMUM ] && echo "Seed data not found: $SEED_MINIMUM" && exit 2
-export PGPASSWORD=$PASSWORD
-set -x
-psql -h $HOST -p $PORT -U $USERNAME -d $DB -f $SEED_MINIMUN
-check_status $?
 

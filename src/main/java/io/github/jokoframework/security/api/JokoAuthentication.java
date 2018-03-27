@@ -32,4 +32,13 @@ public interface JokoAuthentication extends Authentication {
     List<String> getRoles();
 
     void addRole(String role);
+
+    /**
+     * Guarda el subject con el que el token sera emitido en caso que se
+     * autentique
+     * @param subject
+     */
+    public void setSubject(String subject);
+
+
 }

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "keychain")
+@Table(name = "keychain",schema = "joko_security")
 public class KeyChainEntity {
 
     public static final int JOKO_TOKEN_SECRET = 1;
