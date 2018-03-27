@@ -252,4 +252,11 @@ public class SecurityUtils {
         byte[] bytesFromFile = Files.readAllBytes(path);
         return byteToBase64(bytesFromFile);
     }
+
+    public static void main(String args[]){
+        String pass="koreko";
+        String passWordEncrypt = SecurityUtils.hashPassword(pass);
+        System.out.println(passWordEncrypt);
+    }
+
 }

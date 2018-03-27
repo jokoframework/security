@@ -19,16 +19,28 @@ import javax.persistence.TemporalType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Created by afeltes on 07/09/16.
  */
 @Entity
-@Table(name = "audit_session")
-@SequenceGenerator(name = "audit_session_id_seq", sequenceName = "audit_session_id_seq", initialValue = 1, allocationSize = 1)
+@Table(name = "audit_session",schema = "joko_security")
+
 public class AuditSessionEntity {
 
     public static final String USER_DATE = "userDate";
+
+    @GenericGenerator(
+            name = "audit_session_id_seq",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value =
+                            "joko_security.audit_session_id_seq"),
+                    @Parameter(name = "increment_size", value = "1")
+            }
+    )
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "audit_session_id_seq")
     private Long id;

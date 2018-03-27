@@ -6,8 +6,12 @@ import io.github.jokoframework.security.dto.ConsumerAPIDTO;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Parameter;
+import javax.persistence.Table;
 
 /**
  * Usuarios con acceso a nivel de API
@@ -16,8 +20,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name = "consumer_api")
-@SequenceGenerator(name = "consumer_api_id_seq", sequenceName = "consumer_api_id_seq", initialValue = 1, allocationSize = 1)
+@Table(name = "consumer_api",schema = "joko_security")
 public class ConsumerApiEntity implements DTOConvertable {
 
     // FIXME podriamos llevar a otro lugar
@@ -34,7 +37,15 @@ public class ConsumerApiEntity implements DTOConvertable {
     private String secret;
     private ACCESS_LEVEL accessLevel;
 
-
+    @GenericGenerator(
+            name = "consumer_api_id_seq",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value =
+                            "joko_security.consumer_api_id_seq"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            }
+    )
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consumer_api_id_seq")
     public Long getId() {

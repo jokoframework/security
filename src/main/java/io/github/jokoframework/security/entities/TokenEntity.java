@@ -23,7 +23,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * Tokens de acceso al sistema
  */
 @Entity
-@Table(name = "tokens")
+@Table(name = "tokens",schema = "joko_security")
 public class TokenEntity implements Serializable {
 
     public static final int MAX_USER_AGENT_LENGTH = 150;

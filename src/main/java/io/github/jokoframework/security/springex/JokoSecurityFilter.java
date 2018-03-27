@@ -27,9 +27,9 @@ import io.jsonwebtoken.JwtException;
  * Comprueba los requests hechos en busca del token de autenticación. El token
  * de autenticación se encuentra siempre en
  * {@value SecurityConstants#AUTH_HEADER_NAME}.
- * 
+ *
  * Si se encuentra un token se llamara al autoriza
- * 
+ *
  * @author danicricco
  *
  */
@@ -64,12 +64,13 @@ public class JokoSecurityFilter extends GenericFilterBean {
             JokoAuthenticated authentication = new JokoAuthenticated(claims, authorities);
             JokoSecurityContext.setAuthentication(authentication);
 
-            if (LOGGER.isTraceEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
 
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
                 String uri = httpRequest.getRequestURI();
-                LOGGER.trace("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
-                        + JokoUtils.join(authorities, ",") + ". Request-URI " + uri);
+
+                LOGGER.debug("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
+                        + JokoUtils.join(authorities, ",") + " Request-URI " + uri + " jti " + claims.getId());
             }
 
         } else {
@@ -83,7 +84,7 @@ public class JokoSecurityFilter extends GenericFilterBean {
     /**
      * Si el token es valido retorna un {@link JokoJWTClaims}. Si el token NO es
      * valido retorna null
-     * 
+     *
      * @param request
      * @return
      */
@@ -102,8 +103,8 @@ public class JokoSecurityFilter extends GenericFilterBean {
             String userAgent = httpRequest.getHeader("User-Agent");
             LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "
                     + e.getMessage());
-            LOGGER.trace("Token received: " + token);
-            LOGGER.error("Error validando el token.", e);
+            LOGGER.debug("Token received: " + token);
+            LOGGER.trace("Error validando el token.", e);
             return null;
         }
     }

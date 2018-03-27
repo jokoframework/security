@@ -19,7 +19,7 @@ public class AuthenticationSpringWrapper implements JokoAuthentication {
     private boolean authenticated = false;
 
     private List<String> roles;
-
+    private String subject;
     public AuthenticationSpringWrapper(AuthenticationRequest r) {
         this.request = r;
         this.roles = new ArrayList<>();
@@ -27,6 +27,9 @@ public class AuthenticationSpringWrapper implements JokoAuthentication {
 
     @Override
     public String getName() {
+        if(subject!=null){
+            return subject;
+        }
         return request.getUsername();
     }
 
@@ -105,5 +108,12 @@ public class AuthenticationSpringWrapper implements JokoAuthentication {
         this.roles.add(role);
 
     }
+
+    @Override
+    public void setSubject(String subject) {
+        this.subject=subject;
+    }
+
+
 
 }

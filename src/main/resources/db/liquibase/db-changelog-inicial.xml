@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet author="afeltes" id="0">
+        <sql>
+            create schema joko_security;
+        </sql>
+    </changeSet>
+
+    <changeSet author="danicricco" id="1518643732286-1">
+        <createSequence sequenceName="joko_security.audit_session_id_seq"/>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-2">
+        <createSequence sequenceName="joko_security.consumer_api_id_seq"/>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-3">
+        <createSequence sequenceName="joko_security.principal_session_id_seq"/>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-4">
+        <createSequence sequenceName="joko_security.security_profile_id_seq"/>
+    </changeSet>
+
+
+
+    <changeSet author="danicricco" id="1518643732286-6">
+        <createTable tableName="consumer_api"
+                     schemaName="joko_security"
+                     remarks="guarda los consumer para integracion con terceros a nivel de API">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_level" type="VARCHAR(255)"/>
+            <column name="consumer_id" type="VARCHAR(255)"/>
+            <column name="contact_name" type="VARCHAR(255)"/>
+            <column name="document_number" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="secret" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-12">
+        <addPrimaryKey columnNames="id" constraintName="consumer_api_pkey"
+                       tableName="consumer_api" schemaName="joko_security"/>
+    </changeSet>
+
+    <changeSet author="danicricco" id="1518643732286-7">
+        <createTable tableName="keychain"
+                     schemaName="joko_security"
+                     remarks="Guarda la clave para firmar los tokens en caso sea modo BD">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(500)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-13">
+        <addPrimaryKey columnNames="id" constraintName="keychain_pkey"
+                       tableName="keychain" schemaName="joko_security"/>
+    </changeSet>
+
+    <changeSet author="danicricco" id="1518643732286-8">
+        <createTable tableName="principal_session" schemaName="joko_security">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="app_description" type="VARCHAR(255)"/>
+            <column name="app_id" type="VARCHAR(255)"/>
+            <column name="user_description" type="VARCHAR(255)"/>
+            <column name="user_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-14" >
+        <addPrimaryKey columnNames="id"
+                       constraintName="principal_session_pkey" tableName="principal_session" schemaName="joko_security"/>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-17" >
+        <addUniqueConstraint columnNames="app_id, user_id"
+                             constraintName="uk_muajvqvs1jntexdohty6hexrv" tableName="principal_session" schemaName="joko_security"/>
+    </changeSet>
+
+    <changeSet author="danicricco" id="1518643732286-9" >
+        <createTable tableName="security_profile"
+                     schemaName="joko_security"
+                     remarks="Establece la configuracion de emision de tokens para los distintos ambientes">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_token_timeout_seconds" type="INT"/>
+            <column name="key" type="VARCHAR(255)"/>
+            <column name="max_access_token_requests" type="INT"/>
+            <column name="max_number_of_connections" type="INT"/>
+            <column name="max_number_devices_user" type="INT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="refresh_token_timeout_seconds" type="INT"/>
+            <column name="revocable" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-15">
+        <addPrimaryKey columnNames="id"
+                       constraintName="security_profile_pkey" tableName="security_profile" schemaName="joko_security"/>
+    </changeSet>
+
+    <changeSet author="danicricco" id="1518643732286-10"
+               >
+        <createTable tableName="tokens" schemaName="joko_security"
+                     remarks="La lista de tokens de refresh que estan activos">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="issued_at" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="remote_ip" type="VARCHAR(255)"/>
+            <column name="token_type" type="VARCHAR(255)"/>
+            <column name="user_agent" type="VARCHAR(255)"/>
+            <column name="user_id" type="VARCHAR(255)"/>
+            <column name="security_profile_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-16">
+        <addPrimaryKey columnNames="id" constraintName="tokens_pkey"
+                       tableName="tokens" schemaName="joko_security"/>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-19">
+        <addForeignKeyConstraint baseColumnNames="security_profile_id"
+                                 baseTableName="tokens"
+                                 baseTableSchemaName="joko_security"
+                                 constraintName="fk_tokens_securityprofile"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="security_profile"
+                                 referencedTableSchemaName="joko_security" />
+    </changeSet>
+
+
+    <changeSet author="danicricco" id="1518643732286-5">
+        <createTable tableName="audit_session"
+                     schemaName="joko_security"
+                     remarks="Stores the last login of a given user">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="remote_ip" type="VARCHAR(255)"/>
+            <column name="user_agent" type="VARCHAR(255)"/>
+            <column name="user_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="id_principal" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="danicricco"
+               id="1518643732286-11">
+        <addPrimaryKey columnNames="id" constraintName="audit_session_pkey"
+                       tableName="audit_session" schemaName="joko_security"/>
+    </changeSet>
+    <changeSet author="danicricco" id="1518643732286-18">
+        <addForeignKeyConstraint baseColumnNames="id_principal"
+                                 baseTableName="audit_session"
+                                 baseTableSchemaName="joko_security"
+                                 constraintName="fk_audit_principalsession"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="principal_session" referencedTableSchemaName="joko_security"/>
+    </changeSet>
+
+
+
+
+
+</databaseChangeLog>
