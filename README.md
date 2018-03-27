@@ -21,7 +21,7 @@ este caso el repositorio de datos debe tener la estructura de tablas que Joko
  esta esperando.
  Si el repositorio de datos se inicializa con liquibase, entonces todo el 
  contenido para la creacion de la estructura necesaria se encuentra en:
- ./db/liquidbase/db-changelog-evolucion.xml
+ ./db/liquibase/db-changelog-evolucion.xml
  
  Este archivo puede ser referenciado dentro del ciclo de actualizacion de la 
  BD en el proyecto que incluya a joko-security como librería.
