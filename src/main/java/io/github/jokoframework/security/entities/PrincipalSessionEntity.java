@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
  *
  */
 @Entity
-@Table(name = "principal_session",
+@Table(name = "principal_session", schema = "joko_security",
 	uniqueConstraints={
 			@UniqueConstraint(columnNames = {"app_id", "user_id"})
 	})

@@ -7,7 +7,7 @@ Joko Security provee la capacidad de realizar autenticación y autorización por
 separado que emite tokens o embebido como una librería dentro de otra aplicación
 Web.  Joko Security es una extensión de spring-security que permite trabajar con
 token de refresh, y acceso utilizando como formato de tokens JWT.
-
+eed
 ## Configuración embebido en otra App
 
 ### Configuracion de la Base de Datos
@@ -21,7 +21,7 @@ este caso el repositorio de datos debe tener la estructura de tablas que Joko
  esta esperando.
  Si el repositorio de datos se inicializa con liquibase, entonces todo el 
  contenido para la creacion de la estructura necesaria se encuentra en:
- ./db/liquidbase/db-changelog-evolucion.xml
+ ./db/liquibase/db-changelog-evolucion.xml
  
  Este archivo puede ser referenciado dentro del ciclo de actualizacion de la 
  BD en el proyecto que incluya a joko-security como librería.
@@ -90,7 +90,6 @@ Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
 2. (Re)Inicializa datos básicos
 ```shell
   $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
-  $ ./scripts/updater seed src/main/resources/db/sql/dev-config.sql
 ```
 **OJO**:
   * El parámetro "fresh" elimina la base de datos que está configurada en el application.properties
@@ -217,7 +216,11 @@ joko-security cuenta con una clase que contiene tests unitarios, para las funcio
 
 Se puede correr los tests mediante maven
 
-	mvn -Dspring.config.location=file:///opt/joko/development/application.properties test
+   1) Actualizar los datos de una BD fresca con: 
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-test.sql
+     
+   2) Correr MVN	
+	mvn -Dext.prop.dir=/opt/joko-security/dev -Dspring.config.location=file:///opt/joko-security/dev/application.properties test
 
 # Configuraciones
 En esta sección describimos la configuracion que se debería de tener en 
@@ -225,7 +228,7 @@ cuenta para que funcione correctamente joko-security
 
 Toda la configuración se realiza en el archivo application.properties y el 
 archivo `src/main/resources/application.properties` contiene un ejemplo 
-comentado con las opciones 
+comentado con las opciones
 
 ## Configuraciones Basicas 
 El sistema necesita un secreto para firmar los tokens. Este secreto puede ser

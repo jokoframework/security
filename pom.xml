@@ -215,7 +215,7 @@
                 <version>3.1.1</version>
                 <configuration>
                     <propertyFileWillOverride>true</propertyFileWillOverride>
-                    <changeLogFile>src/main/resources/db/liquidbase/db-changelog.xml</changeLogFile>
+                    <changeLogFile>src/main/resources/db/liquibase/db-changelog.xml</changeLogFile>
                     <driver>${spring.datasource.driver-class-name}</driver>
                     <url>${spring.datasource.url}</url>
                     <username>${spring.datasource.username}</username>

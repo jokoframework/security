@@ -16,7 +16,7 @@ Todas las tablas funcionan en un schema llamado "joko_security". Se
 corrigen los scripts de cración y los Entities
 
 ### 3) Compatibilidad con scripts de creación de BD basados en
-    liquidbase
+    liquibase
 La mayoría de los proyectos basados en joko tienen un conjunto de
     scripts que nos permiten gestionar el ciclo de la BD con comandos
     como: `./scripts/updater fresh` . 
@@ -24,9 +24,9 @@ La mayoría de los proyectos basados en joko tienen un conjunto de
 Los mencioanados scripts no estaban funcioanando en joko-security y se
 corrigió para que funcionen.
 
-### 4) Compatibilidad con liquidbase
+### 4) Compatibilidad con liquibase
 Se crea el script db-changelog-initial.xml que posee toda la
-información para generar una BD para joko-security con liquidbase.
+información para generar una BD para joko-security con liquibase.
 
 ### 5) Se actualiza el README
 En base a los cambios anteriores se actualiza el readme, tanto en
