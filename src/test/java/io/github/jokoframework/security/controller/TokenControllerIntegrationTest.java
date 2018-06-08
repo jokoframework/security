@@ -74,7 +74,7 @@ public class TokenControllerIntegrationTest extends AbstractControllerTest {
 	}
 	
 	@Test
-	@Ignore
+	//@Ignore
 	//FIXME ver issue https://github.com/jokoframework/security/issues/15
 	public void requestingTokenInfoShouldReturnOk() throws Exception {
 		// 1. Creamos el refresh token
