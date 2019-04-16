@@ -1,5 +1,6 @@
 package io.github.jokoframework.security.dto.request;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -8,7 +9,8 @@ import java.util.Map;
  * @author danicricco
  *
  */
-public class AuthenticationRequest {
+public class AuthenticationRequest implements Serializable {
+	private static final long serialVersionUID = -8574310592446951264L;
 
 	private String username;
 	private String password;

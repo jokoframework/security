@@ -17,6 +17,12 @@ public class RequestPrinter {
     private static final Logger LOGGER = Logger.getLogger(RequestPrinter.class.getSimpleName());
 
     public static final String INDENT_UNIT = "\t";
+    public static final String SEPARATOR_NL = "', \n";
+    public static final String SEPARATOR_2 = ", \n";
+    public static final String APOSTROPHE = "'";
+    public static final String SEPARATOR_3 = "',\n";
+    public static final String SEPARATOR_4 = ",\n";
+    public static final String LINE_SEPARATOR = "-------\n";
 
     private RequestPrinter() {
     }
@@ -29,10 +35,10 @@ public class RequestPrinter {
             return indentString + "{ }";
         StringBuilder sb = new StringBuilder();
         sb.append(indentString).append("{\n");
-        sb.append(indentString).append(INDENT_UNIT).append("'id': '").append(session.getId()).append("', \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'last_accessed_time': ").append(session.getLastAccessedTime()).append(", \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'max_inactive_interval': ").append(session.getMaxInactiveInterval()).append(", \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'is_new': '").append(session.isNew()).append("', \n");
+        sb.append(indentString).append(INDENT_UNIT).append("'id': '").append(session.getId()).append(SEPARATOR_NL);
+        sb.append(indentString).append(INDENT_UNIT).append("'last_accessed_time': ").append(session.getLastAccessedTime()).append(SEPARATOR_2);
+        sb.append(indentString).append(INDENT_UNIT).append("'max_inactive_interval': ").append(session.getMaxInactiveInterval()).append(SEPARATOR_2);
+        sb.append(indentString).append(INDENT_UNIT).append("'is_new': '").append(session.isNew()).append(SEPARATOR_NL);
         sb.append(indentString).append(INDENT_UNIT).append("'attributes': {\n");
         Enumeration<String> attributeNames = session.getAttributeNames();
         while (attributeNames.hasMoreElements()) {
@@ -41,8 +47,8 @@ public class RequestPrinter {
             sb.
                     append(indentString).
                     append(INDENT_UNIT).
-                    append("'").append(attributeName).append("': ").
-                    append("'").append(o.toString()).append("',\n");
+                    append(APOSTROPHE).append(attributeName).append("': ").
+                    append(APOSTROPHE).append(o.toString()).append(SEPARATOR_3);
         }
         sb.append(indentString).append(INDENT_UNIT).append("}\n");
         sb.append(indentString).append("}\n");
@@ -54,7 +60,7 @@ public class RequestPrinter {
         sb.
                 append(indentString).
                 append(INDENT_UNIT).
-                append("'").append(parameterName).append("': ");
+                append(APOSTROPHE).append(parameterName).append("': ");
         if (ArrayUtils.isEmpty(parameterValues)) {
             sb.append("None");
         } else {
@@ -74,7 +80,7 @@ public class RequestPrinter {
         sb.
                 append(indentString).
                 append(INDENT_UNIT).
-                append("'").append(headerName).append("': ");
+                append(APOSTROPHE).append(headerName).append("': ");
         if (CollectionUtils.isEmpty(headerValues)) {
             sb.append("None");
         } else {
@@ -107,14 +113,14 @@ public class RequestPrinter {
         }
         StringBuilder sb = new StringBuilder();
         sb.append(indentString).append("{ \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'name': '").append(cookie.getName()).append("', \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'value': '").append(cookie.getValue()).append("', \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'domain': '").append(cookie.getDomain()).append("', \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'path': '").append(cookie.getPath()).append("', \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'max_age': ").append(cookie.getMaxAge()).append(", \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'version': ").append(cookie.getVersion()).append(", \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'comment': '").append(cookie.getComment()).append("', \n");
-        sb.append(indentString).append(INDENT_UNIT).append("'secure': '").append(cookie.getSecure()).append("',\n");
+        sb.append(indentString).append(INDENT_UNIT).append("'name': '").append(cookie.getName()).append(SEPARATOR_NL);
+        sb.append(indentString).append(INDENT_UNIT).append("'value': '").append(cookie.getValue()).append(SEPARATOR_NL);
+        sb.append(indentString).append(INDENT_UNIT).append("'domain': '").append(cookie.getDomain()).append(SEPARATOR_NL);
+        sb.append(indentString).append(INDENT_UNIT).append("'path': '").append(cookie.getPath()).append(SEPARATOR_NL);
+        sb.append(indentString).append(INDENT_UNIT).append("'max_age': ").append(cookie.getMaxAge()).append(SEPARATOR_2);
+        sb.append(indentString).append(INDENT_UNIT).append("'version': ").append(cookie.getVersion()).append(SEPARATOR_2);
+        sb.append(indentString).append(INDENT_UNIT).append("'comment': '").append(cookie.getComment()).append(SEPARATOR_NL);
+        sb.append(indentString).append(INDENT_UNIT).append("'secure': '").append(cookie.getSecure()).append(SEPARATOR_3);
         sb.append(indentString).append("}");
         return sb.toString();
     }
@@ -128,7 +134,7 @@ public class RequestPrinter {
         sb.append(indentString).append("[\n");
         int cookieCount = 0;
         for (Cookie cookie : request.getCookies()) {
-            sb.append(RequestPrinter.debugStringCookie(cookie, indentString + INDENT_UNIT)).append(",\n");
+            sb.append(RequestPrinter.debugStringCookie(cookie, indentString + INDENT_UNIT)).append(SEPARATOR_4);
             cookieCount++;
         }
         if (cookieCount > 0) {
@@ -183,7 +189,7 @@ public class RequestPrinter {
     public static String join(List<String> values, String conjuction) {
         StringBuilder sb = new StringBuilder();
         for (String value : values) {
-            sb.append("'").append(value).append("'").append(conjuction);
+            sb.append(APOSTROPHE).append(value).append(APOSTROPHE).append(conjuction);
         }
         sb.delete(sb.length() - conjuction.length(), sb.length());
         return sb.toString();
@@ -247,23 +253,23 @@ public class RequestPrinter {
 
         // COOKIES
         sb.append("COOKIES:\n");
-        sb.append("-------\n");
+        sb.append(LINE_SEPARATOR);
         sb.append(RequestPrinter.debugStringCookies(request, 1));
 
         // PARAMETERS
         sb.append("PARAMETERS:\n");
-        sb.append("----\n");
+        sb.append(LINE_SEPARATOR);
         sb.append(RequestPrinter.debugStringParameters(request, 1));
 
         // HEADERS
         sb.append("HEADERS:\n");
-        sb.append("-------\n");
+        sb.append(LINE_SEPARATOR);
         sb.append(RequestPrinter.debugStringHeaders(request, 1));
 
         // SESSION
         if (printSession) {
             sb.append("SESSION:\n");
-            sb.append("-------\n");
+            sb.append(LINE_SEPARATOR);
             HttpSession session = request.getSession(false);
             if (session != null) {
                 sb.append(RequestPrinter.debugStringSession(session, 1));

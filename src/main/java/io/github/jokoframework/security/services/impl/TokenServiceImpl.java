@@ -104,12 +104,12 @@ public class TokenServiceImpl implements ITokenService {
             this.secret = secretEntity.getValue();
         } else {
             LOGGER.info("Generating secret...");
-            String secret = JokoUtils.generateRandomString(SECRET_LENGTH);
+            String randomString = JokoUtils.generateRandomString(SECRET_LENGTH);
             secretEntity = new KeyChainEntity();
             secretEntity.setId(KeyChainEntity.JOKO_TOKEN_SECRET);
-            secretEntity.setValue(secret);
+            secretEntity.setValue(randomString);
             securityRepository.save(secretEntity);
-            this.secret = secret;
+            this.secret = randomString;
             LOGGER.info("Secret successfully created");
         }
     }
