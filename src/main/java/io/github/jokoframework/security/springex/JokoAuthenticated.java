@@ -17,6 +17,7 @@ public class JokoAuthenticated implements JokoAuthentication, Serializable {
      * 
      */
     private static final long serialVersionUID = -5060564314503748847L;
+    public static final String SHOULD_NOT_MODIFY_AN_AUTHENTICATED_PRINCIPAL = "Should NOT modify an authenticated principal";
 
     private final JokoJWTClaims claims;
 
@@ -62,7 +63,7 @@ public class JokoAuthenticated implements JokoAuthentication, Serializable {
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        throw new JokoApplicationException("Should NOT modify an authenticated principal");
+        throw new JokoApplicationException(SHOULD_NOT_MODIFY_AN_AUTHENTICATED_PRINCIPAL);
 
     }
 
@@ -101,12 +102,12 @@ public class JokoAuthenticated implements JokoAuthentication, Serializable {
     }
 
     public void addRole(String r) {
-        throw new JokoApplicationException("Should NOT modify an authenticated principal");
+        throw new JokoApplicationException(SHOULD_NOT_MODIFY_AN_AUTHENTICATED_PRINCIPAL);
     }
 
     @Override
     public void setSubject(String subject) {
-        throw new JokoApplicationException("Should NOT modify an authenticated principal");
+        throw new JokoApplicationException(SHOULD_NOT_MODIFY_AN_AUTHENTICATED_PRINCIPAL);
     }
 
 }

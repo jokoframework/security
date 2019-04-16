@@ -77,10 +77,10 @@ public class JokoRequestContext {
         Matcher matcher = pattern.matcher(getUserAgent());
 
         String agent = JokoConstants.NOT_AVAILABLE;
-        String version = JokoConstants.NOT_AVAILABLE;
+        String versionLocal = JokoConstants.NOT_AVAILABLE;
         while (matcher.find()) {
             agent = matcher.group(1);
-            version = matcher.group(2);
+            versionLocal = matcher.group(2);
             if (JokoConstants.FIREFOX.equals(agent) && !getUserAgent().contains(JokoConstants.SEAMONKEY)) {
                 break;
             } else if (JokoConstants.SEAMONKEY.equals(agent)) {
@@ -99,7 +99,7 @@ public class JokoRequestContext {
                 break;
             }
         }
-        return String.format("%s %s", agent, version);
+        return String.format("%s %s", agent, versionLocal);
     }
 
     public void setUserAgent(String pUserAgent) {

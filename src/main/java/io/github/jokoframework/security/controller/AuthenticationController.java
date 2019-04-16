@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import io.github.jokoframework.common.errors.JokoApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class AuthenticationController {
     @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")
     @RequestMapping(value = ApiPaths.LOGIN, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JokoTokenResponse> login(@RequestBody @Valid AuthenticationRequest loginRequest,
-            HttpServletRequest httpRequest) throws Exception {
+            HttpServletRequest httpRequest) throws JokoApplicationException {
 
         LOGGER.trace("Authenticating request for " + loginRequest.getUsername());
 
@@ -128,7 +129,7 @@ public class AuthenticationController {
      * @return
      * @throws Exception
      */
-    private ResponseEntity<JokoTokenResponse> processUnauthenticated(Exception e) throws Exception {
+    private ResponseEntity<JokoTokenResponse> processUnauthenticated(Exception e) throws JokoApplicationException {
         String errorCode;
         if (e instanceof DisabledException) {
             errorCode = SecurityConstants.ERROR_ACCOUNT_DISABLED;
@@ -139,7 +140,7 @@ public class AuthenticationController {
         } else {
             // No sabe como procesar esta exception, por lo tanto la pasa a la
             // siguiente capa
-            throw e;
+            throw new JokoApplicationException(e);
         }
         return new ResponseEntity<>(new JokoTokenResponse(errorCode), HttpStatus.UNAUTHORIZED);
     }

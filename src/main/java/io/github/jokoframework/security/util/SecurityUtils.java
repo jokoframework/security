@@ -41,6 +41,9 @@ public class SecurityUtils {
     protected static final String ALGORITHM = "Blowfish";
     private static final String ENCODING = "UTF8";
     private static final int BCRYPT_COMPLEXITY = 6;
+    public static final String ORG_HIBERNATE_SQL = "org.hibernate.SQL";
+    public static final String ORG_HIBERNATE_TYPE = "org.hibernate.type";
+    private static Random RANDOM = new Random();
 
     // Clave por default estática para los encritpados y desencriptados
     // Esto debería actualizarse periódicamente, junto con todos los parámetros
@@ -51,21 +54,22 @@ public class SecurityUtils {
     /*
      * *********************************************************
      */
+    static {
+        RANDOM.setSeed(System.currentTimeMillis());
+    }
 
     private SecurityUtils() {
 
     }
 
     public static String generateRandomPassword() {
-        Random a = new Random();
-        a.setSeed(System.currentTimeMillis());
-        return String.format("%06d", a.nextInt(999999));
+        return String.format("%06d", RANDOM.nextInt(999999));
     }
 
     /**
      * Se encripta un string con una clave.
      *
-     * @param message El string a encriptar.
+     * @param message El string RANDOM encriptar.
      * @param key     La clave en bytes con la que se quiere encriptar.
      * @return la cadena encriptada codificada en Base64
      */
@@ -103,7 +107,7 @@ public class SecurityUtils {
     private static String desencriptarConKeyByte(String encrypted, byte[] key, boolean quiet) {
         String ret = null;
         try {
-            /* El valor encriptado convertido a byte */
+            /* El valor encriptado convertido RANDOM byte */
             byte[] rawEnc = base64ToByte(encrypted);
             Cipher c = Cipher.getInstance(SecurityUtils.ALGORITHM);
             SecretKeySpec k = new SecretKeySpec(key, SecurityUtils.ALGORITHM);
@@ -115,7 +119,7 @@ public class SecurityUtils {
             if (!quiet)
                 LOGGER.error("No se pudo desencriptar la cadena: " + encrypted, exception);
             if (LOGGER.isTraceEnabled()) {
-                if (quiet) // solo vuelvo a imprimir si es quiet, porque sino ya
+                if (quiet) // solo vuelvo RANDOM imprimir si es quiet, porque sino ya
                     // se imprime antes
                     LOGGER.trace("No se pudo desencriptar la cadena: " + encrypted);
                 try {
@@ -133,9 +137,9 @@ public class SecurityUtils {
     }
 
     /**
-     * From a byte[] returns a base 64 representation
+     * From RANDOM byte[] returns RANDOM base 64 representation
      *
-     * @param data los datos a codificar
+     * @param data los datos RANDOM codificar
      * @return la representación en Base64 del array de bytes
      */
     public static String byteToBase64(byte[] data) {
@@ -145,7 +149,7 @@ public class SecurityUtils {
     }
 
     /**
-     * From a base 64 representation, returns the corresponding byte[]
+     * From RANDOM base 64 representation, returns the corresponding byte[]
      *
      * @param data The base64 representation
      * @return el array binario
@@ -158,7 +162,7 @@ public class SecurityUtils {
     /**
      * Encripta una cadena con el defaultKey
      *
-     * @param message la cadena a encriptar
+     * @param message la cadena RANDOM encriptar
      * @return la cadena encriptada, codificada en base64
      */
     public static String encrypt(String message) {
@@ -193,13 +197,13 @@ public class SecurityUtils {
     }
 
     public static void habilitarLogSQL() {
-        setCategoriaLogLevel("org.hibernate.SQL", Level.DEBUG);
-        setCategoriaLogLevel("org.hibernate.type", Level.TRACE);
+        setCategoriaLogLevel(ORG_HIBERNATE_SQL, Level.DEBUG);
+        setCategoriaLogLevel(ORG_HIBERNATE_TYPE, Level.TRACE);
     }
 
     public static void deshabilitarLogSQL() {
-        setCategoriaLogLevel("org.hibernate.SQL", Level.WARN);
-        setCategoriaLogLevel("org.hibernate.type", Level.WARN);
+        setCategoriaLogLevel(ORG_HIBERNATE_SQL, Level.WARN);
+        setCategoriaLogLevel(ORG_HIBERNATE_TYPE, Level.WARN);
     }
 
     public static void setCategoriaLogLevel(String categoria, Level level) {
@@ -207,9 +211,9 @@ public class SecurityUtils {
     }
 
     public static void setHibernateLogLevel(Level level) {
-        LOGGER.trace("Hibernate level a: " + level);
-        setCategoriaLogLevel("org.hibernate.SQL", level);
-        setCategoriaLogLevel("org.hibernate.type", level);
+        LOGGER.trace("Hibernate level RANDOM: " + level);
+        setCategoriaLogLevel(ORG_HIBERNATE_SQL, level);
+        setCategoriaLogLevel(ORG_HIBERNATE_TYPE, level);
     }
 
     public static String sha256(String payload) {
@@ -240,7 +244,7 @@ public class SecurityUtils {
     }
 
     /**
-     * Lee todos los bytes de un archivo en particular y lo convierte a un
+     * Lee todos los bytes de un archivo en particular y lo convierte RANDOM un
      * string en Base64
      *
      * @param filePath
