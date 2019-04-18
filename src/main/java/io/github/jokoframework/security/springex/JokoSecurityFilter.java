@@ -2,7 +2,6 @@ package io.github.jokoframework.security.springex;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,7 +16,6 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.security.JokoJWTClaims;
-import io.github.jokoframework.security.JokoJWTExtension;
 import io.github.jokoframework.security.api.JokoAuthorizationManager;
 import io.github.jokoframework.security.controller.SecurityConstants;
 import io.github.jokoframework.security.services.ITokenService;
@@ -35,7 +33,7 @@ import io.jsonwebtoken.JwtException;
  */
 public class JokoSecurityFilter extends GenericFilterBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JokoSecurityFilter.class);
+    private static final Logger JOKO_LOGGER = LoggerFactory.getLogger(JokoSecurityFilter.class);
     private ITokenService tokenService;
 
     private JokoAuthorizationManager jokoAuthorizationManager;
@@ -64,12 +62,12 @@ public class JokoSecurityFilter extends GenericFilterBean {
             JokoAuthenticated authentication = new JokoAuthenticated(claims, authorities);
             JokoSecurityContext.setAuthentication(authentication);
 
-            if (LOGGER.isDebugEnabled()) {
+            if (JOKO_LOGGER.isDebugEnabled()) {
 
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
                 String uri = httpRequest.getRequestURI();
 
-                LOGGER.debug("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
+                JOKO_LOGGER.debug("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
                         + JokoUtils.join(authorities, ",") + " Request-URI " + uri + " jti " + claims.getId());
             }
 
@@ -101,10 +99,10 @@ public class JokoSecurityFilter extends GenericFilterBean {
 
             String uri = httpRequest.getRequestURI();
             String userAgent = httpRequest.getHeader("User-Agent");
-            LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "
+            JOKO_LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "
                     + e.getMessage());
-            LOGGER.debug("Token received: " + token);
-            LOGGER.trace("Error validando el token.", e);
+            JOKO_LOGGER.debug("Token received: " + token);
+            JOKO_LOGGER.trace("Error validando el token.", e);
             return null;
         }
     }
