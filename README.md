@@ -1,7 +1,5 @@
 # Joko Security
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ddd1abd344524a15bcfbb262b29728a2)](https://www.codacy.com/app/Joko/security?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jokoframework/security&amp;utm_campaign=Badge_Grade)
-
 Joko Security provee la capacidad de realizar autenticación y autorización por
 .medio de Tokens JWT.  Se puede utilizar de dos maneras, como un componente
 separado que emite tokens o embebido como una librería dentro de otra aplicación
