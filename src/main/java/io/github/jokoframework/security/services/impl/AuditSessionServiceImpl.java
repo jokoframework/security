@@ -3,6 +3,7 @@ package io.github.jokoframework.security.services.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,9 @@ public class AuditSessionServiceImpl implements IAuditSessionService {
     @Override
     public AuditSessionDTO findById(Long pId) {
         AuditSessionDTO auditDTO = new AuditSessionDTO();
-        AuditSessionEntity entity = auditSessionRepository.findOne(pId);
-        BeanUtils.copyProperties(entity, auditDTO);
+        Optional<AuditSessionEntity> entity = auditSessionRepository.findById(pId);
+        entity.ifPresent(e ->
+                BeanUtils.copyProperties(e, auditDTO));
         return auditDTO;
     }
     

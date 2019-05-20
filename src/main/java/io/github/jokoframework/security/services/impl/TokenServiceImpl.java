@@ -98,7 +98,7 @@ public class TokenServiceImpl implements ITokenService {
     }
 
     public void initSecretFromBD() {
-        KeyChainEntity secretEntity = securityRepository.findOne(KeyChainEntity.JOKO_TOKEN_SECRET);
+        KeyChainEntity secretEntity = securityRepository.getOne(KeyChainEntity.JOKO_TOKEN_SECRET);
         if (secretEntity != null && secretEntity.getId() != null) {
             LOGGER.info("Re-using secret stored");
             this.secret = secretEntity.getValue();
@@ -224,7 +224,7 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public void revokeToken(String jti) {
         LOGGER.trace("Revoking token {} ", JokoUtils.formatLogString(jti));
-        tokenRepository.delete(jti);
+        tokenRepository.deleteById(jti);
         LOGGER.trace("Token revoked: {}", jti);
     }
 

@@ -6,9 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.BadPaddingException;
@@ -33,7 +32,7 @@ import java.util.Random;
  */
 public class SecurityUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityUtils.class);
+    private static final Logger LOGGER = LogManager.getLogger(SecurityUtils.class);
 
     /**
      * El tipo de algoritmo utilizado para las encriptaciones.
@@ -51,6 +50,7 @@ public class SecurityUtils {
     // encriptados con este algoritmo
     // 16 bytes
     private static byte[] defaultKey = new byte[]{19, 38, 27, 46, 65, 21, 73, 66, 91, 99, 98, 97, 19, 95, 94, 90};
+
     /*
      * *********************************************************
      */
@@ -196,26 +196,6 @@ public class SecurityUtils {
         return encoder.matches(raw, encoded);
     }
 
-    public static void habilitarLogSQL() {
-        setCategoriaLogLevel(ORG_HIBERNATE_SQL, Level.DEBUG);
-        setCategoriaLogLevel(ORG_HIBERNATE_TYPE, Level.TRACE);
-    }
-
-    public static void deshabilitarLogSQL() {
-        setCategoriaLogLevel(ORG_HIBERNATE_SQL, Level.WARN);
-        setCategoriaLogLevel(ORG_HIBERNATE_TYPE, Level.WARN);
-    }
-
-    public static void setCategoriaLogLevel(String categoria, Level level) {
-        org.apache.log4j.Logger.getLogger(categoria).setLevel(level);
-    }
-
-    public static void setHibernateLogLevel(Level level) {
-        LOGGER.trace("Hibernate level RANDOM: " + level);
-        setCategoriaLogLevel(ORG_HIBERNATE_SQL, level);
-        setCategoriaLogLevel(ORG_HIBERNATE_TYPE, level);
-    }
-
     public static String sha256(String payload) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -257,8 +237,8 @@ public class SecurityUtils {
         return byteToBase64(bytesFromFile);
     }
 
-    public static void main(String args[]){
-        String pass="koreko";
+    public static void main(String args[]) {
+        String pass = "koreko";
         String passWordEncrypt = SecurityUtils.hashPassword(pass);
         System.out.println(passWordEncrypt);
     }
