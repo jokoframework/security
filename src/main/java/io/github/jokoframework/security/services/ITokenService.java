@@ -1,5 +1,6 @@
 package io.github.jokoframework.security.services;
 
+import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +16,12 @@ public interface ITokenService {
     void init();
 
     JokoTokenWrapper createAndStoreRefreshToken(String user, String appKey, TOKEN_TYPE tokenType,
-                                                String userAgent, String remoteIP, List<String> roles);
+                                                String userAgent, String remoteIP, List<String> roles, String seed);
 
     JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,
                                  String profileKey);
 
-    JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken);
+    JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken, String OTP) throws GeneralSecurityException;
 
     JokoTokenWrapper refreshToken(JokoJWTClaims jokoToken, String userAgent, String remoteIP);
 

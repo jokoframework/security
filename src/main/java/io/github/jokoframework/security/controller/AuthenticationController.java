@@ -78,7 +78,7 @@ public class AuthenticationController {
         }
 
         if (authenticate != null && authenticate.isAuthenticated()) {
-            return processLoginSucessfull(httpRequest, jokoRequest, authenticate);
+            return processLoginSucessfull(httpRequest, jokoRequest, authenticate, loginRequest.getSeed());
         }
 
         // Si no excepciono y tampoco se indico como login exitoso entonces se
@@ -101,7 +101,7 @@ public class AuthenticationController {
      * @return
      */
     private ResponseEntity<JokoTokenResponse> processLoginSucessfull(HttpServletRequest httpRequest,
-            JokoRequestContext jokoRequest, Authentication authenticate) {
+            JokoRequestContext jokoRequest, Authentication authenticate, String seed) {
         String securityProfile = null;
         List<String> roles = null;
         if (authenticate instanceof JokoAuthentication) {
@@ -116,7 +116,7 @@ public class AuthenticationController {
         }
 
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(authenticate.getName(), securityProfile,
-                TOKEN_TYPE.REFRESH, jokoRequest.getUserAgent(), httpRequest.getRemoteAddr(), roles);
+                TOKEN_TYPE.REFRESH, jokoRequest.getUserAgent(), httpRequest.getRemoteAddr(), roles, seed);
 
         return new ResponseEntity<>(new JokoTokenResponse(token), HttpStatus.OK);
     }

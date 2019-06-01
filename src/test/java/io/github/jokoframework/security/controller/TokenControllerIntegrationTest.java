@@ -76,7 +76,7 @@ public class TokenControllerIntegrationTest extends AbstractControllerTest {
 	public void requestingTokenInfoShouldReturnOk() throws Exception {
 		// 1. Creamos el refresh token
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES);
+                USER_AGENT, REMOTE_IP, ROLES, "a");
        
     	// 2. Pedimos información del token
     	mockMvc.perform(get(ApiPaths.TOKEN_INFO + "?accessToken={accessToken}", token.getToken()))
@@ -91,7 +91,7 @@ public class TokenControllerIntegrationTest extends AbstractControllerTest {
 	public void requestingRevokedTokenShouldReturnUnauthorized() throws Exception {
 		// 1. Creamos el refresh token
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES);
+                USER_AGENT, REMOTE_IP, ROLES, "a");
        
     	// 2. Revocamos 
     	tokenService.revokeToken(token.getClaims().getId());
@@ -107,7 +107,7 @@ public class TokenControllerIntegrationTest extends AbstractControllerTest {
 	public void requestingExpiredTokenShouldReturnUnauthorized() throws Exception {
 		// 1. Creamos el refresh token que tiene 0 segundos como expiración
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, EXPIRATION_SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES);
+                USER_AGENT, REMOTE_IP, ROLES, "a");
        
     	// 2. Pedimos información del token
     	mockMvc.perform(get(ApiPaths.TOKEN_INFO + "?accessToken={accessToken}", token.getToken()))

@@ -1,6 +1,7 @@
 package io.github.jokoframework.security.services.impl;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,9 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import io.github.jokoframework.security.controller.TwoFactorAuthUtil;
+import io.github.jokoframework.security.entities.SeedEntity;
+import io.github.jokoframework.security.repositories.ISeedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,8 @@ public class TokenServiceImpl implements ITokenService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenServiceImpl.class);
 
+    private TwoFactorAuthUtil twoFactorAuthUtil = new TwoFactorAuthUtil();
+
     @Autowired
     private ISecurityProfileService appService;
 
@@ -59,6 +65,11 @@ public class TokenServiceImpl implements ITokenService {
 
     @Autowired
     private IKeychainRepository securityRepository;
+
+    @Autowired
+    private ISeedRepository seedRepository;
+
+
 
     private TXUUIDGenerator tokenGenerator;
 
@@ -116,7 +127,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public JokoTokenWrapper createAndStoreRefreshToken(String user, String profileKey, TOKEN_TYPE tokenType,
-                                                       String userAgent, String remoteIP, List<String> roles) {
+                                                       String userAgent, String remoteIP, List<String> roles, String seed) {
         SecurityProfile securityProfile = appService.getProfileByKey(profileKey);
         if (securityProfile == null) {
             throw new JokoApplicationException("Unable to create refresh token without a valid security profile. The profile "
@@ -139,7 +150,16 @@ public class TokenServiceImpl implements ITokenService {
         // Un refresh token es siempre revocable
         JokoTokenWrapper token = createToken(user, roles, tokenType, timeOut, profileKey);
         storeToken(token, securityProfile, userAgent, remoteIP);
-        return token;
+        String seedEntity = seedRepository.findOneByUserId(user).toString();
+        if(seed != null && seedEntity == "Optional.empty") {
+            storeSeed(seed, user);
+            return token;
+        }else if(seed == null){
+            return token;
+        }
+        else{
+            throw new JokoUnauthenticatedException(JokoUnauthenticatedException.DEFAULT_ERROR_MSG);
+        }
     }
 
     /**
@@ -147,9 +167,10 @@ public class TokenServiceImpl implements ITokenService {
      * parametro
      *
      * @param refreshToken
+     * @param OTP
      * @return
      */
-    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken) {
+    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken, String OTP) throws GeneralSecurityException{
         if (!hasBeenRevoked(refreshToken.getId())) {
             // Solo si el token de refresh esta activo produce token.
             // En este punto el token ya fue controlado por los filtros
@@ -166,7 +187,25 @@ public class TokenServiceImpl implements ITokenService {
             }
             JokoTokenWrapper token = createToken(refreshToken.getSubject(), jokoClaims.getRoles(), TOKEN_TYPE.ACCESS,
                     timeOut, jokoClaims.getProfile());
-            return token;
+            TokenEntity entity = tokenRepository.getTokenById(refreshToken.getId());
+            String userId = entity.getUserId();
+            Optional<SeedEntity> check= seedRepository.findOneByUserId(userId);
+            SeedEntity seed;
+            if(check.isPresent()) {
+                seed = seedRepository.findOneByUserId(userId).orElseThrow(() -> new JokoUnauthenticatedException(JokoUnauthenticatedException.DEFAULT_ERROR_MSG));
+            }
+            else{
+                return token;
+            }
+            String secret = seed.getSeedSecret();
+            String number;
+
+            number = twoFactorAuthUtil.generateCurrentNumber(secret);
+            if(number.equalsIgnoreCase(OTP)) {
+                return token;
+            }else {
+                throw new JokoApplicationException("The OTP doesnt match with the given number");
+            }
 
         }
         throw new JokoUnauthorizedException();
@@ -314,6 +353,14 @@ public class TokenServiceImpl implements ITokenService {
         tokenRepository.save(entity);
     }
 
+    private void storeSeed(String seed, String userId){
+        SeedEntity seedEntity = new SeedEntity();
+        seedEntity.setSeedSecret(seed);
+        seedEntity.setUserId(userId);
+
+        seedRepository.save(seedEntity);
+    }
+
     @Override
     public boolean hasBeenRevoked(String jti) {
         LOGGER.trace("Verifying if token was revoked: {}", jti);
@@ -370,7 +417,7 @@ public class TokenServiceImpl implements ITokenService {
 
         JokoTokenWrapper tokenWrapper = createAndStoreRefreshToken(jokoToken.getSubject(),
                 jokoToken.getJoko().getProfile(), TOKEN_TYPE.REFRESH, userAgent, remoteIP,
-                jokoToken.getJoko().getRoles());
+                jokoToken.getJoko().getRoles(), null);
         return tokenWrapper;
     }
 
