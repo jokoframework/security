@@ -15,7 +15,7 @@ public interface ITokenService {
     void init();
 
     JokoTokenWrapper createAndStoreRefreshToken(String user, String appKey, TOKEN_TYPE tokenType,
-                                                String userAgent, String remoteIP, List<String> roles);
+                                                String userAgent, String remoteIP, List<String> roles, String seed);
 
     JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,
                                  String profileKey);

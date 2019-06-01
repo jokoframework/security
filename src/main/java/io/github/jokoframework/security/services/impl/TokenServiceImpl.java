@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import io.github.jokoframework.security.entities.SeedEntity;
+import io.github.jokoframework.security.repositories.ISeedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,10 @@ public class TokenServiceImpl implements ITokenService {
 
     @Autowired
     private IKeychainRepository securityRepository;
+
+    @Autowired
+    private ISeedRepository seedRepository;
+
 
     private TXUUIDGenerator tokenGenerator;
 
@@ -116,7 +122,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public JokoTokenWrapper createAndStoreRefreshToken(String user, String profileKey, TOKEN_TYPE tokenType,
-                                                       String userAgent, String remoteIP, List<String> roles) {
+                                                       String userAgent, String remoteIP, List<String> roles, String seed) {
         SecurityProfile securityProfile = appService.getProfileByKey(profileKey);
         if (securityProfile == null) {
             throw new JokoApplicationException("Unable to create refresh token without a valid security profile. The profile "
@@ -139,7 +145,16 @@ public class TokenServiceImpl implements ITokenService {
         // Un refresh token es siempre revocable
         JokoTokenWrapper token = createToken(user, roles, tokenType, timeOut, profileKey);
         storeToken(token, securityProfile, userAgent, remoteIP);
-        return token;
+        String seedEntity = seedRepository.findOneByUserId(user).toString();
+        if(seed != null && seedEntity == "Optional.empty") {
+            storeSeed(seed, user);
+            return token;
+        }else if(seed == null && seedEntity != null){
+            return token;
+        }
+        else{
+            throw new JokoUnauthenticatedException(JokoUnauthenticatedException.DEFAULT_ERROR_MSG);
+        }
     }
 
     /**
@@ -314,6 +329,14 @@ public class TokenServiceImpl implements ITokenService {
         tokenRepository.save(entity);
     }
 
+    private void storeSeed(String seed, String userId){
+        SeedEntity seedEntity = new SeedEntity();
+        seedEntity.setSeedSecret(seed);
+        seedEntity.setUserId(userId);
+
+        seedRepository.save(seedEntity);
+    }
+
     @Override
     public boolean hasBeenRevoked(String jti) {
         LOGGER.trace("Verifying if token was revoked: {}", jti);
@@ -370,7 +393,7 @@ public class TokenServiceImpl implements ITokenService {
 
         JokoTokenWrapper tokenWrapper = createAndStoreRefreshToken(jokoToken.getSubject(),
                 jokoToken.getJoko().getProfile(), TOKEN_TYPE.REFRESH, userAgent, remoteIP,
-                jokoToken.getJoko().getRoles());
+                jokoToken.getJoko().getRoles(), null);
         return tokenWrapper;
     }
 

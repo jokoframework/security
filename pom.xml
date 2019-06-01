@@ -49,6 +49,7 @@
             <scope>compile</scope>
         </dependency>
 
+
         <!-- JDBC Driver para PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -76,6 +77,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+	<!-- QRgen -->
+        <dependency>
+            <groupId>com.github.kenglxn.qrgen</groupId>
+            <artifactId>javase</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
 
         <!-- Security -->
         <dependency>
@@ -262,7 +271,14 @@
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
+
+	<!--Repo de jitpack -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>spring-releases</id>
