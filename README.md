@@ -244,6 +244,24 @@ momento de levantar la aplicacion.
 Obs.:En modo BD puede dejarse sin crear un archivo y el sistema va a crear 
 un secreto la primera vez que se levanta.
 
+## Uso del OTP
+
+Primeramente hay que ver si quiere registrar en el usuario la semilla que seria utilizada para generar el OTP que sera comparado
+con el OTP que ingresa:
+ * Ingresar Semilla: si quiere ingresar una semilla, debe ir a la pagina https://freeotp.github.io/qrcode.html. En esa pagina debe completar
+   los datos opcionales como el nombre de la cuenta relacionada a la semilla, y poner la opcion "TIMEOUT" para que funcione como Timed-OTP.
+   Esta aplicacion genera un QR que debe ser escaneado por su telefono, utilizando el programa FreeOTP que se puede descargar para Android.
+   La semilla solo se ingresa una vez por lo que en nuevos logins, el usuario solo debe completar el campo de "user" y "password", y eliminar
+   el campo de semilla.
+ * No ingresar una semilla: si no desea en el momento ingresar una semilla, puede simplemente eliminar el campo de "seed" y el token sera
+   generado.
+
+Luego de tener una semilla en la DB, se procede al siguiente paso, el cual tendran 2 opciones:
+ * Sin semilla guardada: solo debe ingresar un "0" en la linea de OTP, si realmente no tiene una semilla guardada, entonces se le consedera
+   el token, de lo contrario se le dira que el OTP assignado no concuerda con el OTP generado en el programa.
+ * Con semilla guardada: en la aplicacion FreeOTP en el celular podra ver el codigo de 6 digitos que debe ingresar para el parametro de OTP
+   en el servidor.
+
 ## Configuraciones del POM file Asegurese que las versiones de las dependencias
 en los archivos pom.xml tengan la misma version, esto le generara problemas a la
 hora de querer levantar el servicio.

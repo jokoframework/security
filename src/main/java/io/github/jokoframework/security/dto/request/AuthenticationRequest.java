@@ -14,6 +14,15 @@ public class AuthenticationRequest implements Serializable {
 
 	private String username;
 	private String password;
+	private String seed;
+
+	public String getSeed() {
+		return seed;
+	}
+
+	public void setSeed(String seed) {
+		this.seed = seed;
+	}
 
 	private Map<String, Object> custom;
 
