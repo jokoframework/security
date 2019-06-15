@@ -68,7 +68,7 @@ public class TokenServiceTest {
         
     	// Crea el token de refresh
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES, "a");
+                USER_AGENT, REMOTE_IP, ROLES, null);
 
         // Comprueba que no esta revocado
         boolean hasBeenRevoked = tokenService.hasBeenRevoked(token.getClaims().getId());
@@ -113,10 +113,10 @@ public class TokenServiceTest {
         
         // Crea el token de refresh
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES, "a");
+                USER_AGENT, REMOTE_IP, ROLES, null);
         
         JokoJWTClaims refreshToken = token.getClaims();
-        JokoTokenWrapper accessToken = tokenService.createAccessToken(refreshToken, "123456");
+        JokoTokenWrapper accessToken = tokenService.createAccessToken(refreshToken, null);
         JokoJWTClaims jwtClaims = accessToken.getClaims();
         
         assertEquals(TOKEN_TYPE.ACCESS, jwtClaims.getJoko().getType());
@@ -128,7 +128,7 @@ public class TokenServiceTest {
     public void gettingTokenShouldReturnInfo() {
     	// 1. Creamos el refresh token
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES, "a");
+                USER_AGENT, REMOTE_IP, ROLES, null);
         
         // 2. Obtenemos su información
     	JokoTokenInfoResponse response = tokenService.tokenInfo(token.getToken());
@@ -143,7 +143,7 @@ public class TokenServiceTest {
     public void gettingRevokedTokenShouldThrowException() {
     	// 1. Creamos el refresh token
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES, "a");
+                USER_AGENT, REMOTE_IP, ROLES, null);
         
         // 2. Lo revocamos
     	tokenService.revokeToken(token.getClaims().getId());
@@ -162,7 +162,7 @@ public class TokenServiceTest {
     @Test
     public void gettingExpiredTokenShouldThrowException() {
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, EXPIRATION_SECURITY_PROFILE, TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES, "a");
+                USER_AGENT, REMOTE_IP, ROLES, null);
     	try {
     		tokenService.tokenInfo(token.getToken());
     		Assert.fail("tokenInfo() call should not have succeeded");
@@ -176,7 +176,7 @@ public class TokenServiceTest {
     @Test
     public void gettingTamperedTokenShouldThrowException() {
     	JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(USER, SECURITY_PROFILE , TOKEN_TYPE.REFRESH,
-                USER_AGENT, REMOTE_IP, ROLES, "a");
+                USER_AGENT, REMOTE_IP, ROLES, null);
     	
     	error.expect(SignatureException.class);
     	
