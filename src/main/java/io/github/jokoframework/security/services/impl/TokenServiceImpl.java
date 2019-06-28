@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
-import io.github.jokoframework.security.controller.TwoFactorAuthUtil;
+import io.github.jokoframework.security.util.TwoFactorAuthUtil;
 import io.github.jokoframework.security.entities.SeedEntity;
 import io.github.jokoframework.security.repositories.ISeedRepository;
 import org.slf4j.Logger;
@@ -167,10 +167,10 @@ public class TokenServiceImpl implements ITokenService {
      * parametro
      *
      * @param refreshToken
-     * @param OTP
+     * @param otp
      * @return
      */
-    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken, String OTP) throws GeneralSecurityException{
+    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken, String otp) throws GeneralSecurityException{
         if (!hasBeenRevoked(refreshToken.getId())) {
             // Solo si el token de refresh esta activo produce token.
             // En este punto el token ya fue controlado por los filtros
@@ -201,7 +201,7 @@ public class TokenServiceImpl implements ITokenService {
             String number;
 
             number = twoFactorAuthUtil.generateCurrentNumber(secret);
-            if(number.equalsIgnoreCase(OTP)) {
+            if(number.equalsIgnoreCase(otp)) {
                 return token;
             }else {
                 throw new JokoApplicationException("The OTP doesnt match with the given number");

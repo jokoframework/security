@@ -1,4 +1,4 @@
-package io.github.jokoframework.security.controller;
+package io.github.jokoframework.security.util;
 
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -10,11 +10,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Two factor Java implementation for the Time-based One-Time Password (TOTP) algorithm.
- * 
+ *
  * See: https://github.com/j256/java-two-factor-auth
- * 
+ *
  * Copyright 2015, Gray Watson
- * 
+ *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted provided that the above copyright notice and this permission notice appear in all copies. THE SOFTWARE IS
  * PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
  * OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
- * 
+ *
  * @author graywatson
  */
 public class TwoFactorAuthUtil {
@@ -61,9 +61,9 @@ public class TwoFactorAuthUtil {
 
 	/**
 	 * Return the current number to be checked. This can be compared against user input.
-	 * 
+	 *
 	 * WARNING: This requires a system clock that is in sync with the world.
-	 * 
+	 *
 	 * For more details of this magic algorithm, see:
 	 * http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm
 	 */
@@ -115,7 +115,7 @@ public class TwoFactorAuthUtil {
 	/**
 	 * Return the QR image url thanks to Google. This can be shown to the user and scanned by the authenticator program
 	 * as an easy way to enter the secret.
-	 * 
+	 *
 	 * NOTE: this must be URL escaped if it is to be put into a href on a web-page.
 	 */
 	public String qrImageUrl(String keyId, String secret) {
@@ -226,6 +226,8 @@ public class TwoFactorAuthUtil {
 					result[resultIndex++] = (byte) working;
 					which = 0;
 					break;
+				default:
+					throw new IllegalArgumentException("Invalid number: " + which);
 			}
 		}
 		if (which != 0) {
