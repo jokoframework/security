@@ -36,10 +36,10 @@ public class TokenController {
     @ApiImplicitParams(
             {@ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Refresh Token")})
     @RequestMapping(value = ApiPaths.TOKEN_USER_ACCESS, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JokoTokenResponse> createTokenUserAccess(@RequestHeader ("SEED_OTP_TOKEN") String OTP) throws GeneralSecurityException {
+    public ResponseEntity<JokoTokenResponse> createTokenUserAccess(@RequestHeader (value = "SEED_OTP_TOKEN", required = false) String otp) throws GeneralSecurityException {
 
 
-            JokoTokenWrapper accessTokenWrapper = tokenService.createAccessToken(JokoSecurityContext.getClaims(), OTP);
+            JokoTokenWrapper accessTokenWrapper = tokenService.createAccessToken(JokoSecurityContext.getClaims(), otp);
             return new ResponseEntity<>(new JokoTokenResponse(accessTokenWrapper), HttpStatus.OK);
 
     }
