@@ -2,8 +2,8 @@ package io.github.jokoframework.common;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RequestPrinter {
 
-    private static final Logger LOGGER = Logger.getLogger(RequestPrinter.class.getSimpleName());
+    private static final Logger LOGGER = LogManager.getLogger(RequestPrinter.class.getSimpleName());
 
     public static final String INDENT_UNIT = "\t";
     public static final String SEPARATOR_NL = "', \n";

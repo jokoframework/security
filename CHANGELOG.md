@@ -2,6 +2,14 @@
 
 Archivo para documentar cambios más importantes de la librería.
 
+
+## [v1.1.0]
+
+Cambia la versión base a Spring Boot 2.1.5 y Java 11
+* Cambio de API para Spring DATA
+* Cambio de Log4j a su versión 2
+* Adaptación de properties para conexiones a Postgresql
+
 ## [v1.0.0]
 
 ### 1) Upgrade a Spring 1.5.10

@@ -1,7 +1,8 @@
 package io.github.jokoframework.security.util;
 
 import org.apache.commons.codec.binary.Base32;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
 
@@ -106,7 +107,7 @@ import java.util.UUID;
 // TODO luego de analizar quedamos en subir el largo generado de IDs
 public class TXUUIDGenerator {
 
-    private static final Logger LOGGER = Logger.getLogger(TXUUIDGenerator.class.getSimpleName());
+    private static final Logger LOGGER = LogManager.getLogger(TXUUIDGenerator.class.getSimpleName());
 
     private static final int BYTE_SIZE = 8;
 
