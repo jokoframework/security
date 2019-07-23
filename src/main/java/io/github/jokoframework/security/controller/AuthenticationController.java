@@ -81,10 +81,12 @@ public class AuthenticationController {
             return processLoginSucessfull(httpRequest, jokoRequest, authenticate, loginRequest.getSeed());
         }
 
-        // Si no excepciono y tampoco se indico como login exitoso entonces se
-        // utiliza el default
-        LOGGER.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
-                + " didn't specify the cause of the unauhtentication");
+        if(authenticationManager != null ) {
+            // Si no excepciono y tampoco se indico como login exitoso entonces se
+            // utiliza el default
+            LOGGER.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
+                    + " didn't specify the cause of the unauhtentication");
+        }
 
         return new ResponseEntity<>(new JokoTokenResponse(SecurityConstants.ERROR_BAD_CREDENTIALS),
                 HttpStatus.UNAUTHORIZED);
