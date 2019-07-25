@@ -188,7 +188,8 @@ Dentro del directorio "samples" se puede observar ejemplos que muestran como
 utilizar joko-security
 
 ## Obtener el jar
-El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar.
+El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar. En la instalación del jar se correran los Unit Tests por defecto, se debe prepara la BD como se define en la sección "Unit Tests"
+
 
 	mvn -Dext.prop.dir=/opt/joko-security/test -Dspring.config.location=file:///opt/joko-security/dev/application.properties install
 

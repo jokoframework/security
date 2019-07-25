@@ -109,7 +109,14 @@ public class TokenServiceImpl implements ITokenService {
     }
 
     public void initSecretFromBD() {
-        KeyChainEntity secretEntity = securityRepository.getOne(KeyChainEntity.JOKO_TOKEN_SECRET);
+    	Optional<KeyChainEntity> optionalSecretEntity = securityRepository.findById(KeyChainEntity.JOKO_TOKEN_SECRET);
+    	KeyChainEntity secretEntity;
+        if (optionalSecretEntity.isPresent()) {
+        	secretEntity = optionalSecretEntity.get();
+        } else {
+        	secretEntity = null;
+        }
+        
         if (secretEntity != null && secretEntity.getId() != null) {
             LOGGER.info("Re-using secret stored");
             this.secret = secretEntity.getValue();
