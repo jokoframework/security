@@ -3,7 +3,7 @@ package io.github.jokoframework.security.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.wordnik.swagger.annotations.*;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
