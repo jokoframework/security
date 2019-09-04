@@ -1,39 +1,49 @@
 package io.github.jokoframework.security.sample.standalone_simple.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.common.base.Predicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import java.util.Collections;
+
+import static com.google.common.base.Predicates.or;
+import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
-@EnableSwagger
-@Profile(value={"default"})
+@EnableSwagger2
+@Profile(value = {"default"})
 public class SwaggerConfig {
-	
-	private SpringSwaggerConfig springSwaggerConfig;
-	
-	@Autowired
-	public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
-		this.springSwaggerConfig = springSwaggerConfig;
-	}
-	
+
+
 	@Bean
-	public SwaggerSpringMvcPlugin customImplementation() {
-		return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(
-				apiInfo()).includePatterns("/api/.*");
-		
-		//.useDefaultResponseMessages(false);
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("public-api")
+				.apiInfo(apiInfo()).select().paths(postPaths()).build();
 	}
-	
+
+	private Predicate<String> postPaths() {
+		return or(regex("/api/posts.*"), regex("/api/.*"));
+	}
+
+
 	private ApiInfo apiInfo() {
-		ApiInfo apiInfo = new ApiInfo("Joko-Security API", "",
-				"", "joko@sodep.com.py",
-				"Joko-Security API Licence Type", "Apache 2.0");
+		Contact contact = new Contact("Sodep S.A.", "http://www.sodep.com.py", "joko@sodep.com.py");
+		ApiInfo apiInfo = new ApiInfo("Joko-Starter-Kit API",
+				"Joko-Starter-Kit API Licence Type",
+				"1.1",
+				"http://github.com/jokoframework",
+				contact,
+				"@sodepsa",
+				"Apache 2.0",
+				Collections.emptyList());
 		return apiInfo;
 	}
 }

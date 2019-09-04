@@ -19,8 +19,11 @@ public class SimpleAuthorization implements JokoAuthorizationManager {
 
         http.authorizeRequests()
                 // Permite el acceso al api de swagger
-                .antMatchers("/swagger/**").permitAll().antMatchers("/api-docs").permitAll().antMatchers("/api-docs/**")
-                .permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/swagger/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v2/api-docs/**").permitAll()
                 // Cualquier puede ejecutar el api/test-public
                 .antMatchers("/api/test-public").permitAll().antMatchers("/api/test-public/").permitAll()
                 .antMatchers("/api/test-noautorizado").permitAll().antMatchers("/api/test-noautorizado/").permitAll()
