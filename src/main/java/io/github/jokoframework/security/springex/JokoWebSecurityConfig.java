@@ -74,7 +74,9 @@ public class JokoWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(ApiPaths.LOGOUT + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
                 //sessions
                 .antMatchers(ApiPaths.SESSIONS).hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
-                .antMatchers(ApiPaths.SESSIONS + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH);
+                .antMatchers(ApiPaths.SESSIONS + "/").hasAnyAuthority(SecurityConstants.AUTHORIZATION_REFRESH)
+                //qrcode
+                .antMatchers("/qrcode").permitAll();
 
         if (jokoAuthorizationManager != null) {
             // Configuracion de URL particular para la aplicacion

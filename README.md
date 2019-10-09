@@ -1,7 +1,5 @@
 # Joko Security
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/959a1567f7484130b3943bbf7760186c)](https://www.codacy.com/app/alefq/security?utm_source=github.com&utm_medium=referral&utm_content=jokoframework/security&utm_campaign=badger)
-
 Joko Security provee la capacidad de realizar autenticación y autorización por
 .medio de Tokens JWT.  Se puede utilizar de dos maneras, como un componente
 separado que emite tokens o embebido como una librería dentro de otra aplicación
@@ -54,6 +52,9 @@ varios PROFILE_DIR segun se requiera. Por ejemplo:
 
 En el anterior ejemplo existen dos PROFILE_DIR dentro del joko-demo, el 
 primero para development y el segundo con datos de quality assurance.
+
+Obs.: Un archivo de ejemplo para el application.properties se encuentra en 
+`src/main/resources/application.properties`
 
 ### Step 2) Configuración del archivo "development.vars"
 
@@ -183,13 +184,14 @@ Se debe implementar esta interfaz para:
 	realiza las configuraciones básicas requeridas en proyectos de este tipo.
  
 ## Ejemplos
-Dentro del directorio "samples" se puede observar ejemplos que muestran
+Dentro del directorio "samples" se puede observar ejemplos que muestran como 
+utilizar joko-security
 
 ## Obtener el jar
-El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar.
+El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar. En la instalación del jar se correran los Unit Tests por defecto, se debe prepara la BD como se define en la sección "Unit Tests"
 
-	mvn -Dspring.config.location=file:///opt/joko/development/application
-	.properties install
+
+	mvn -Dext.prop.dir=/opt/joko-security/test -Dspring.config.location=file:///opt/joko-security/dev/application.properties install
 
 Un archivo de ejemplo de application.properties puede obtenerse en src/main/resources/application.properties.example	
 ## Funcionalidades proveídas por Joko
@@ -214,29 +216,57 @@ joko-security cuenta con una clase que contiene tests unitarios, para las funcio
 Se puede correr los tests mediante maven
 
    1) Actualizar los datos de una BD fresca con: 
-
-      $ ./scripts/updater seed src/main/resources/db/sql/seed-test.sql
+  $ ./scripts/updater seed src/main/resources/db/sql/seed-test.sql
      
-     2) Correr MVN	
+   2) Correr MVN	
 	mvn -Dext.prop.dir=/opt/joko-security/dev -Dspring.config.location=file:///opt/joko-security/dev/application.properties test
-	
-# Configuraciones Complementarias
-Algunas configuraciones extras que fueron necesarias durante la implementacion en ciertos proyectos.
+
+# Configuraciones
+En esta sección describimos la configuracion que se debería de tener en 
+cuenta para que funcione correctamente joko-security
+
+Toda la configuración se realiza en el archivo application.properties y el 
+archivo `src/main/resources/application.properties` contiene un ejemplo 
+comentado con las opciones
 
 ## Configuraciones Basicas 
-Es necesario tener un directorio /conf/secret.key para que los test que se
-realicen no tengan problema al encontrar el archivo de la clave. Sin esto es
-probable que 10 de los 11 test le den un problemas de Exception, al no encontrar
-dicho directorio. Observacion: este archivo tampoco puede ser nulo o vacio!
+El sistema necesita un secreto para firmar los tokens. Este secreto puede ser
+ guradado en dos lugares:
+ * BD: Si se guarda en la Base de datos va a la tabla joko_security.keychain
+ * FILE: Si va al filesystem se debe configurar la propiedad joko.secret.file
+
+ATENCIÓN: Es MUY importante que este secreto no sea accedido por terceras 
+personas. La recomendacion para esto es:
+* BD: En este caso asigne permisos a la tabla con solo lectura y solamente 
+para el usuario que se utiliza en la aplicacion
+* FILE: Asigne permisos de lecutra y solo para el usuario que se utiliza al 
+momento de levantar la aplicacion.
+
+Obs.:En modo BD puede dejarse sin crear un archivo y el sistema va a crear 
+un secreto la primera vez que se levanta.
+
+## Uso del OTP
+
+Primeramente hay que ver si quiere registrar en el usuario la semilla que seria utilizada para generar el OTP que sera comparado
+con el OTP que ingresa:
+ * Ingresar Semilla: si quiere ingresar una semilla, debe ir a la pagina https://freeotp.github.io/qrcode.html. En esa pagina debe completar
+   los datos opcionales como el nombre de la cuenta relacionada a la semilla, y poner la opcion "TIMEOUT" para que funcione como Timed-OTP.
+   Esta aplicacion genera un QR que debe ser escaneado por su telefono, utilizando el programa FreeOTP que se puede descargar para Android.
+   La semilla solo se ingresa una vez por lo que en nuevos logins, el usuario solo debe completar el campo de "user" y "password", y eliminar
+   el campo de semilla.
+ * No ingresar una semilla: si no desea en el momento ingresar una semilla, puede simplemente eliminar el campo de "seed" y el token sera
+   generado.
+
+Luego de tener una semilla en la DB, se procede al siguiente paso, el cual tendran 2 opciones:
+ * Sin semilla guardada: solo debe ingresar un "0" en la linea de OTP, si realmente no tiene una semilla guardada, entonces se le consedera
+   el token, de lo contrario se le dira que el OTP assignado no concuerda con el OTP generado en el programa.
+ * Con semilla guardada: en la aplicacion FreeOTP en el celular podra ver el codigo de 6 digitos que debe ingresar para el parametro de OTP
+   en el servidor.
 
 ## Configuraciones del POM file Asegurese que las versiones de las dependencias
 en los archivos pom.xml tengan la misma version, esto le generara problemas a la
 hora de querer levantar el servicio.
 
-## Configuraciones del application.properties Tenga en cuenta los valores que
-deben tomar las variables en el archivo de configuracion del
-application.properties, que es el encargado de obtener los valores de las
-configuraciones que usteded asigno a su DB.
 
 # Changelog
 Para una descripcion detallada de las versiones ver el archivo de [Changelog](CHANGELOG.md)

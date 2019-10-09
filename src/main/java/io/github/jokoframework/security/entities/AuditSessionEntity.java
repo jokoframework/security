@@ -148,7 +148,7 @@ public class AuditSessionEntity {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("userAgent", userAgent)
-                .append("userDate", userDate)
+                .append(USER_DATE, userDate)
                 .append("remoteIp", remoteIp)
                 .append("creationDate", creationDate)
                 .toString();

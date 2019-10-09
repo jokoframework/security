@@ -1,5 +1,6 @@
 package io.github.jokoframework.security;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,10 @@ import java.util.Map;
  * @author danicricco
  *
  */
-public class JokoJWTExtension {
+public class JokoJWTExtension implements Serializable {
+
+    private static final long serialVersionUID = -8574313332676951264L;
+
 
     public enum TOKEN_TYPE {
         REFRESH, // token de refresh para end user

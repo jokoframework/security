@@ -6,9 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.BadPaddingException;
@@ -33,7 +32,7 @@ import java.util.Random;
  */
 public class SecurityUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityUtils.class);
+    private static final Logger LOGGER = LogManager.getLogger(SecurityUtils.class);
 
     /**
      * El tipo de algoritmo utilizado para las encriptaciones.
@@ -41,6 +40,9 @@ public class SecurityUtils {
     protected static final String ALGORITHM = "Blowfish";
     private static final String ENCODING = "UTF8";
     private static final int BCRYPT_COMPLEXITY = 6;
+    public static final String ORG_HIBERNATE_SQL = "org.hibernate.SQL";
+    public static final String ORG_HIBERNATE_TYPE = "org.hibernate.type";
+    private static Random RANDOM = new Random();
 
     // Clave por default estática para los encritpados y desencriptados
     // Esto debería actualizarse periódicamente, junto con todos los parámetros
@@ -48,24 +50,26 @@ public class SecurityUtils {
     // encriptados con este algoritmo
     // 16 bytes
     private static byte[] defaultKey = new byte[]{19, 38, 27, 46, 65, 21, 73, 66, 91, 99, 98, 97, 19, 95, 94, 90};
+
     /*
      * *********************************************************
      */
+    static {
+        RANDOM.setSeed(System.currentTimeMillis());
+    }
 
     private SecurityUtils() {
 
     }
 
     public static String generateRandomPassword() {
-        Random a = new Random();
-        a.setSeed(System.currentTimeMillis());
-        return String.format("%06d", a.nextInt(999999));
+        return String.format("%06d", RANDOM.nextInt(999999));
     }
 
     /**
      * Se encripta un string con una clave.
      *
-     * @param message El string a encriptar.
+     * @param message El string RANDOM encriptar.
      * @param key     La clave en bytes con la que se quiere encriptar.
      * @return la cadena encriptada codificada en Base64
      */
@@ -103,7 +107,7 @@ public class SecurityUtils {
     private static String desencriptarConKeyByte(String encrypted, byte[] key, boolean quiet) {
         String ret = null;
         try {
-            /* El valor encriptado convertido a byte */
+            /* El valor encriptado convertido RANDOM byte */
             byte[] rawEnc = base64ToByte(encrypted);
             Cipher c = Cipher.getInstance(SecurityUtils.ALGORITHM);
             SecretKeySpec k = new SecretKeySpec(key, SecurityUtils.ALGORITHM);
@@ -115,7 +119,7 @@ public class SecurityUtils {
             if (!quiet)
                 LOGGER.error("No se pudo desencriptar la cadena: " + encrypted, exception);
             if (LOGGER.isTraceEnabled()) {
-                if (quiet) // solo vuelvo a imprimir si es quiet, porque sino ya
+                if (quiet) // solo vuelvo RANDOM imprimir si es quiet, porque sino ya
                     // se imprime antes
                     LOGGER.trace("No se pudo desencriptar la cadena: " + encrypted);
                 try {
@@ -133,9 +137,9 @@ public class SecurityUtils {
     }
 
     /**
-     * From a byte[] returns a base 64 representation
+     * From RANDOM byte[] returns RANDOM base 64 representation
      *
-     * @param data los datos a codificar
+     * @param data los datos RANDOM codificar
      * @return la representación en Base64 del array de bytes
      */
     public static String byteToBase64(byte[] data) {
@@ -145,7 +149,7 @@ public class SecurityUtils {
     }
 
     /**
-     * From a base 64 representation, returns the corresponding byte[]
+     * From RANDOM base 64 representation, returns the corresponding byte[]
      *
      * @param data The base64 representation
      * @return el array binario
@@ -158,7 +162,7 @@ public class SecurityUtils {
     /**
      * Encripta una cadena con el defaultKey
      *
-     * @param message la cadena a encriptar
+     * @param message la cadena RANDOM encriptar
      * @return la cadena encriptada, codificada en base64
      */
     public static String encrypt(String message) {
@@ -192,26 +196,6 @@ public class SecurityUtils {
         return encoder.matches(raw, encoded);
     }
 
-    public static void habilitarLogSQL() {
-        setCategoriaLogLevel("org.hibernate.SQL", Level.DEBUG);
-        setCategoriaLogLevel("org.hibernate.type", Level.TRACE);
-    }
-
-    public static void deshabilitarLogSQL() {
-        setCategoriaLogLevel("org.hibernate.SQL", Level.WARN);
-        setCategoriaLogLevel("org.hibernate.type", Level.WARN);
-    }
-
-    public static void setCategoriaLogLevel(String categoria, Level level) {
-        org.apache.log4j.Logger.getLogger(categoria).setLevel(level);
-    }
-
-    public static void setHibernateLogLevel(Level level) {
-        LOGGER.trace("Hibernate level a: " + level);
-        setCategoriaLogLevel("org.hibernate.SQL", level);
-        setCategoriaLogLevel("org.hibernate.type", level);
-    }
-
     public static String sha256(String payload) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -240,7 +224,7 @@ public class SecurityUtils {
     }
 
     /**
-     * Lee todos los bytes de un archivo en particular y lo convierte a un
+     * Lee todos los bytes de un archivo en particular y lo convierte RANDOM un
      * string en Base64
      *
      * @param filePath
@@ -253,8 +237,8 @@ public class SecurityUtils {
         return byteToBase64(bytesFromFile);
     }
 
-    public static void main(String args[]){
-        String pass="koreko";
+    public static void main(String args[]) {
+        String pass = "koreko";
         String passWordEncrypt = SecurityUtils.hashPassword(pass);
         System.out.println(passWordEncrypt);
     }

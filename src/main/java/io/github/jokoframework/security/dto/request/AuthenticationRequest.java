@@ -1,5 +1,7 @@
 package io.github.jokoframework.security.dto.request;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,12 +10,22 @@ import java.util.Map;
  * @author danicricco
  *
  */
-public class AuthenticationRequest {
+public class AuthenticationRequest implements Serializable {
+	private static final long serialVersionUID = -8574310592446951264L;
 
 	private String username;
 	private String password;
+	private String seed;
+	//Ignoramos el warning del sonar. HashMap sí implementa serializable
+	private HashMap<String, Object> custom;
 
-	private Map<String, Object> custom;
+	public String getSeed() {
+		return seed;
+	}
+
+	public void setSeed(String seed) {
+		this.seed = seed;
+	}
 
 	public String getUsername() {
 		return username;
@@ -31,11 +43,11 @@ public class AuthenticationRequest {
 		this.password = password;
 	}
 
-	public Map<String, Object> getCustom() {
+	public HashMap<String, Object> getCustom() {
 		return custom;
 	}
 
-	public void setCustom(Map<String, Object> custom) {
+	public void setCustom(HashMap<String, Object> custom) {
 		this.custom = custom;
 	}
 

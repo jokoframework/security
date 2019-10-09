@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import io.github.jokoframework.common.errors.JokoApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wordnik.swagger.annotations.ApiImplicitParam;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import io.github.jokoframework.common.dto.JokoBaseResponse;
 import io.github.jokoframework.security.ApiPaths;
@@ -59,7 +60,7 @@ public class AuthenticationController {
     @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")
     @RequestMapping(value = ApiPaths.LOGIN, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JokoTokenResponse> login(@RequestBody @Valid AuthenticationRequest loginRequest,
-            HttpServletRequest httpRequest) throws Exception {
+            HttpServletRequest httpRequest) throws JokoApplicationException {
 
         LOGGER.trace("Authenticating request for " + loginRequest.getUsername());
 
@@ -77,13 +78,15 @@ public class AuthenticationController {
         }
 
         if (authenticate != null && authenticate.isAuthenticated()) {
-            return processLoginSucessfull(httpRequest, jokoRequest, authenticate);
+            return processLoginSucessfull(httpRequest, jokoRequest, authenticate, loginRequest.getSeed());
         }
 
-        // Si no excepciono y tampoco se indico como login exitoso entonces se
-        // utiliza el default
-        LOGGER.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
-                + " didn't specify the cause of the unauhtentication");
+        if(authenticationManager != null ) {
+            // Si no excepciono y tampoco se indico como login exitoso entonces se
+            // utiliza el default
+            LOGGER.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
+                    + " didn't specify the cause of the unauhtentication");
+        }
 
         return new ResponseEntity<>(new JokoTokenResponse(SecurityConstants.ERROR_BAD_CREDENTIALS),
                 HttpStatus.UNAUTHORIZED);
@@ -100,7 +103,7 @@ public class AuthenticationController {
      * @return
      */
     private ResponseEntity<JokoTokenResponse> processLoginSucessfull(HttpServletRequest httpRequest,
-            JokoRequestContext jokoRequest, Authentication authenticate) {
+            JokoRequestContext jokoRequest, Authentication authenticate, String seed) {
         String securityProfile = null;
         List<String> roles = null;
         if (authenticate instanceof JokoAuthentication) {
@@ -115,7 +118,7 @@ public class AuthenticationController {
         }
 
         JokoTokenWrapper token = tokenService.createAndStoreRefreshToken(authenticate.getName(), securityProfile,
-                TOKEN_TYPE.REFRESH, jokoRequest.getUserAgent(), httpRequest.getRemoteAddr(), roles);
+                TOKEN_TYPE.REFRESH, jokoRequest.getUserAgent(), httpRequest.getRemoteAddr(), roles, seed);
 
         return new ResponseEntity<>(new JokoTokenResponse(token), HttpStatus.OK);
     }
@@ -128,7 +131,7 @@ public class AuthenticationController {
      * @return
      * @throws Exception
      */
-    private ResponseEntity<JokoTokenResponse> processUnauthenticated(Exception e) throws Exception {
+    private ResponseEntity<JokoTokenResponse> processUnauthenticated(Exception e) throws JokoApplicationException {
         String errorCode;
         if (e instanceof DisabledException) {
             errorCode = SecurityConstants.ERROR_ACCOUNT_DISABLED;
@@ -139,7 +142,7 @@ public class AuthenticationController {
         } else {
             // No sabe como procesar esta exception, por lo tanto la pasa a la
             // siguiente capa
-            throw e;
+            throw new JokoApplicationException(e);
         }
         return new ResponseEntity<>(new JokoTokenResponse(errorCode), HttpStatus.UNAUTHORIZED);
     }

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.2.xsd">
+    <!-- START CVE-2018-1258 ***************************************************
+         Falso positivo. https://pivotal.io/security/cve-2018-1258
+         Users leveraging Spring Framework 4.x (Spring Security 4.x or Spring Boot 1.x) are not impacted so no steps are necessary.
+    -->
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-security-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-security:.*$</gav>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <!--suppress>
+      <notes>
+        <![CDATA[
+                 file name: spring-security-crypto-4.2.12.RELEASE.jar
+        ]]>
+      </notes>
+      <gav regex="true">^org\.springframework\.security:spring-security-crypto:.*$</gav>
+      <cve>CVE-2018-1258</cve>
+    </suppress-->
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-security-web-4.2.12.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.security:spring-security-web:.*$</gav>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-security-core-5.0.1.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.security:spring-security-core:.*$</gav>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-security-config-4.2.12.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.security:spring-security-config:.*$</gav>
+        <cve>CVE-2018-1258</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-tomcat-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-tomcat:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <!-- END
+         False positive. https://pivotal.io/security/cve-2018-1258
+         Users leveraging Spring Framework 4.x (Spring Security 4.x or Spring Boot 1.x) are not impacted so no steps are necessary.
+         ***************************************** -->
+    <!-- Falso positivo. Esto está relacionado con Ruby no Java. https://github.com/nov/json-jwt/pull/62 -->
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: jjwt-0.9.1.jar
+      ]]>
+        </notes>
+        <gav regex="true">^io\.jsonwebtoken:jjwt:.*$</gav>
+        <cpe>cpe:/a:json-jwt_project:json-jwt</cpe>
+    </suppress>
+    <!-- Depende de Spring Boot que a su vez depende de Hibernate
+         https://hibernate.atlassian.net/browse/HHH-12322 -->
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: dom4j-1.6.1.jar
+      ]]>
+        </notes>
+        <gav regex="true">^dom4j:dom4j:.*$</gav>
+        <cpe>cpe:/a:dom4j_project:dom4j</cpe>
+    </suppress>
+    <!-- START CVE-2011-2730 ***************************************************
+         Falsos positivos: No afectan a Spring Boot 1.x
+    -->
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-aop-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-aop:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-web-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-web:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-jdbc-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-jdbc:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-data-jpa-1.11.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.data:spring-data-jpa:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-data-commons-1.13.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.data:spring-data-commons:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-security-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-security:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-autoconfigure-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-autoconfigure:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-data-jpa-1.11.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.data:spring-data-jpa:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-data-commons-1.13.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.data:spring-data-commons:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-security-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-security:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-logging-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-logging:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <suppress>
+        <notes>
+            <![CDATA[
+               file name: spring-boot-starter-data-jpa-1.5.20.RELEASE.jar
+      ]]>
+        </notes>
+        <gav regex="true">^org\.springframework\.boot:spring-boot-starter-data-jpa:.*$</gav>
+        <cve>CVE-2011-2730</cve>
+    </suppress>
+    <!-- END  CVE-2011-2730
+         Falsos positivos: No afectan a Spring Boot 1.x
+         ***************************************** -->
+    <suppress>
+        <notes><![CDATA[
+   file name: tomcat-embed-core-8.5.39.jar
+        Sólo afecta a Windows https://nvd.nist.gov/vuln/detail/CVE-2019-0232 
+   ]]></notes>
+        <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-core:.*$</gav>
+        <cve>CVE-2019-0232</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: tomcat-embed-websocket-8.5.39.jar
+   Sólo afecta a Windows https://nvd.nist.gov/vuln/detail/CVE-2019-0232
+   ]]></notes>
+        <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
+        <cve>CVE-2019-0232</cve>
+    </suppress>
+</suppressions>

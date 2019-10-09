@@ -1,12 +1,12 @@
 package io.github.jokoframework.security.controller;
 
-import com.wordnik.swagger.annotations.*;
 import io.github.jokoframework.security.ApiPaths;
 import io.github.jokoframework.security.dto.AuditSessionDTO;
 import io.github.jokoframework.security.dto.BaseResponseDTO;
 import io.github.jokoframework.security.dto.request.AuditSessionRequestDTO;
 import io.github.jokoframework.security.dto.response.AuditSessionResponseDTO;
 import io.github.jokoframework.security.services.IAuditSessionService;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

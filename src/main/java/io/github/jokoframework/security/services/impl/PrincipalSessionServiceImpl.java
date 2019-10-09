@@ -10,6 +10,8 @@ import io.github.jokoframework.security.entities.PrincipalSessionEntity;
 import io.github.jokoframework.security.repositories.IPrincipalSessionRepository;
 import io.github.jokoframework.security.services.IPrincipalSessionService;
 
+import java.util.Optional;
+
 /**
  * 
  * @author bsandoval
@@ -41,8 +43,8 @@ public class PrincipalSessionServiceImpl implements IPrincipalSessionService{
     @Override
     public PrincipalSessionDTO findById(Long pId) {
         PrincipalSessionDTO principalDTO = new PrincipalSessionDTO();
-        PrincipalSessionEntity entity = principalSessionRepository.findOne(pId);
-        BeanUtils.copyProperties(entity, principalDTO);
+        Optional<PrincipalSessionEntity> entity = principalSessionRepository.findById(pId);
+        entity.ifPresent(e -> BeanUtils.copyProperties(e, principalDTO));
         return principalDTO;
     }
     
