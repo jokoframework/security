@@ -6,29 +6,15 @@
         </sql>
     </changeSet>
 
-    <changeSet author="danicricco" id="1518643732286-1">
-        <createSequence sequenceName="joko_security.audit_session_id_seq"/>
-    </changeSet>
-    <changeSet author="danicricco" id="1518643732286-2">
-        <createSequence sequenceName="joko_security.consumer_api_id_seq"/>
-    </changeSet>
-    <changeSet author="danicricco" id="1518643732286-3">
-        <createSequence sequenceName="joko_security.principal_session_id_seq"/>
-    </changeSet>
-    <changeSet author="danicricco" id="1518643732286-4">
-        <createSequence sequenceName="joko_security.security_profile_id_seq"/>
-    </changeSet>
     <changeSet author="danicricco" id="1518643732286-100">
         <createSequence sequenceName="joko_security.id_seq"/>
     </changeSet>
-
-
 
     <changeSet author="danicricco" id="1518643732286-6">
         <createTable tableName="consumer_api"
                      schemaName="joko_security"
                      remarks="guarda los consumer para integracion con terceros a nivel de API">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGSERIAL">
                 <constraints nullable="false"/>
             </column>
             <column name="access_level" type="VARCHAR(255)"/>
@@ -61,7 +47,7 @@
 
     <changeSet author="danicricco" id="1518643732286-8">
         <createTable tableName="principal_session" schemaName="joko_security">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGSERIAL">
                 <constraints nullable="false"/>
             </column>
             <column name="app_description" type="VARCHAR(255)"/>
@@ -83,7 +69,7 @@
         <createTable tableName="security_profile"
                      schemaName="joko_security"
                      remarks="Establece la configuracion de emision de tokens para los distintos ambientes">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGSERIAL">
                 <constraints nullable="false"/>
             </column>
             <column name="access_token_timeout_seconds" type="INT"/>
@@ -152,7 +138,7 @@
         <createTable tableName="audit_session"
                      schemaName="joko_security"
                      remarks="Stores the last login of a given user">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGSERIAL">
                 <constraints nullable="false"/>
             </column>
             <column name="creation_date" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
@@ -176,9 +162,5 @@
                                  initiallyDeferred="false"
                                  onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="principal_session" referencedTableSchemaName="joko_security"/>
     </changeSet>
-
-
-
-
 
 </databaseChangeLog>
