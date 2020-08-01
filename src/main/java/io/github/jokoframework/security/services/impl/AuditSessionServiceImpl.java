@@ -39,7 +39,7 @@ public class AuditSessionServiceImpl implements IAuditSessionService {
     @Override
     public List<AuditSessionResponseDTO> findAllOrderdByUserDate(Integer startPage, Integer rowsPerPage) {
         List<AuditSessionResponseDTO> sessionsPage = new ArrayList<>();
-        Pageable pageable = new PageRequest(startPage, rowsPerPage, new Sort(Sort.Direction.DESC, AuditSessionEntity.USER_DATE));
+        Pageable pageable = PageRequest.of(startPage, rowsPerPage, Sort.by(AuditSessionEntity.USER_DATE).descending());
         Page<AuditSessionEntity> sessions = auditSessionRepository.findAll(pageable);
         for (AuditSessionEntity entity : sessions) {
             AuditSessionResponseDTO dto = new AuditSessionResponseDTO();
