@@ -15,7 +15,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
@@ -24,6 +23,7 @@ import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Random;
 
@@ -144,7 +144,7 @@ public class SecurityUtils {
      */
     public static String byteToBase64(byte[] data) {
 
-        return DatatypeConverter.printBase64Binary(data);
+        return  Base64.getEncoder().encodeToString(data);
 
     }
 
@@ -156,7 +156,11 @@ public class SecurityUtils {
      */
     public static byte[] base64ToByte(String data) {
 
-        return DatatypeConverter.parseBase64Binary(data);
+        byte[] bytesss = null;
+        if(data != null) {
+            bytesss = Base64.getEncoder().encode(data.getBytes());
+        }
+        return  bytesss;
     }
 
     /**
