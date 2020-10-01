@@ -6,7 +6,7 @@
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-security</artifactId>
 
-    <version>1.1.8</version>
+    <version>1.1.9</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -23,7 +23,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <spring-security-test.version>5.4.0</spring-security-test.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <dependency-check.version>5.2.1</dependency-check.version>
+        <dependency-check.version>6.0.2</dependency-check.version>
         <postgresql.version>42.2.16.jre7</postgresql.version>
         <guava.version>29.0-jre</guava.version>
         <jackson-databind.version>2.11.2</jackson-databind.version>
@@ -197,6 +197,29 @@
     <!--Plugins -->
     <build>
         <plugins>
+           <!--Establece la versión mínima de maven -->
+		   <plugin>
+		      <inherited>true</inherited>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-enforcer-plugin</artifactId>
+		      <version>3.0.0-M3</version>
+		        <executions>
+		          <execution>
+		            <id>enforce-maven-3</id>
+		            <goals>
+		              <goal>enforce</goal>
+		            </goals>
+		            <configuration>
+		              <rules>
+		                <requireMavenVersion>
+		                  <version>3.1.0</version>
+		                </requireMavenVersion>                
+		              </rules>
+		              <fail>true</fail>
+		            </configuration>
+		          </execution>
+		       </executions>
+		    </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -205,7 +228,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -218,7 +241,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -235,7 +258,7 @@
                     por línea de comando -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <version>1.0.0</version>
                 <configuration>
                     <outputFile />
                     <properties />
@@ -255,7 +278,7 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>4.1.0</version>
                 <configuration>
                     <propertyFileWillOverride>true</propertyFileWillOverride>
                     <changeLogFile>src/main/resources/db/liquibase/db-changelog.xml</changeLogFile>
@@ -306,4 +329,12 @@
             <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
+    
+	<distributionManagement>
+	   <repository>
+	     <id>github</id>
+	     <name>GitHub jokoframework Apache Maven Packages</name>
+	     <url>https://maven.pkg.github.com/jokoframework/security</url>
+	   </repository>
+	</distributionManagement>
 </project>
