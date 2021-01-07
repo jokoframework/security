@@ -184,8 +184,7 @@ Se debe implementar esta interfaz para:
 	realiza las configuraciones básicas requeridas en proyectos de este tipo.
  
 ## Ejemplos
-Dentro del directorio "samples" se puede observar ejemplos que muestran como 
-utilizar joko-security
+Se recomienda tomar como modelo el proyecto [joko_backend_starter_kit](https://github.com/jokoframework/joko_backend_starter_kit)
 
 ## Obtener el jar
 El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar. En la instalación del jar se correran los Unit Tests por defecto, se debe prepara la BD como se define en la sección "Unit Tests"
