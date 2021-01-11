@@ -1,11 +1,12 @@
 # Joko Security
+[![Build Status](https://travis-ci.com/jokoframework/security.svg?branch=develop)](https://travis-ci.com/github/jokoframework/security)
 
 Joko Security provee la capacidad de realizar autenticación y autorización por
 .medio de Tokens JWT.  Se puede utilizar de dos maneras, como un componente
 separado que emite tokens o embebido como una librería dentro de otra aplicación
 Web.  Joko Security es una extensión de spring-security que permite trabajar con
 token de refresh, y acceso utilizando como formato de tokens JWT.
-eed
+
 ## Configuración embebido en otra App
 
 ### Configuracion de la Base de Datos
@@ -184,8 +185,7 @@ Se debe implementar esta interfaz para:
 	realiza las configuraciones básicas requeridas en proyectos de este tipo.
  
 ## Ejemplos
-Dentro del directorio "samples" se puede observar ejemplos que muestran como 
-utilizar joko-security
+Se recomienda tomar como modelo de ejemplo el proyecto [joko_backend_starter_kit](https://github.com/jokoframework/joko_backend_starter_kit)
 
 ## Obtener el jar
 El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar. En la instalación del jar se correran los Unit Tests por defecto, se debe prepara la BD como se define en la sección "Unit Tests"
