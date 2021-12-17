@@ -26,7 +26,7 @@ public class KeyChainEntity {
         this.id = id;
     }
 
-    @Column( name = "value", length = 500 )
+    @Column(name = "`VALUE`", length = 500 )
     public String getValue() {
         return value;
     }

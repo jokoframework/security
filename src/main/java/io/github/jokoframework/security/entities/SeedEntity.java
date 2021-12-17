@@ -2,6 +2,7 @@ package io.github.jokoframework.security.entities;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,13 +13,27 @@ public class SeedEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    @GenericGenerator(
+            name = "seed_id_seq",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value =
+                            "joko_security.seed_id_seq"),
+                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+            }
+    )
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seed_id_seq")
+    @Column(name = "id")
     private Long seedId;
+
+    @Column(name = "user_id")
     private String userId;
+
+    @Column(name = "seed_secret")
     private String seedSecret;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     public Long getSeedId() {
         return seedId;
     }
@@ -27,7 +42,6 @@ public class SeedEntity implements Serializable {
         this.seedId = seedId;
     }
 
-    @Column(name = "user_id")
     public String getUserId() {
         return userId;
     }
@@ -36,7 +50,6 @@ public class SeedEntity implements Serializable {
         this.userId = userId;
     }
 
-    @Column(name = "seed_secret")
     public String getSeedSecret() {
         return seedSecret;
     }

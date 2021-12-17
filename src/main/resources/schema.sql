@@ -5,21 +5,21 @@ CREATE SCHEMA IF NOT EXISTS basic;
 
 CREATE TABLE IF NOT EXISTS  joko_security.security_profile
 (
-   id bigint IDENTITY PRIMARY KEY NOT NULL,
+    id bigint AUTO_INCREMENT PRIMARY KEY NOT NULL,
    access_token_timeout_seconds int,
-   key varchar(255),
+    "KEY" varchar(255),
    max_access_token_requests int,
    max_number_of_connections int,
    max_number_devices_user int,
    name varchar(255),
    refresh_token_timeout_seconds int,
-   revocable bool
+    revocable boolean
 )
 ;
 
 CREATE TABLE IF NOT EXISTS  basic.person
 (
-   id bigint IDENTITY PRIMARY KEY NOT NULL,
+    id bigint AUTO_INCREMENT PRIMARY KEY NOT NULL,
    name varchar(250),
    lastname varchar(255),
    identification_number varchar(100) NOT NULL,
@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS  basic.person
 
 
 
-CREATE TABLE IF NOT EXISTS  profile.user
+CREATE TABLE IF NOT EXISTS  profile."USER"
 (
-   id bigint IDENTITY PRIMARY KEY NOT NULL,
+    id bigint AUTO_INCREMENT PRIMARY KEY NOT NULL,
    username varchar(255) NOT NULL,
    password varchar(255) NOT NULL,
    profile varchar(50) NOT NULL,
@@ -51,5 +51,19 @@ CREATE TABLE IF NOT EXISTS  basic.country
 (
    id varchar(10) PRIMARY KEY NOT NULL,
    description varchar(50)
+)
+;
+
+DROP TABLE IF EXISTS joko_security.keychain;
+CREATE TABLE joko_security.keychain (
+                                        id bigint AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                                        "VALUE" varchar(2048)
+);
+
+CREATE TABLE IF NOT EXISTS  joko_security.seed
+(
+    id bigint AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    seed_secret varchar(1024),
+    user_id varchar(255)
 )
 ;
