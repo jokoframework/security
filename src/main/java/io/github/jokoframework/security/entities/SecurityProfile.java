@@ -72,7 +72,7 @@ public class SecurityProfile implements Serializable {
 	 *
 	 * @return key
 	 */
-	@Column(name = "key")
+	@Column(name = "`KEY`")
 	public String getKey() {
 		return key;
 	}
