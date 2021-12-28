@@ -1,0 +1,28 @@
+name: Upload joko security artifac to github registry
+
+on:
+  push :
+    branches : [1.1.4]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Step 1 - Checkout branch on github
+      - uses: actions/checkout@v2
+
+      - name: Step 2 - Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Step 3 - Build with Maven
+      - run: mvn --batch-mode --update-snapshots verify -DskipTests
+      - run: mkdir staging && cp target/*.jar staging
+
+      - name: Step 4 - Uploard artifact
+      - uses: actions/upload-artifact@v2
+        with:
+          name: io.github.jokoframework.joko-security
+          path: staging
