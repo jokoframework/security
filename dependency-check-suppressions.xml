@@ -240,4 +240,13 @@
         <gav regex="true">^org\.apache\.tomcat\.embed:tomcat-embed-websocket:.*$</gav>
         <cve>CVE-2019-0232</cve>
     </suppress>
+
+    	<suppress>
+		<!-- detalles en: https://github.com/spring-projects/spring-framework/issues/24434 --> 
+   		<notes><![CDATA[
+		   file name: spring-web-5.3.22.jar
+			]]>
+		</notes>
+   		<cve>CVE-2016-1000027</cve>
+	</suppress>
 </suppressions>
