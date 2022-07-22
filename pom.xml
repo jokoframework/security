@@ -6,7 +6,7 @@
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-security</artifactId>
 
-    <version>1.2.11</version>
+    <version>1.2.12</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -34,7 +34,7 @@
         <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
         <ext.prop.dir>src/main/resources</ext.prop.dir>
         <junit.version>4.13.2</junit.version>
-        <javase.version>v2.2.0</javase.version>
+        <javase.version>2.6.0</javase.version>
     </properties>
 
     <!--Dependencias -->
@@ -91,6 +91,20 @@
             <groupId>com.github.kenglxn.qrgen</groupId>
             <artifactId>javase</artifactId>
             <version>${javase.version}</version>
+            <exclusions>
+                <exclusion>  <!-- declare the exclusion here -->
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-css</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-dom</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-svggen</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -206,6 +220,29 @@
             <version>${junit.version}</version>
             <scope>test</scope>
 		</dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-css -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-css</artifactId>
+            <version>1.14</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-dom -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>1.14</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-svggen -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>1.14</version>
+        </dependency>
+
+
 
     </dependencies>
 
