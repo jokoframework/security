@@ -248,5 +248,7 @@
 			]]>
 		</notes>
    		<cve>CVE-2016-1000027</cve>
+		<!-- temporary 2022-12-07 - afeltes - https://nvd.nist.gov/vuln/detail/CVE-2022-1471 -->
+        	<cve>CVE-2022-1471</cve>
 	</suppress>
 </suppressions>
