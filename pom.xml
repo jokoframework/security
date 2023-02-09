@@ -34,7 +34,7 @@
         <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
         <ext.prop.dir>src/main/resources</ext.prop.dir>
         <junit.version>4.13.2</junit.version>
-        <javase.version>2.6.0</javase.version>
+        <javase.version>2.5.0</javase.version>
     </properties>
 
     <!--Dependencias -->
