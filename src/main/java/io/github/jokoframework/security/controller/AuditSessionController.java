@@ -28,7 +28,7 @@ public class AuditSessionController {
 
     @ApiOperation(value = "Obtiene la lista de sesiones.", notes = "Obtiene la lista de sesiones ordenados por fecha de ingreso en orden descendente.")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = AuditSessionResponseDTO.class)})
-    @RequestMapping(value = ApiPaths.SESSIONS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = ApiPaths.SESSIONS, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiImplicitParams({@ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "User Access Token"),
             @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")})
     public List<AuditSessionResponseDTO> getSessions(HttpServletRequest request, HttpServletResponse response,
@@ -44,7 +44,7 @@ public class AuditSessionController {
             @ApiResponse(code = 409, message = "No se pudo guardar la información de auditoría.")})
     @ApiImplicitParams({@ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "User Access Token"),
             @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")})
-    @RequestMapping(value = ApiPaths.SESSIONS, method = RequestMethod.POST)
+    @PostMapping(value = ApiPaths.SESSIONS)
     public ResponseEntity<BaseResponseDTO> saveAuditSession(HttpServletRequest pHttpServletRequest, HttpServletResponse pHttpServletResponse, @RequestBody AuditSessionRequestDTO pAuditSessionRequestDTO) {
         BaseResponseDTO responseDTO = new BaseResponseDTO();
         AuditSessionDTO auditDTO = auditSessionService.save(pAuditSessionRequestDTO);
@@ -55,6 +55,6 @@ public class AuditSessionController {
             responseDTO.setHttpStatus(HttpStatus.CONFLICT);
             responseDTO.setMessage(String.format("No se pudo guardar la información de auditoria: %s ", pAuditSessionRequestDTO));
         }
-        return new ResponseEntity<BaseResponseDTO>(responseDTO, responseDTO.getHttpStatus());
+        return new ResponseEntity<>(responseDTO, responseDTO.getHttpStatus());
     }
 }

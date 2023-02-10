@@ -62,7 +62,7 @@ public class AuthenticationController {
     public ResponseEntity<JokoTokenResponse> login(@RequestBody @Valid AuthenticationRequest loginRequest,
             HttpServletRequest httpRequest) throws JokoApplicationException {
 
-        LOGGER.trace("Authenticating request for " + loginRequest.getUsername());
+        LOGGER.trace("Authenticating request for {0}", loginRequest.getUsername());
 
         JokoRequestContext jokoRequest = new JokoRequestContext(httpRequest);
 
@@ -84,8 +84,7 @@ public class AuthenticationController {
         if(authenticationManager != null ) {
             // Si no excepciono y tampoco se indico como login exitoso entonces se
             // utiliza el default
-            LOGGER.warn("The AuthenticationManager " + authenticationManager.getClass().getCanonicalName()
-                    + " didn't specify the cause of the unauhtentication");
+            LOGGER.warn("The AuthenticationManager {0} didn't specify the cause of the unauhtentication", authenticationManager.getClass().getCanonicalName());
         }
 
         return new ResponseEntity<>(new JokoTokenResponse(SecurityConstants.ERROR_BAD_CREDENTIALS),
