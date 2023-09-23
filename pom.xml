@@ -6,7 +6,7 @@
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-security</artifactId>
 
-    <version>1.2.15</version>
+    <version>1.2.16</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -35,6 +35,7 @@
         <ext.prop.dir>src/main/resources</ext.prop.dir>
         <junit.version>4.13.2</junit.version>
         <javase.version>2.6.0</javase.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
 
     <!--Dependencias -->
@@ -253,7 +254,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
         	<artifactId>snakeyaml</artifactId>
-        	<version>1.33</version>
+        	<version>${snakeyaml.version}</version>
       	    </dependency>
 
    	</dependencies>
