@@ -39,6 +39,7 @@
         <batik-dom.version>1.14</batik-dom.version>
         <batik-svggen.version>1.14</batik-svggen.version>
         <commons-codec.version>1.16.1</commons-codec.version>
+        <spring-web.version>5.3.32</spring-web.version>
     </properties>
 
     <!--Dependencias -->
@@ -49,6 +50,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>compile</scope>
         </dependency>
 
@@ -254,6 +261,12 @@
             <version>${commons-codec.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-web.version}</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -263,11 +276,11 @@
             <!-- security fix pending https://nvd.nist.gov/vuln/detail/CVE-2022-1471 -->
             <dependency>
                 <groupId>org.yaml</groupId>
-        	<artifactId>snakeyaml</artifactId>
-        	<version>${snakeyaml.version}</version>
-      	    </dependency>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
 
-   	</dependencies>
+        </dependencies>
     </dependencyManagement>    
 
     <!--Plugins -->
