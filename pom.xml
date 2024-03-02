@@ -6,36 +6,39 @@
     <groupId>io.github.jokoframework</groupId>
     <artifactId>joko-security</artifactId>
 
-    <version>1.2.16</version>
+    <version>1.2.17</version>
     <packaging>jar</packaging>
 
     <properties>
         <start-class>io.github.jokoframework.security.Application</start-class>
-        <java.version>11</java.version>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <java.version>17</java.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <spring-boot.version>2.7.16</spring-boot.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <spring-boot.version>2.7.18</spring-boot.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <httpclient.version>4.5.13</httpclient.version>
+        <commons-io.version>2.15.1</commons-io.version>
+        <httpclient.version>5.3.1</httpclient.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <spring-security-test.version>5.8.7</spring-security-test.version>
+        <spring-security-test.version>5.8.10</spring-security-test.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <dependency-check.version>8.4.0</dependency-check.version>
-        <postgresql.version>42.5.1</postgresql.version>
-        <guava.version>30.1.1-jre</guava.version>
-        <jackson-databind.version>2.13.3</jackson-databind.version>
-        <jsonassert.version>1.3.0</jsonassert.version>
-        <log4j-api.version>2.18.0</log4j-api.version>
-        <log4j-slf4j.version>2.18.0</log4j-slf4j.version>
-        <h2.version>2.1.214</h2.version>
+        <dependency-check.version>9.0.9</dependency-check.version>
+        <postgresql.version>42.7.2</postgresql.version>
+        <guava.version>33.0.0-jre</guava.version>
+        <jackson-databind.version>2.16.1</jackson-databind.version>
+        <jsonassert.version>1.5.1</jsonassert.version>
+        <log4j-api.version>2.23.0</log4j-api.version>
+        <log4j-slf4j.version>2.23.0</log4j-slf4j.version>
+        <h2.version>2.2.224</h2.version>
         <springfox-swagger2.version>3.0.0</springfox-swagger2.version>
         <ext.prop.dir>src/main/resources</ext.prop.dir>
         <junit.version>4.13.2</junit.version>
         <javase.version>2.6.0</javase.version>
         <snakeyaml.version>2.2</snakeyaml.version>
+        <batik-dom.version>1.14</batik-dom.version>
+        <batik-svggen.version>1.14</batik-svggen.version>
+        <commons-codec.version>1.16.1</commons-codec.version>
     </properties>
 
     <!--Dependencias -->
@@ -151,11 +154,12 @@
         </dependency>
 
         <!-- HTTPClient con mayor poder de configuracion-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
+	<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
+	<dependency>
+    		<groupId>org.apache.httpcomponents.client5</groupId>
+    		<artifactId>httpclient5</artifactId>
+            	<version>${httpclient.version}</version>
+	</dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -233,16 +237,22 @@
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-dom</artifactId>
-            <version>1.14</version>
+            <version>${batik-dom.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-svggen -->
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-svggen</artifactId>
-            <version>1.14</version>
+            <version>${batik-svggen.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
 
 
     </dependencies>
