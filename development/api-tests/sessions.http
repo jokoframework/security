@@ -1,0 +1,31 @@
+# ===============================================
+# Joko Security API - Session Management
+# ===============================================
+# Base URL para desarrollo
+@baseUrl = http://localhost:8080/joko-security-dev
+@contentType = application/json
+
+# Datos de prueba disponibles:
+# - Username: testuser
+# - App ID: dev-app
+
+### 1. Get Sessions - Listar sesiones activas del usuario
+GET {{baseUrl}}/api/sessions
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+### 2. Get Sessions con filtros - Paginación
+GET {{baseUrl}}/api/sessions?page=0&size=10&sort=id,desc
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+### 3. Create Session - Crear nueva sesión de auditoría
+POST {{baseUrl}}/api/sessions
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "username": "testuser",
+  "ip": "192.168.1.100",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "sessionStart": "2025-12-17T14:30:00Z",
+  "application": "joko-security-dev"
+}

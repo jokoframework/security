@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--
+        Maven settings for GitHub Actions
+
+        This file is used by GitHub Actions workflows to authenticate with GitHub Packages.
+        The GITHUB_TOKEN is automatically provided by GitHub Actions.
+    -->
+
+    <servers>
+        <server>
+            <id>github</id>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/jokoframework/security</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>github</activeProfile>
+    </activeProfiles>
+
+</settings>

@@ -1,0 +1,138 @@
+# ===============================================
+# Joko Security API - Flujo de Autenticación
+# ===============================================
+# INSTRUCCIONES:
+# 1. Ejecuta los requests en orden
+# 2. Las variables se capturan automáticamente
+# 3. No necesitas copiar/pegar tokens
+# ===============================================
+
+@baseUrl = http://localhost:8080/joko-security-dev
+
+# Usuarios disponibles (ver DevAuthenticationManager.java):
+# - testuser / test123 → [ROLE_USER] → Perfil DEFAULT
+# - admin / admin123 → [ROLE_ADMIN, ROLE_USER] → Perfil ADMIN
+# - mobileuser / mobile123 → [ROLE_USER, ROLE_MOBILE] → Perfil MOBILE
+# - readonly / readonly123 → [ROLE_READONLY] → Perfil DEFAULT
+
+# ===============================================
+# FLUJO BÁSICO (testuser)
+# ===============================================
+
+### 1️⃣ Login - Obtener Refresh Token
+# @name login
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "test123"
+}
+
+### 2️⃣ Obtener Access Token
+# @name accessToken
+POST {{baseUrl}}/api/token/user-access
+X-JOKO-AUTH: {{login.response.body.$.secret}}
+
+### 3️⃣ Verificar información del Access Token
+GET {{baseUrl}}/api/token/info?accessToken={{accessToken.response.body.$.secret}}
+
+### 4️⃣ Renovar Refresh Token (opcional)
+# @name newRefresh
+POST {{baseUrl}}/api/token/refresh
+X-JOKO-AUTH: {{login.response.body.$.secret}}
+
+### 5️⃣ Logout - Revocar Refresh Token
+POST {{baseUrl}}/api/logout
+X-JOKO-AUTH: {{login.response.body.$.secret}}
+
+# ===============================================
+# OTROS USUARIOS
+# ===============================================
+
+### 🔐 Admin - Login
+# @name adminLogin
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Admin - Access Token
+POST {{baseUrl}}/api/token/user-access
+X-JOKO-AUTH: {{adminLogin.response.body.$.secret}}
+
+###
+
+### 📱 Mobile - Login
+# @name mobileLogin
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "username": "mobileuser",
+  "password": "mobile123"
+}
+
+### Mobile - Access Token
+POST {{baseUrl}}/api/token/user-access
+X-JOKO-AUTH: {{mobileLogin.response.body.$.secret}}
+
+###
+
+### 👁️ Readonly - Login
+# @name readonlyLogin
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "username": "readonly",
+  "password": "readonly123"
+}
+
+### Readonly - Access Token
+POST {{baseUrl}}/api/token/user-access
+X-JOKO-AUTH: {{readonlyLogin.response.body.$.secret}}
+
+# ===============================================
+# CASOS DE ERROR
+# ===============================================
+
+### ❌ Credenciales incorrectas
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "wrong-password"
+}
+
+### ❌ Token inválido
+GET {{baseUrl}}/api/token/info?accessToken=invalid-token
+
+### ❌ Token revocado
+# @name tokenRevoke
+POST {{baseUrl}}/api/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "test123"
+}
+
+### Revocar el token
+POST {{baseUrl}}/api/logout
+X-JOKO-AUTH: {{tokenRevoke.response.body.$.secret}}
+
+### Intentar usarlo (debería fallar)
+POST {{baseUrl}}/api/token/user-access
+X-JOKO-AUTH: {{tokenRevoke.response.body.$.secret}}
+
+# ===============================================
+# UTILIDADES
+# ===============================================
+
+### Health Check
+GET {{baseUrl}}/actuator/health

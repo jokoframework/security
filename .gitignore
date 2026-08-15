@@ -17,3 +17,4 @@ conf/*
 db/*.db
 *.db
 /src/main/resources/application.properties
+.DS_Store

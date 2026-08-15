@@ -29,13 +29,13 @@ if [ $sys != "MINGW32_NT-6.2" ]; then
 else
     MY_IP="unknown";
 fi
-# si estamos dentro de sodep
-for i in `scripts/lib/get-ip.sh`; do 
-	if [[ "$i" =~ ^10\.1\.* || "$MY_IP" =~ ^10\.0\.* ]]; then 
-		SODEP="si"; 
-	else 
-		SODEP=""; 
-	fi 
+# Optional hint if we appear to be on a typical RFC1918 LAN
+for i in `scripts/lib/get-ip.sh`; do
+	if [[ "$i" =~ ^10\.1\.* || "$MY_IP" =~ ^10\.0\.* ]]; then
+		INTERNAL_NET="si"
+	else
+		INTERNAL_NET=""
+	fi
 done
 PROP_FILE=${PROFILE_DIR}/application.properties
 

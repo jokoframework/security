@@ -11,12 +11,12 @@
 #Base de datos de joko_security. Mayor documentacion al respecto en joko_security
 spring.datasource.url=jdbc\:postgresql\://localhost\:5433/postgres
 spring.datasource.username=postgres
-spring.datasource.password=sodep
+spring.datasource.password=your-password
 spring.datasource.driver-class-name=org.postgresql.Driver
 
-#spring.datasource.url=jdbc\:oracle\:thin\:@oracle.hq.sodep.com.py\:1521\:orcl12c
-#spring.datasource.username=sodep
-#spring.datasource.password=sopeda2016
+#spring.datasource.url=jdbc\:oracle\:thin\:@oracle.example.com\:1521\:orcl
+#spring.datasource.username=your-username
+#spring.datasource.password=your-password
 #spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
 
 spring.jpa.show-sql=true
@@ -43,4 +43,4 @@ joko.authentication.enable=true
 #Modo para encontrar el secret. Puede ser BD o FILE
 joko.secret.mode=BD
 #Archivo que contiene el secreto para firmar los tokens
-joko.secret.file=/home/joaquin/Desktop/Security/key/secret.key
+joko.secret.file=/path/to/joko-secret.key
