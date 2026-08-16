@@ -19,7 +19,7 @@ joko-security-parent (2.0.0)
 
 ### Pre-requisitos
 
-- Java 17
+- Java 21
 - Maven 3.8+
 - Git
 

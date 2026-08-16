@@ -7,7 +7,7 @@
 # La URL se toma de ARTIFACTORY_BASE_URL (sin default de infraestructura).
 #
 # Pre-requisitos:
-#   - Java 17+
+#   - Java 21+
 #   - Maven Wrapper (mvnw) en el directorio raíz
 #   - ~/.m2/settings.xml configurado con credenciales de Artifactory
 #   - Variables de entorno: ARTIFACTORY_USER, ARTIFACTORY_PASSWORD
@@ -152,13 +152,13 @@ check_prerequisites() {
 
     # Verificar Java
     if ! command -v java &> /dev/null; then
-        log_error "Java no está instalado. Instala Java 17+."
+        log_error "Java no está instalado. Instala Java 21+."
         exit 1
     fi
 
     JAVA_VERSION=$(java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}' | cut -d'.' -f1)
-    if [ "$JAVA_VERSION" -lt 17 ]; then
-        log_error "Java 17+ es requerido. Versión actual: $JAVA_VERSION"
+    if [ "$JAVA_VERSION" -lt 21 ]; then
+        log_error "Java 21+ es requerido. Versión actual: $JAVA_VERSION"
         exit 1
     fi
 

@@ -4,7 +4,7 @@ Esta guía te muestra cómo integrar **joko-security** como biblioteca JAR en tu
 
 ## 📋 Requisitos
 
-- Java 17+
+- Java 21+
 - Spring Boot 3.5.16+
 - PostgreSQL 9.4+ (u otra BD compatible con JPA)
 - Maven o Gradle
@@ -1895,6 +1895,6 @@ try {
 
 ---
 
-**Versión:** joko-security v2.0.0 (Spring Boot 3.3.1, Java 17, JJWT 0.12.6)
+**Versión:** joko-security v2.0.0 (Spring Boot 3.5.16, Java 21, JJWT 0.12.6)
 **Última Actualización:** Diciembre 2024
 **Build System:** Maven o Gradle

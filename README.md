@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/jokoframework/security.svg?branch=develop)](https://travis-ci.com/github/jokoframework/security)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen.svg)
-![Java](https://img.shields.io/badge/Java-17-orange.svg)
+![Java](https://img.shields.io/badge/Java-21-orange.svg)
 ![JJWT](https://img.shields.io/badge/JJWT-0.12.6-blue.svg)
 
 Joko Security provee autenticación y autorización mediante Tokens JWT. Puede utilizarse como microservicio independiente o embebido como librería en otra aplicación Spring Boot.
@@ -89,7 +89,7 @@ Ver [docs/INTEGRATION_GUIDE.md](./docs/INTEGRATION_GUIDE.md) para guía completa
 
 #### Pre-requisitos
 
-- Java 17
+- Java 21
 - Maven 3.8+
 - PostgreSQL 9.4+ (o H2 para testing)
 
@@ -416,7 +416,7 @@ Suppressions: `dependency-check-suppressions.xml` en la raíz del parent.
 
 - **Spring Boot**: 3.5.16
 - **Spring Security**: 6.5.x (incluido en Spring Boot 3.5.16)
-- **Java**: 17
+- **Java**: 21
 - **JJWT**: 0.12.6
 - **PostgreSQL**: 9.4+ (desarrollo y producción)
 - **H2**: 2.2.224 (testing)

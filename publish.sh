@@ -7,7 +7,7 @@
 # a GitHub Packages, Artifactory o repositorio Maven local usando Maven Wrapper.
 #
 # Pre-requisitos:
-#   - Java 17+
+#   - Java 21+
 #   - Maven Wrapper (mvnw) en el directorio raíz
 #
 # Uso:
@@ -56,13 +56,13 @@ check_prerequisites() {
     fi
 
     if ! command -v java &> /dev/null; then
-        log_error "Java no está instalado. Instala Java 17 primero."
+        log_error "Java no está instalado. Instala Java 21 primero."
         exit 1
     fi
 
     JAVA_VERSION=$(java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}' | cut -d'.' -f1)
-    if [ "$JAVA_VERSION" -lt 17 ]; then
-        log_error "Java 17 o superior es requerido. Versión actual: $JAVA_VERSION"
+    if [ "$JAVA_VERSION" -lt 21 ]; then
+        log_error "Java 21 o superior es requerido. Versión actual: $JAVA_VERSION"
         exit 1
     fi
 
