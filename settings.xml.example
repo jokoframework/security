@@ -42,6 +42,28 @@
         ⚠️  ADVERTENCIA: NO commitear este archivo con credenciales reales
     -->
 
+    <!--
+        Resolución: el POM no lista remotes. Central es el default.
+        Un remoto privado extra va aquí (por máquina / por ejecución: mvn -s),
+        no en el pom.xml del proyecto.
+    -->
+    <!--
+    <profiles>
+        <profile>
+            <id>privado</id>
+            <repositories>
+                <repository>
+                    <id>privado</id>
+                    <url>https://artifactory.example.com/artifactory/libs-release</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>privado</activeProfile>
+    </activeProfiles>
+    -->
+
     <servers>
         <!-- Configuración para GitHub Packages -->
         <server>

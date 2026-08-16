@@ -1,2 +1,3 @@
 io.github.jokoframework.security.autoconfigure.JokoSecurityAutoConfiguration
 io.github.jokoframework.security.autoconfigure.JokoSecurityStorageAutoConfiguration
+io.github.jokoframework.security.autoconfigure.JokoSecurityWebAutoConfiguration

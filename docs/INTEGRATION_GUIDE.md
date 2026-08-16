@@ -5,7 +5,7 @@ Esta guía te muestra cómo integrar **joko-security** como biblioteca JAR en tu
 ## 📋 Requisitos
 
 - Java 17+
-- Spring Boot 3.3.1+
+- Spring Boot 3.5.16+
 - PostgreSQL 9.4+ (u otra BD compatible con JPA)
 - Maven o Gradle
 
@@ -19,14 +19,9 @@ Esta guía te muestra cómo integrar **joko-security** como biblioteca JAR en tu
 
 Agrega joko-security y sus dependencias peer a tu `pom.xml`:
 
-```xml
-<repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/jokoframework/security</url>
-    </repository>
-</repositories>
+La librería no declara remotes en el POM: Maven Central + `~/.m2`. Un remoto privado se agrega en `settings.xml` (`-s` o `~/.m2/settings.xml`), no en el `pom.xml` del consumidor.
 
+```xml
 <dependencies>
     <!-- Joko Security - Starter (incluye todo lo necesario) -->
     <dependency>

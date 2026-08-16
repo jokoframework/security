@@ -1,7 +1,7 @@
 # Joko Security
 
 [![Build Status](https://travis-ci.com/jokoframework/security.svg?branch=develop)](https://travis-ci.com/github/jokoframework/security)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.1-brightgreen.svg)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen.svg)
 ![Java](https://img.shields.io/badge/Java-17-orange.svg)
 ![JJWT](https://img.shields.io/badge/JJWT-0.12.6-blue.svg)
 
@@ -10,7 +10,7 @@ Joko Security provee autenticación y autorización mediante Tokens JWT. Puede u
 ## Características Principales
 
 - ✅ **JWT Tokens**: Access y Refresh tokens con firma segura
-- ✅ **Spring Boot 3.3.1**: Última versión estable con Spring Security 6.x
+- ✅ **Spring Boot 3.5.16**: Spring Security 6.5.x y Tomcat 10.1.57
 - ✅ **JJWT 0.12.6**: Biblioteca JWT moderna con protecciones OWASP
 - ✅ **Arquitectura Modular**: Módulos independientes y reutilizables
 - ✅ **Stateless**: Validación en memoria para escalabilidad
@@ -34,18 +34,11 @@ joko-security-parent (2.0.0)
 
 ### 1. Como Dependencia en otro Proyecto
 
+El POM del parent **no declara remotes**. Maven resuelve desde **Maven Central** y `~/.m2`. Un remoto privado (GitHub Packages, Artifactory) va en `~/.m2/settings.xml` o `mvn -s settings.xml`, no en el `pom.xml` del proyecto. Plantilla: `settings.xml.example`.
+
 #### Maven
 
-Agregar a `pom.xml`:
-
 ```xml
-<repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/jokoframework/security</url>
-    </repository>
-</repositories>
-
 <dependencies>
     <dependency>
         <groupId>io.github.jokoframework</groupId>
@@ -55,20 +48,14 @@ Agregar a `pom.xml`:
 </dependencies>
 ```
 
-#### Gradle
+Hasta que 2.x esté en Central: `./mvnw install` en este repo e instalar el starter desde el repositorio local.
 
-Agregar a `build.gradle`:
+#### Gradle
 
 ```gradle
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.github.com/jokoframework/security")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
-            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
+    mavenLocal() // si instalaste el 2.x en local
 }
 
 dependencies {
@@ -76,26 +63,7 @@ dependencies {
 }
 ```
 
-O con Kotlin DSL (`build.gradle.kts`):
-
-```kotlin
-repositories {
-    mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.github.com/jokoframework/security")
-        credentials {
-            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
-            password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
-}
-
-dependencies {
-    implementation("io.github.jokoframework:joko-security-starter:2.0.0")
-}
-```
-
-**Nota:** Para acceder a GitHub Packages, configura tus credenciales en `~/.gradle/gradle.properties` o variables de entorno. Ver [docs/INTEGRATION_GUIDE.md](./docs/INTEGRATION_GUIDE.md) para detalles.
+Ver [docs/INTEGRATION_GUIDE.md](./docs/INTEGRATION_GUIDE.md).
 
 #### Configurar application.yml
 
@@ -381,28 +349,52 @@ mvn liquibase:diff
 
 ## Seguridad
 
-### Protecciones OWASP implementadas
+### Protecciones implementadas
 
-✅ JWT Algorithm Verification (prevent "none" attack)
-✅ JWT Signature Validation
-✅ Token Expiration Enforcement
-✅ Secret Key Rotation Support
-✅ HTTPS enforcement (configurable)
-✅ CORS configuration
-✅ SQL Injection prevention (Prepared Statements)
-✅ Dependency vulnerability scanning (OWASP Dependency Check)
+- Verificación de algoritmo JWT (evita el ataque `none`)
+- Validación de firma y expiración de tokens
+- Rotación de secretos
+- HTTPS y CORS configurables
+- Consultas parametrizadas (prevención de inyección SQL)
 
-### Ejecutar scan de vulnerabilidades
+### Seguridad de dependencias
+
+El parent corre [OWASP](https://owasp.org/) (*Open Worldwide Application Security Project*) Dependency-Check **13** en la fase `verify` (`aggregate` de los cinco módulos).
+
+**Default del build: solo warning.** `failBuildOnCVSS` vale `11` (el plugin no corta el build; 11 está fuera de la escala CVSS 0–10). Los hallazgos salen en consola y en el HTML. Un `./mvnw clean install` termina en SUCCESS aunque haya CVE de score 9.
+
+Clave de la [NVD](https://nvd.nist.gov/) (*National Vulnerability Database*):
 
 ```bash
-# Con Maven Wrapper (recomendado)
-./mvnw org.owasp:dependency-check-maven:check
-
-# O con Maven global
-mvn org.owasp:dependency-check-maven:check
+# Pedirla en https://nvd.nist.gov/developers/request-an-api-key
+export NVD_API_KEY='…'
 ```
 
-Reportes en `target/dependency-check-report.html`
+El POM lee `NVD_API_KEY` vía `nvdApiKeyEnvironmentVariable`. Sin esa variable el 13.0.0 no puede actualizar la NVD y el análisis no sirve.
+
+```bash
+# Build normal (scan en warning; no falla)
+./mvnw clean verify
+
+# Saltar el scan (CI rápido / sin red NVD)
+./mvnw clean verify -Ddependency-check.skip=true
+
+# Gate estricto: falla si hay CVE con CVSS >= 8
+./mvnw clean verify -Ddependency-check.failBuildOnCVSS=8
+```
+
+No uses `mvn dependency-check:check` en un módulo suelto (por ejemplo `joko-security-starter`) si querés el informe del reactor: ese goal **no hereda** la config del parent (`inherited=false`) y no aplica el umbral. El reporte “oficial” es el `aggregate` de la raíz.
+
+Informes:
+
+- `target/dependency-check-report.html`
+- `target/dependency-check-report.xml`
+
+La consola *identified with known vulnerabilities* lista CVE **sin score**. El score (CVSS v3/v4) está en el HTML, CVE por CVE. El umbral 8 solo se evalúa con `-Ddependency-check.failBuildOnCVSS=8`.
+
+El JAR `joko-security-storage-postgres-*-SNAPSHOT` puede aparecer como CPE de PostgreSQL servidor: es un falso positivo por el nombre del artefacto, no por el driver.
+
+Suppressions: `dependency-check-suppressions.xml` en la raíz del parent.
 
 ## Documentación Adicional
 
@@ -422,8 +414,8 @@ Reportes en `target/dependency-check-report.html`
 
 ## Stack Tecnológico
 
-- **Spring Boot**: 3.3.1
-- **Spring Security**: 6.x (incluido en Spring Boot 3.3.1)
+- **Spring Boot**: 3.5.16
+- **Spring Security**: 6.5.x (incluido en Spring Boot 3.5.16)
 - **Java**: 17
 - **JJWT**: 0.12.6
 - **PostgreSQL**: 9.4+ (desarrollo y producción)

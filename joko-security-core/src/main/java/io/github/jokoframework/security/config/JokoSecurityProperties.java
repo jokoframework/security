@@ -1,8 +1,6 @@
 package io.github.jokoframework.security.config;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -54,9 +52,10 @@ public class JokoSecurityProperties {
     @Data
     public static class JwtProperties {
         /**
-         * Clave secreta para firmar tokens (mínimo 64 caracteres para HS512)
+         * Optional JWT signing secret. When blank, TokenServiceImpl reads the
+         * secret from the keychain table ({@code joko.secret.mode=BD}) or from
+         * {@code joko.secret.file} (mode FILE).
          */
-        @NotBlank(message = "JWT secret must not be blank")
         private String secret;
 
         /**
@@ -107,9 +106,10 @@ public class JokoSecurityProperties {
         private boolean enabled = false;
 
         /**
-         * Base path para los controllers
+         * Reserved. Controllers keep the historical paths ({@code /api/login},
+         * {@code /api/token/user-access}, {@code /api/logout}).
          */
-        private String basePath = "/api/auth";
+        private String basePath = "/api";
     }
 
     /**

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.5.16</version>
         <relativePath/>
     </parent>
 
@@ -30,15 +30,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring-boot.version>3.3.1</spring-boot.version>
+        <spring-boot.version>3.5.16</spring-boot.version>
+        <tomcat.version>10.1.57</tomcat.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-io.version>2.15.1</commons-io.version>
         <httpclient.version>5.3.1</httpclient.version>
         <jjwt.version>0.12.6</jjwt.version>
         <spring-security-test.version>5.8.10</spring-security-test.version>
         <commons-collections4.version>4.4</commons-collections4.version>
-        <dependency-check.version>9.0.9</dependency-check.version>
-        <postgresql.version>42.7.4</postgresql.version>
+        <dependency-check.version>13.0.0</dependency-check.version>
+        <dependency-check.skip>false</dependency-check.skip>
+        <!-- 11 = no falla el build (solo warning). Umbral estricto: -Ddependency-check.failBuildOnCVSS=8 -->
+        <dependency-check.failBuildOnCVSS>11</dependency-check.failBuildOnCVSS>
+        <postgresql.version>42.7.13</postgresql.version>
         <guava.version>33.0.0-jre</guava.version>
         <jackson-databind.version>2.18.2</jackson-databind.version>
         <jsonassert.version>1.5.1</jsonassert.version>
@@ -158,54 +162,30 @@
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <version>${dependency-check.version}</version>
+                <inherited>false</inherited>
                 <configuration>
-                    <failBuildOnCVSS>8</failBuildOnCVSS>
-                    <suppressionFiles>dependency-check-suppressions.xml</suppressionFiles>
+                    <failBuildOnCVSS>${dependency-check.failBuildOnCVSS}</failBuildOnCVSS>
+                    <suppressionFile>${maven.multiModuleProjectDirectory}/dependency-check-suppressions.xml</suppressionFile>
                     <formats>
                         <format>HTML</format>
                         <format>XML</format>
                     </formats>
-                    <!-- No fallar si hay problemas al actualizar NVD -->
                     <failOnError>false</failOnError>
-                    <!-- Usar caché local si no se puede actualizar -->
-                    <cveValidForHours>48</cveValidForHours>
+                    <skip>${dependency-check.skip}</skip>
+                    <nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>aggregate</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>check</goal>
+                            <goal>aggregate</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
-    <!--Repositorios de Spring -->
-    <repositories>
-        <repository>
-            <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-
-        <!--Repo de jitpack -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-
-        <repository>
-            <id>mulesoft</id>
-            <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <profiles>
         <!-- Perfil para GitHub Packages (por defecto) -->

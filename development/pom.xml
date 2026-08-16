@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.5.16</version>
         <relativePath/>
     </parent>
 
@@ -22,7 +22,7 @@
         <java.version>17</java.version>
         <start-class>io.github.jokoframework.security.development.DevelopmentApplication</start-class>
         <flyway.version>10.21.0</flyway.version>
-        <spring-boot.version>3.3.1</spring-boot.version>
+        <spring-boot.version>3.5.16</spring-boot.version>
         <joko-security.version>2.0.0-SNAPSHOT</joko-security.version>
     </properties>
 
