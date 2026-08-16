@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.jokoframework</groupId>
+        <artifactId>joko-security-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>joko-security-autoconfigure</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Joko Security AutoConfiguration</name>
+    <description>Spring Boot auto-configuration for joko-security</description>
+
+    <dependencies>
+        <!-- Dependency on core module -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Optional dependency on storage-postgres -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-storage-postgres</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Optional dependency on web module -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-web</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Boot - AutoConfigure -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- Spring Boot - Configuration Processor (for metadata generation) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

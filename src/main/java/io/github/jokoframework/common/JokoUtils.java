@@ -12,7 +12,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.*;

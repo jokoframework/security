@@ -1,17 +1,15 @@
 package io.github.jokoframework.security.services.impl;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 
-import io.github.jokoframework.security.util.TwoFactorAuthUtil;
-import io.github.jokoframework.security.entities.SeedEntity;
-import io.github.jokoframework.security.repositories.ISeedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +28,24 @@ import io.github.jokoframework.security.JokoTokenWrapper;
 import io.github.jokoframework.security.controller.SecurityConstants;
 import io.github.jokoframework.security.entities.KeyChainEntity;
 import io.github.jokoframework.security.entities.SecurityProfile;
+import io.github.jokoframework.security.entities.SeedEntity;
 import io.github.jokoframework.security.entities.TokenEntity;
 import io.github.jokoframework.security.errors.JokoUnauthenticatedException;
 import io.github.jokoframework.security.errors.JokoUnauthorizedException;
 import io.github.jokoframework.security.repositories.IKeychainRepository;
+import io.github.jokoframework.security.repositories.ISeedRepository;
 import io.github.jokoframework.security.repositories.ITokenRepository;
 import io.github.jokoframework.security.services.ISecurityProfileService;
 import io.github.jokoframework.security.services.ITokenService;
 import io.github.jokoframework.security.services.TokenUtils;
 import io.github.jokoframework.security.util.SecurityUtils;
 import io.github.jokoframework.security.util.TXUUIDGenerator;
+import io.github.jokoframework.security.util.TwoFactorAuthUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Service
 @Transactional
@@ -69,8 +71,6 @@ public class TokenServiceImpl implements ITokenService {
     @Autowired
     private ISeedRepository seedRepository;
 
-
-
     private TXUUIDGenerator tokenGenerator;
 
     private String secret;
@@ -94,8 +94,8 @@ public class TokenServiceImpl implements ITokenService {
             initSecretFromFile();
         } else {
             throw new IllegalThreadStateException("Unrecognized property value for joko.secret.mode. Please use "
-                    + SecurityConstants.SECRET_MODE_BD + " or " +
-                    SecurityConstants.SECRET_MODE_FILE);
+                    + SecurityConstants.SECRET_MODE_BD + " or "
+                    + SecurityConstants.SECRET_MODE_FILE);
         }
 
     }
@@ -109,14 +109,14 @@ public class TokenServiceImpl implements ITokenService {
     }
 
     public void initSecretFromBD() {
-    	Optional<KeyChainEntity> optionalSecretEntity = securityRepository.findById(KeyChainEntity.JOKO_TOKEN_SECRET);
-    	KeyChainEntity secretEntity;
+        Optional<KeyChainEntity> optionalSecretEntity = securityRepository.findById(KeyChainEntity.JOKO_TOKEN_SECRET);
+        KeyChainEntity secretEntity;
         if (optionalSecretEntity.isPresent()) {
-        	secretEntity = optionalSecretEntity.get();
+            secretEntity = optionalSecretEntity.get();
         } else {
-        	secretEntity = null;
+            secretEntity = null;
         }
-        
+
         if (secretEntity != null && secretEntity.getId() != null) {
             LOGGER.info("Re-using secret stored");
             this.secret = secretEntity.getValue();
@@ -134,7 +134,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public JokoTokenWrapper createAndStoreRefreshToken(String user, String profileKey, TOKEN_TYPE tokenType,
-                                                       String userAgent, String remoteIP, List<String> roles, String seed) {
+            String userAgent, String remoteIP, List<String> roles, String seed) {
         SecurityProfile securityProfile = appService.getProfileByKey(profileKey);
         if (securityProfile == null) {
             throw new JokoApplicationException("Unable to create refresh token without a valid security profile. The profile "
@@ -157,16 +157,21 @@ public class TokenServiceImpl implements ITokenService {
         // Un refresh token es siempre revocable
         JokoTokenWrapper token = createToken(user, roles, tokenType, timeOut, profileKey);
         storeToken(token, securityProfile, userAgent, remoteIP);
-        String seedEntity = seedRepository.findOneByUserId(user).toString();
-        if(seed != null && seedEntity == "Optional.empty") {
-            storeSeed(seed, user);
-            return token;
-        }else if(seed == null){
-            return token;
+
+        // Handle 2FA seed if provided
+        if (seed != null) {
+            Optional<SeedEntity> existingSeed = seedRepository.findOneByUserId(user);
+            if (!existingSeed.isPresent()) {
+                // User doesn't have a seed yet, store the new one
+                LOGGER.info("Storing new 2FA seed for user: {}", JokoUtils.formatLogString(user));
+                storeSeed(seed, user);
+            } else {
+                // User already has a seed configured, that's fine
+                LOGGER.debug("User {} already has 2FA configured", JokoUtils.formatLogString(user));
+            }
         }
-        else{
-            throw new JokoUnauthenticatedException(JokoUnauthenticatedException.DEFAULT_ERROR_MSG);
-        }
+
+        return token;
     }
 
     /**
@@ -177,7 +182,7 @@ public class TokenServiceImpl implements ITokenService {
      * @param otp
      * @return
      */
-    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken, String otp) throws GeneralSecurityException{
+    public JokoTokenWrapper createAccessToken(JokoJWTClaims refreshToken, String otp) throws GeneralSecurityException {
         if (!hasBeenRevoked(refreshToken.getId())) {
             // Solo si el token de refresh esta activo produce token.
             // En este punto el token ya fue controlado por los filtros
@@ -196,21 +201,20 @@ public class TokenServiceImpl implements ITokenService {
                     timeOut, jokoClaims.getProfile());
             TokenEntity entity = tokenRepository.getTokenById(refreshToken.getId());
             String userId = entity.getUserId();
-            Optional<SeedEntity> check= seedRepository.findOneByUserId(userId);
+            Optional<SeedEntity> check = seedRepository.findOneByUserId(userId);
             SeedEntity seed;
-            if(check.isPresent()) {
+            if (check.isPresent()) {
                 seed = seedRepository.findOneByUserId(userId).orElseThrow(() -> new JokoUnauthenticatedException(JokoUnauthenticatedException.DEFAULT_ERROR_MSG));
-            }
-            else{
+            } else {
                 return token;
             }
             String secret = seed.getSeedSecret();
             String number;
 
             number = twoFactorAuthUtil.generateCurrentNumber(secret);
-            if(number.equalsIgnoreCase(otp)) {
+            if (number.equalsIgnoreCase(otp)) {
                 return token;
-            }else {
+            } else {
                 throw new JokoApplicationException("The OTP doesnt match with the given number");
             }
 
@@ -235,7 +239,7 @@ public class TokenServiceImpl implements ITokenService {
      * </p>
      *
      * @param user usuario registrado
-     * @param app  entidad de aplicacion
+     * @param app entidad de aplicacion
      */
     private void revokePreviousTokenIfNeccesary(String user, SecurityProfile app) {
         List<TokenEntity> tokensRegistered = tokenRepository.findByUser(user);
@@ -277,15 +281,15 @@ public class TokenServiceImpl implements ITokenService {
     /**
      * Crea un token JWT firmado por este servidor con los parametros asignados
      *
-     * @param user    El usuario dueño del token
-     * @param roles   La lista de roles que se le concederá al usuario para este
-     *                token en particular
+     * @param user El usuario dueño del token
+     * @param roles La lista de roles que se le concederá al usuario para este
+     * token en particular
      * @param type
      * @param timeout
      * @return
      */
     public JokoTokenWrapper createToken(String user, List<String> roles, TOKEN_TYPE type, int timeout,
-                                        String securityProfile) {
+            String securityProfile) {
         if (timeout < 0) {
             throw new IllegalArgumentException("Unable to create a token with an expired timeout");
         }
@@ -305,22 +309,27 @@ public class TokenServiceImpl implements ITokenService {
 
         JokoJWTExtension jokoExtension = new JokoJWTExtension(type, roles, securityProfile);
 
-        JokoJWTClaims claims = new JokoJWTClaims();
-        claims.setJoko(jokoExtension);
-
+        // Set standard claims using builder methods
         // TODO evaluar de utilizar el issuer .iss()
-        claims.setSubject(user).setExpiration(exp).setIssuedAt(now).setId(uuid);
+        builder.subject(user)
+                .expiration(exp)
+                .issuedAt(now)
+                .id(uuid);
 
-        // Es clave setear primero todas las propiedades y luego los custom de
-        // joko. Si el orden es inverso se borra el claim custom (con el
-        // setClaims)
-        builder.setClaims(claims);
-        builder.claim("joko", claims.getJoko());
+        // Add custom joko claim
+        builder.claim("joko", jokoExtension);
 
         // Obtiene el secreto para firmarlo
-        builder.signWith(SignatureAlgorithm.HS512, getSecret());
+        SecretKey key = Keys.hmacShaKeyFor(getSecret().getBytes(StandardCharsets.UTF_8));
+        builder.signWith(key);
 
         String token = builder.compact();
+
+        // Create JokoJWTClaims for the wrapper
+        JokoJWTClaims claims = new JokoJWTClaims();
+        claims.setSubject(user).setExpiration(exp).setIssuedAt(now).setId(uuid);
+        claims.setJoko(jokoExtension);
+
         return new JokoTokenWrapper(claims, token);
     }
 
@@ -334,10 +343,10 @@ public class TokenServiceImpl implements ITokenService {
     /**
      * Guarda el token dentro de la BD
      *
-     * @param token     token generado
-     * @param app       aplicacion
+     * @param token token generado
+     * @param app aplicacion
      * @param userAgent tipo de navegador
-     * @param remoteIP  direccion remota
+     * @param remoteIP direccion remota
      */
     private void storeToken(JokoTokenWrapper token, SecurityProfile app, String userAgent, String remoteIP) {
         TokenEntity entity = TokenUtils.toEntity(token, app);
@@ -360,7 +369,7 @@ public class TokenServiceImpl implements ITokenService {
         tokenRepository.save(entity);
     }
 
-    private void storeSeed(String seed, String userId){
+    private void storeSeed(String seed, String userId) {
         SeedEntity seedEntity = new SeedEntity();
         seedEntity.setSeedSecret(seed);
         seedEntity.setUserId(userId);
@@ -371,7 +380,7 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public boolean hasBeenRevoked(String jti) {
         LOGGER.trace("Verifying if token was revoked: {}", jti);
-    	TokenEntity token = tokenRepository.getTokenById(jti);
+        TokenEntity token = tokenRepository.getTokenById(jti);
         if (token == null) {
             // Si el token no está en la BD entonces se asume que fue revocado
             // (o
@@ -389,7 +398,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public void revokeTokensUntil(Date date) {
-    	tokenRepository.deleteTokensFromDate(date);
+        tokenRepository.deleteTokensFromDate(date);
     }
 
     @Override
@@ -421,53 +430,53 @@ public class TokenServiceImpl implements ITokenService {
         revokeToken(jokoToken.getId());
 
         // Crea uno nuevo con los mismos permisos que el anterior
-
         JokoTokenWrapper tokenWrapper = createAndStoreRefreshToken(jokoToken.getSubject(),
                 jokoToken.getJoko().getProfile(), TOKEN_TYPE.REFRESH, userAgent, remoteIP,
                 jokoToken.getJoko().getRoles(), null);
         return tokenWrapper;
     }
 
-	@Override
-	public JokoTokenInfoResponse tokenInfo(String accessToken) {
-		Assert.notNull(accessToken, "El token es requerido");
-		try {
-			JokoJWTClaims claims =  this
-					.tokenInfoAsClaims(accessToken)
-					.orElseThrow(() -> new JokoUnauthenticatedException(JokoUnauthenticatedException.ERROR_REVOKED_TOKEN));
-			JokoTokenInfoResponse response = new JokoTokenInfoResponse.Builder()
-					.audience(claims.getAudience())
-			        .userId(claims.getSubject())
-			        .expiresIn(secondsFromNow(claims.getExpiration()))
-			        .success(Boolean.TRUE)
-			        .build();
-			return response;
-		} catch (ExpiredJwtException ex) {
-			LOGGER.error(ex.getMessage(), ex);
-			throw new JokoUnauthenticatedException(JokoUnauthenticatedException.ERROR_EXPIRED_TOKEN);
-		}
-	}
-	
-	private Long secondsFromNow(Date expiration) {
-		Date now = new Date();
-		long seconds = (expiration.getTime() - now.getTime()) / 1000;
-		return seconds;
-	}
+    @Override
+    public JokoTokenInfoResponse tokenInfo(String accessToken) {
+        Assert.notNull(accessToken, "El token es requerido");
+        try {
+            JokoJWTClaims claims = this
+                    .tokenInfoAsClaims(accessToken)
+                    .orElseThrow(() -> new JokoUnauthenticatedException(JokoUnauthenticatedException.ERROR_REVOKED_TOKEN));
+            JokoTokenInfoResponse response = new JokoTokenInfoResponse.Builder()
+                    .audience(claims.getAudience() != null && !claims.getAudience().isEmpty()
+                            ? claims.getAudience().iterator().next() : null)
+                    .userId(claims.getSubject())
+                    .expiresIn(secondsFromNow(claims.getExpiration()))
+                    .success(Boolean.TRUE)
+                    .build();
+            return response;
+        } catch (ExpiredJwtException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new JokoUnauthenticatedException(JokoUnauthenticatedException.ERROR_EXPIRED_TOKEN);
+        }
+    }
 
-	@Override
-	public Optional<JokoJWTClaims> tokenInfoAsClaims(String token) {
-		JokoJWTClaims claims = this.parse(token);
-		// En este punto el token ya es valido sino habria tirado una
-		// excepcion JwtException
-		JokoJWTExtension jokoClaims = claims.getJoko();
-		if (jokoClaims.getType().equals(JokoJWTExtension.TOKEN_TYPE.REFRESH)) {
-		    // Solamente los tokens de refresh se pueden revocar
-		    if (this.hasBeenRevoked(claims.getId())) {
-		        return Optional.empty();
-		    }
-		}
+    private Long secondsFromNow(Date expiration) {
+        Date now = new Date();
+        long seconds = (expiration.getTime() - now.getTime()) / 1000;
+        return seconds;
+    }
 
-		return Optional.of(new JokoJWTClaims(claims, jokoClaims));
-	}
+    @Override
+    public Optional<JokoJWTClaims> tokenInfoAsClaims(String token) {
+        JokoJWTClaims claims = this.parse(token);
+        // En este punto el token ya es valido sino habria tirado una
+        // excepcion JwtException
+        JokoJWTExtension jokoClaims = claims.getJoko();
+        if (jokoClaims.getType().equals(JokoJWTExtension.TOKEN_TYPE.REFRESH)) {
+            // Solamente los tokens de refresh se pueden revocar
+            if (this.hasBeenRevoked(claims.getId())) {
+                return Optional.empty();
+            }
+        }
+
+        return Optional.of(new JokoJWTClaims(claims.getClaims(), jokoClaims));
+    }
 
 }

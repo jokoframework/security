@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--
+        MAVEN SETTINGS PARA JOKO-SECURITY
+
+        Copia este archivo a ~/.m2/settings.xml
+
+        Soporta dos destinos de publicación:
+        1. GitHub Packages (público)
+        2. Artifactory interno (privado, requiere VPN)
+
+        ═══════════════════════════════════════════════════════════════
+        CONFIGURACIÓN CON VARIABLES DE ENTORNO (Recomendado)
+        ═══════════════════════════════════════════════════════════════
+
+        Para GitHub Packages:
+        - Generar token: GitHub → Settings → Developer settings → Personal access tokens
+        - Permisos: write:packages, read:packages
+        - Configurar:
+            export GITHUB_USERNAME="tu-usuario-github"
+            export GITHUB_TOKEN="ghp_xxxxxxxxxxxxx"
+
+        Para Artifactory:
+        - URL: https://artifactory.example.com/artifactory/
+        - Solicitar credenciales a tu equipo de DevOps
+        - Configurar:
+            export ARTIFACTORY_USER="your-username"
+            export ARTIFACTORY_PASSWORD="tu-password"
+
+        ═══════════════════════════════════════════════════════════════
+        ALTERNATIVA: Hardcodear credenciales (NO recomendado)
+        ═══════════════════════════════════════════════════════════════
+
+        Reemplaza ${env.VARIABLE} con el valor directo:
+        <username>tu-usuario</username>
+        <password>tu-password</password>
+
+        ⚠️  ADVERTENCIA: NO commitear este archivo con credenciales reales
+    -->
+
+    <!--
+        Resolución: el POM no lista remotes. Central es el default.
+        Un remoto privado extra va aquí (por máquina / por ejecución: mvn -s),
+        no en el pom.xml del proyecto.
+    -->
+    <!--
+    <profiles>
+        <profile>
+            <id>privado</id>
+            <repositories>
+                <repository>
+                    <id>privado</id>
+                    <url>https://artifactory.example.com/artifactory/libs-release</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>privado</activeProfile>
+    </activeProfiles>
+    -->
+
+    <servers>
+        <!-- Configuración para GitHub Packages -->
+        <server>
+            <id>github</id>
+            <username>${env.GITHUB_USERNAME}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+
+        <!-- Configuración para Artifactory interno -->
+        <!-- IDs deben coincidir con los del pom.xml: central, snapshots -->
+        <server>
+            <id>central</id>
+            <username>${env.ARTIFACTORY_USER}</username>
+            <password>${env.ARTIFACTORY_PASSWORD}</password>
+        </server>
+        <server>
+            <id>snapshots</id>
+            <username>${env.ARTIFACTORY_USER}</username>
+            <password>${env.ARTIFACTORY_PASSWORD}</password>
+        </server>
+    </servers>
+
+    <!--
+        NOTA: Los servidores de Artifactory usan las mismas credenciales
+        para releases y snapshots. Solo cambia el repositorio destino:
+        - Releases: https://artifactory.example.com/artifactory/libs-release
+        - Snapshots: https://artifactory.example.com/artifactory/libs-snapshot
+
+        IDs de servidor (deben coincidir con pom.xml):
+        - central: Para releases
+        - snapshots: Para snapshots
+
+        Para publicar:
+        - GitHub:     ./publish.sh github
+        - Artifactory: ./publish-artifactory.sh [release|snapshot]
+
+        Ver docs/PACKAGING_GUIDE.md para más información.
+    -->
+
+</settings>

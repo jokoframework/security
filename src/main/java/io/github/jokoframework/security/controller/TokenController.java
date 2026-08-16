@@ -1,9 +1,14 @@
 package io.github.jokoframework.security.controller;
 
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,11 +35,11 @@ public class TokenController {
     	this.tokenService = tokenService;
     }
     
-    @ApiOperation(value = "Crea un token de acceso de usuario", notes = "Dependiendo del security profile utilizado el token se creara con mayor o menor tiempo de expiración. ", position = 4)
-    @ApiResponses(value = { @ApiResponse(code = 202, message = "El token se ha creado exitosamente."),
-            @ApiResponse(code = 403, message = "En caso de proveerse un refresh token inválido") })
-    @ApiImplicitParams(
-            {@ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Refresh Token")})
+    @Operation(summary = "Crea un token de acceso de usuario", description = "Dependiendo del security profile utilizado el token se creara con mayor o menor tiempo de expiración. ")
+    @ApiResponses(value = { @ApiResponse(responseCode = "202", description = "El token se ha creado exitosamente."),
+            @ApiResponse(responseCode = "403", description = "En caso de proveerse un refresh token inválido") })
+    @Parameters(
+            {@Parameter(name = SecurityConstants.AUTH_HEADER_NAME, in = ParameterIn.HEADER, required = true, description = "Refresh Token")})
     @RequestMapping(value = ApiPaths.TOKEN_USER_ACCESS, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JokoTokenResponse> createTokenUserAccess(@RequestHeader (value = "SEED_OTP_TOKEN", required = false) String otp) throws GeneralSecurityException {
 
@@ -44,12 +49,12 @@ public class TokenController {
 
     }
 
-    @ApiOperation(value = "Refresca un token, y vuelve a setear su tiempo de duración", notes = "El token viene en la variable "
+    @Operation(summary = "Refresca un token, y vuelve a setear su tiempo de duración", description = "El token viene en la variable "
             + SecurityConstants.AUTH_HEADER_NAME + " de la  cabecera. "
-            + "Si el token es válido y no ha sido revocado se puede refrescar", position = 2)
-    @ApiResponses(value = { @ApiResponse(code = 202, message = "El token se ha renovado exitosamente."),
-            @ApiResponse(code = 409, message = "En caso de proveerse un parámetro inválido") })
-    @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Refresh token")
+            + "Si el token es válido y no ha sido revocado se puede refrescar")
+    @ApiResponses(value = { @ApiResponse(responseCode = "202", description = "El token se ha renovado exitosamente."),
+            @ApiResponse(responseCode = "409", description = "En caso de proveerse un parámetro inválido") })
+    @Parameter(name = SecurityConstants.AUTH_HEADER_NAME, in = ParameterIn.HEADER, required = true, description = "Refresh token")
     @RequestMapping(value = ApiPaths.TOKEN_REFRESH, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JokoTokenResponse> refreshToken(HttpServletRequest httpRequest) {
 

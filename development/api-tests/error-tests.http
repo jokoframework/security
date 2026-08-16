@@ -1,0 +1,79 @@
+# ===============================================
+# Joko Security API - Error Testing & Edge Cases
+# ===============================================
+@baseUrl = http://localhost:8080/joko-security-dev
+@contentType = application/json
+
+# Datos válidos disponibles:
+# - Username: testuser
+# - Password: test123
+# - Seed: development-seed
+
+### Test 1: Login con credenciales incorrectas
+POST {{baseUrl}}/api/login
+Content-Type: {{contentType}}
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Test 2: Login sin password
+POST {{baseUrl}}/api/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser"
+}
+
+### Test 3: Login sin username
+POST {{baseUrl}}/api/login
+Content-Type: {{contentType}}
+
+{
+  "password": "test123"
+}
+
+### Test 4: Request con token inválido
+GET {{baseUrl}}/api/token/info
+Authorization: Bearer invalid_token_here
+
+### Test 5: Request sin Authorization header
+GET {{baseUrl}}/api/token/info
+
+### Test 6: Logout con token inválido
+POST {{baseUrl}}/api/logout
+Content-Type: {{contentType}}
+Authorization: Bearer invalid_token
+
+{}
+
+### Test 7: Refresh con token expirado/inválido
+POST {{baseUrl}}/api/token/refresh
+Content-Type: {{contentType}}
+Authorization: Bearer expired_or_invalid_refresh_token
+
+{
+  "refreshToken": "expired_or_invalid_refresh_token"
+}
+
+### Test 8: Sessions sin autenticación
+GET {{baseUrl}}/api/sessions
+
+### Test 9: JSON malformado
+POST {{baseUrl}}/api/login
+Content-Type: {{contentType}}
+
+{
+  "username": "admin"
+  "password": "missing_comma"
+}
+
+### Test 10: Content-Type incorrecto
+POST {{baseUrl}}/api/login
+Content-Type: text/plain
+
+{
+  "username": "testuser",
+  "password": "test123"
+}

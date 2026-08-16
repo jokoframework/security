@@ -2,8 +2,8 @@ package io.github.jokoframework.security.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import io.github.jokoframework.common.errors.JokoApplicationException;
 import org.slf4j.Logger;
@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import io.github.jokoframework.common.dto.JokoBaseResponse;
 import io.github.jokoframework.security.ApiPaths;
@@ -54,10 +56,10 @@ public class AuthenticationController {
     @Autowired
     private ITokenService tokenService;
 
-    @ApiOperation(value = "Realiza el login de un usuario", notes = "La operación devuelve los datos del usuario y el refresh token que debe ser utilizado. ", position = 1)
-    @ApiResponses(value = { @ApiResponse(code = 202, message = "El usuario se ha logueado exitosamente."),
-            @ApiResponse(code = 401, message = "El usuario introdujo una credencial inválida.") })
-    @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")
+    @Operation(summary = "Realiza el login de un usuario", description = "La operación devuelve los datos del usuario y el refresh token que debe ser utilizado. ")
+    @ApiResponses(value = { @ApiResponse(responseCode = "202", description = "El usuario se ha logueado exitosamente."),
+            @ApiResponse(responseCode = "401", description = "El usuario introdujo una credencial inválida.") })
+    @Parameter(name = SecurityConstants.VERSION_HEADER_NAME, in = ParameterIn.HEADER, required = false, description = "Version"/* defaultValue not supported in OpenAPI 3 */)
     @RequestMapping(value = ApiPaths.LOGIN, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JokoTokenResponse> login(@RequestBody @Valid AuthenticationRequest loginRequest,
             HttpServletRequest httpRequest) throws JokoApplicationException {
@@ -147,10 +149,10 @@ public class AuthenticationController {
         return new ResponseEntity<>(new JokoTokenResponse(errorCode), HttpStatus.UNAUTHORIZED);
     }
 
-    @ApiOperation(value = "Realiza un logout del usuario", notes = "Este metodo revoca el token (si es aún válido) que está siendo utilizado", position = 3)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "El token se ha eliminado exitosamente."),
-            @ApiResponse(code = 409, message = "En caso de proveerse un parámetro inválido") })
-    @ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "Refresh Token")
+    @Operation(summary = "Realiza un logout del usuario", description = "Este metodo revoca el token (si es aún válido) que está siendo utilizado")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "El token se ha eliminado exitosamente."),
+            @ApiResponse(responseCode = "409", description = "En caso de proveerse un parámetro inválido") })
+    @Parameter(name = SecurityConstants.AUTH_HEADER_NAME, in = ParameterIn.HEADER, required = true, description = "Refresh Token")
     @RequestMapping(value = ApiPaths.LOGOUT, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JokoBaseResponse> logout() {
 

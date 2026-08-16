@@ -3,16 +3,15 @@ package io.github.jokoframework.security.springex;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.github.jokoframework.common.JokoUtils;
 import io.github.jokoframework.security.JokoJWTClaims;
@@ -31,7 +30,7 @@ import io.jsonwebtoken.JwtException;
  * @author danicricco
  *
  */
-public class JokoSecurityFilter extends GenericFilterBean {
+public class JokoSecurityFilter extends OncePerRequestFilter {
 
     private static final Logger JOKO_LOGGER = LoggerFactory.getLogger(JokoSecurityFilter.class);
     private ITokenService tokenService;
@@ -49,23 +48,24 @@ public class JokoSecurityFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         JokoJWTClaims claims = validateToken(request);
         if (claims != null) {
 
             Collection<? extends GrantedAuthority> baseAuthorizations = JokoSecurityContext.determineAuthorizations(claims);
-            Collection<? extends GrantedAuthority> authorities = jokoAuthorizationManager.authorize(
-            		claims,
-                    baseAuthorizations);
+            Collection<? extends GrantedAuthority> authorities = baseAuthorizations;
+
+            if (jokoAuthorizationManager != null) {
+                authorities = jokoAuthorizationManager.authorize(claims, baseAuthorizations);
+            }
 
             JokoAuthenticated authentication = new JokoAuthenticated(claims, authorities);
             JokoSecurityContext.setAuthentication(authentication);
 
             if (JOKO_LOGGER.isDebugEnabled()) {
 
-                HttpServletRequest httpRequest = (HttpServletRequest) request;
-                String uri = httpRequest.getRequestURI();
+                String uri = request.getRequestURI();
 
                 JOKO_LOGGER.debug("Authorized user " + JokoUtils.formatLogString(claims.getSubject()) + " to: "
                         + JokoUtils.join(authorities, ",") + " Request-URI " + uri + " jti " + claims.getId());
@@ -86,9 +86,8 @@ public class JokoSecurityFilter extends GenericFilterBean {
      * @param request
      * @return
      */
-    private JokoJWTClaims validateToken(ServletRequest request) {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String token = getTokenFromHeader(httpRequest);
+    private JokoJWTClaims validateToken(HttpServletRequest request) {
+        String token = getTokenFromHeader(request);
         if (token == null) {
             return null;
         }
@@ -97,8 +96,8 @@ public class JokoSecurityFilter extends GenericFilterBean {
         	return tokenService.tokenInfoAsClaims(token).orElse(null);
         } catch (JwtException | IllegalArgumentException e) {
 
-            String uri = httpRequest.getRequestURI();
-            String userAgent = httpRequest.getHeader("User-Agent");
+            String uri = request.getRequestURI();
+            String userAgent = request.getHeader("User-Agent");
             JOKO_LOGGER.debug(uri + " from User-Agent: " + userAgent + " Unable to authenticate " + e.getClass() + ": "
                     + e.getMessage());
             JOKO_LOGGER.debug("Token received: " + token);

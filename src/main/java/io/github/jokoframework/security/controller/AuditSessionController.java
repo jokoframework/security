@@ -6,15 +6,20 @@ import io.github.jokoframework.security.dto.BaseResponseDTO;
 import io.github.jokoframework.security.dto.request.AuditSessionRequestDTO;
 import io.github.jokoframework.security.dto.response.AuditSessionResponseDTO;
 import io.github.jokoframework.security.services.IAuditSessionService;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -26,24 +31,24 @@ public class AuditSessionController {
     @Autowired
     private IAuditSessionService auditSessionService;
 
-    @ApiOperation(value = "Obtiene la lista de sesiones.", notes = "Obtiene la lista de sesiones ordenados por fecha de ingreso en orden descendente.")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "", response = AuditSessionResponseDTO.class)})
+    @Operation(summary = "Obtiene la lista de sesiones.", description = "Obtiene la lista de sesiones ordenados por fecha de ingreso en orden descendente.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = ""/* response attribute replaced - see @Content annotation */)})
     @RequestMapping(value = ApiPaths.SESSIONS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiImplicitParams({@ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "User Access Token"),
-            @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")})
+    @Parameters({@Parameter(name = SecurityConstants.AUTH_HEADER_NAME, in = ParameterIn.HEADER, required = true, description = "User Access Token"),
+            @Parameter(name = SecurityConstants.VERSION_HEADER_NAME, in = ParameterIn.HEADER, required = false, description = "Version"/* defaultValue not supported in OpenAPI 3 */)})
     public List<AuditSessionResponseDTO> getSessions(HttpServletRequest request, HttpServletResponse response,
-                                                     @ApiParam(name = "startPage", value = "El número de página en que se iniciará la consulta. Si se pasa 0 no se toma en cuenta la paginación.")
+                                                     @Parameter(name = "startPage", description = "El número de página en que se iniciará la consulta. Si se pasa 0 no se toma en cuenta la paginación.")
                                                      @RequestParam(value = "startPage", required = false, defaultValue = "1") Integer startPage,
-                                                     @ApiParam(name = "rowsPerPage", value = "Cuantos resultados por página se desean consultar.")
+                                                     @Parameter(name = "rowsPerPage", description = "Cuantos resultados por página se desean consultar.")
                                                      @RequestParam(value = "rowsPerPage", required = false, defaultValue = "5") Integer rowsPerPage) {
         return auditSessionService.findAllOrderdByUserDate(startPage, rowsPerPage);
     }
 
-    @ApiOperation(value = "Guarda datos relacionados a la sesión de usuario, para fines de auditoría. Para la fecha de la sesión, se toma la del servidor.")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Auditoria de sesión guardada correctamente."),
-            @ApiResponse(code = 409, message = "No se pudo guardar la información de auditoría.")})
-    @ApiImplicitParams({@ApiImplicitParam(name = SecurityConstants.AUTH_HEADER_NAME, dataType = "String", paramType = "header", required = true, value = "User Access Token"),
-            @ApiImplicitParam(name = SecurityConstants.VERSION_HEADER_NAME, dataType = "String", paramType = "header", required = false, value = "Version", defaultValue = "1.0")})
+    @Operation(summary = "Guarda datos relacionados a la sesión de usuario, para fines de auditoría. Para la fecha de la sesión, se toma la del servidor.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Auditoria de sesión guardada correctamente."),
+            @ApiResponse(responseCode = "409", description = "No se pudo guardar la información de auditoría.")})
+    @Parameters({@Parameter(name = SecurityConstants.AUTH_HEADER_NAME, in = ParameterIn.HEADER, required = true, description = "User Access Token"),
+            @Parameter(name = SecurityConstants.VERSION_HEADER_NAME, in = ParameterIn.HEADER, required = false, description = "Version"/* defaultValue not supported in OpenAPI 3 */)})
     @RequestMapping(value = ApiPaths.SESSIONS, method = RequestMethod.POST)
     public ResponseEntity<BaseResponseDTO> saveAuditSession(HttpServletRequest pHttpServletRequest, HttpServletResponse pHttpServletResponse, @RequestBody AuditSessionRequestDTO pAuditSessionRequestDTO) {
         BaseResponseDTO responseDTO = new BaseResponseDTO();

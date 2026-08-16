@@ -7,11 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -19,21 +20,21 @@ import io.github.jokoframework.common.dto.JokoTokenInfoResponse;
 import io.github.jokoframework.security.ApiPaths;
 import io.github.jokoframework.security.services.ITokenService;
 
+@ExtendWith(MockitoExtension.class)
 public class TokenControllerTest extends AbstractControllerTest {
-	
+
 	private static final String NOT_VALID_TOKEN = "not.valid.token";
 
 	protected MockMvc mockMvc;
-	
+
 	@InjectMocks
 	private TokenController controller;
-	
+
 	@Mock
 	private ITokenService tokenService;
-	
-	@Before
+
+	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
 	

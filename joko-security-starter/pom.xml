@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.jokoframework</groupId>
+        <artifactId>joko-security-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>joko-security-starter</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Joko Security Starter</name>
+    <description>Spring Boot starter for joko-security with all default modules</description>
+
+    <!--
+        Este módulo es un Bill of Materials (BOM) que agrega todos los módulos
+        de joko-security en una sola dependencia para facilitar su uso.
+
+        Para usar joko-security en un proyecto Spring Boot, solo necesitas:
+
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-starter</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+
+        Y configurar las propiedades en application.yml:
+
+        joko:
+          security:
+            jwt:
+              secret: ${JWT_SECRET}
+              issuer: my-app
+              audience: my-app-users
+            storage:
+              type: postgres
+
+        NOTA: Los TTL de tokens se configuran en la tabla 'security_profile' de la BD,
+              no en application.yml
+    -->
+
+    <dependencies>
+        <!-- Core module (always required) -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Storage module (default: postgres) -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-storage-postgres</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Web module (optional controllers) -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- AutoConfigure module (enables Spring Boot auto-configuration) -->
+        <dependency>
+            <groupId>io.github.jokoframework</groupId>
+            <artifactId>joko-security-autoconfigure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

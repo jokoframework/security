@@ -21,7 +21,7 @@
     </appender>
 
 	<!-- Application loggers -->
-	<logger name="py.com.sodep.bancard" level="DEBUG" />
+	<logger name="io.github.jokoframework.security" level="DEBUG" />
 	
 	<!-- 3rd party libraries loggers -->
 	<logger name="org.springframework.web" level="DEBUG" />

@@ -1,274 +1,466 @@
 # Joko Security
+
 [![Build Status](https://travis-ci.com/jokoframework/security.svg?branch=develop)](https://travis-ci.com/github/jokoframework/security)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen.svg)
+![Java](https://img.shields.io/badge/Java-21-orange.svg)
+![JJWT](https://img.shields.io/badge/JJWT-0.12.6-blue.svg)
 
-Joko Security provee la capacidad de realizar autenticación y autorización por
-.medio de Tokens JWT.  Se puede utilizar de dos maneras, como un componente
-separado que emite tokens o embebido como una librería dentro de otra aplicación
-Web.  Joko Security es una extensión de spring-security que permite trabajar con
-token de refresh, y acceso utilizando como formato de tokens JWT.
+Joko Security provee autenticación y autorización mediante Tokens JWT. Puede utilizarse como microservicio independiente o embebido como librería en otra aplicación Spring Boot.
 
-## Configuración embebido en otra App
+## Características Principales
 
-### Configuracion de la Base de Datos
-Joko-security necesita un repositorio de datos en el cual se almacenan datos que
-permiten realizar el proceso de autorización. El sistema utiliza JPA de una manera bastante agnóstica a la
-BD. Sin embargo, actualmente solamente está probado con PostgreSQL 9.4
+- ✅ **JWT Tokens**: Access y Refresh tokens con firma segura
+- ✅ **Spring Boot 3.5.16**: Spring Security 6.5.x y Tomcat 10.1.57
+- ✅ **JJWT 0.12.6**: Biblioteca JWT moderna con protecciones OWASP
+- ✅ **Arquitectura Modular**: Módulos independientes y reutilizables
+- ✅ **Stateless**: Validación en memoria para escalabilidad
+- ✅ **Revocación de tokens**: Almacenamiento en PostgreSQL/Redis
+- ✅ **Security Profiles**: Diferentes tiempos de vida para tokens
+- ✅ **Two-Factor Auth**: Soporte para TOTP/OTP
+- ✅ **Session Auditing**: Registro de sesiones de usuario
 
-#### Escenario embebido en otra aplicacion
-Una opción es utilizar Joko-security embebido dentro de otra aplicacion. En 
-este caso el repositorio de datos debe tener la estructura de tablas que Joko
- esta esperando.
- Si el repositorio de datos se inicializa con liquibase, entonces todo el 
- contenido para la creacion de la estructura necesaria se encuentra en:
- ./db/liquibase/db-changelog-evolucion.xml
- 
- Este archivo puede ser referenciado dentro del ciclo de actualizacion de la 
- BD en el proyecto que incluya a joko-security como librería.
- 
- 
-#### Inicio desde .sql 
-El inicio mas sencillo es correr el script .sql
-correspondiente a la BD que utiliza. Estos scripts se encuentran en:
-```shell
-/db/sql-initialization
+## Arquitectura Multi-Módulo
+
+```
+joko-security-parent (2.0.0)
+├── joko-security-core              # JWT services, filtros (REQUERIDO)
+├── joko-security-storage-postgres  # Storage PostgreSQL para tokens
+├── joko-security-web               # Controllers REST (opcional)
+├── joko-security-autoconfigure     # Spring Boot auto-configuration
+└── joko-security-starter           # BOM - Todo en una dependencia
 ```
 
-## Configuracion de su propia BD
+## Inicio Rápido
 
-En Joko poseemos un conjunto de scripts que nos permiten automatizar el ciclo
- de vida de una aplicación. Con esto se puede crear facilmente toda la BD 
- desde la linea de comandos. Para actualizar hay que seguir los siguientes 
- pasos:
+### 1. Como Dependencia en otro Proyecto
 
-### Step 1) Crear el directorio PROFILE_DIR
-El directorio de profile contiene el archivo application.properties con la 
-configuracion necesaria para lanzar la aplicacion spring-boot.
+El POM del parent **no declara remotes**. Maven resuelve desde **Maven Central** y `~/.m2`. Un remoto privado (GitHub Packages, Artifactory) va en `~/.m2/settings.xml` o `mvn -s settings.xml`, no en el `pom.xml` del proyecto. Plantilla: `settings.xml.example`.
 
-La convencion utilizada es tener un directorio, dentro del cual existan 
-varios PROFILE_DIR segun se requiera. Por ejemplo:
-```shell
-/opt/joko-demo/dev
-/opt/joko-demo/qa
+#### Maven
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>io.github.jokoframework</groupId>
+        <artifactId>joko-security-starter</artifactId>
+        <version>2.0.0</version>
+    </dependency>
+</dependencies>
 ```
 
-En el anterior ejemplo existen dos PROFILE_DIR dentro del joko-demo, el 
-primero para development y el segundo con datos de quality assurance.
+Hasta que 2.x esté en Central: `./mvnw install` en este repo e instalar el starter desde el repositorio local.
 
-Obs.: Un archivo de ejemplo para el application.properties se encuentra en 
-`src/main/resources/application.properties`
+#### Gradle
 
-### Step 2) Configuración del archivo "development.vars"
+```gradle
+repositories {
+    mavenCentral()
+    mavenLocal() // si instalaste el 2.x en local
+}
 
-Se debe configurar el archivo "development.vars", que servirá para la 
-ejecucion de liquibase. Este es un archivo bash que debe tener dos variables: 
-
-- MVN_SETTINGS: Archivo de configuracion de perfil Maven. En caso de utilizar
- el Artifactory interno, sería el recien descargado. Ej. $HOME/.m2/settings.xml
-- PROFILE_DIR: Directorio de perfil creado en el punto inicial. Ej. /opt/joko
-
-Un ejemplo de este archivo se encuenta en `src/main/resources/development.vars`.
-
-Se recomienda que este archivo esté fuera del workspsace en el directorio 
-padre de los PROFILE_DIR. Ejemplo: ``/opt/joko-security/``.
-Este directorio es lo que se llama "ext.prop.dir" en las siguientes secciones.
-
-### Step 3) Configuración de variables de entorno
-Exportar variable, desde la terminal:
-```shell
-  $ export ENV_VARS="/opt/joko-security/development.vars"
-```
-Obs.: El truco es tener varios archivos profile.vars y cada uno apuntando a
- un PROFILE_DIR diferente. 
- 
-### Step 4) Ejecutar Liquibase.
-
-1. Crea la schema de cero.
-```shell
-  $ ./scripts/updater fresh
-```
-2. (Re)Inicializa datos básicos
-```shell
-  $ ./scripts/updater seed src/main/resources/db/sql/seed-data.sql
-```
-**OJO**:
-  * El parámetro "fresh" elimina la base de datos que está configurada en el application.properties
-    y la vuelve a crear desde cero con la última versión del schema
-
-  * El parámetro "seed <file>" carga datos indicados en el archivo <file>, para los casos en que se
-    ejecute "fresh" siempre debe ir seguido de un "seed" con el archivo que (re)inicializa los datos
-    básicos del sistema 
-
-  * Los datos básicos del sistema estan en dos archivos:
-    ** seed-data.sql: Todos la configuracion base que es independiente al 
-    ambiente
-    ** [ambiente]-config. Por ejemplo: dev-config.sql . Posee los parametros 
-    de configuracion adecuados  para el ambiente de
-  desarrollo. Tambien existe qa-config y prod-config
-
-3. Para correr el liquibase en modo de actualización ejecute:
-```shell
-  $ ./scripts/updater update
+dependencies {
+    implementation 'io.github.jokoframework:joko-security-starter:2.0.0'
+}
 ```
 
- 
-## Conceptos de token 
-Un token es un permiso particular que garantiza al
-poseedor acceso a ciertos recursos. Los *tokens* son firmados por joko-security
-con una clave secreta, por lo tanto no pueden ser alterados. Esto permite a
-Joko-security realizar la validación en memoria de los *tokens*. Por ejemplo: un
-*token* extemporáneo se rechaza sin mayor chequeo.
+Ver [docs/INTEGRATION_GUIDE.md](./docs/INTEGRATION_GUIDE.md).
 
-Realizar las validaciones en memoria sin tener que tocar la base de datos
-permite a los sistemas que utilizan joko-security escalar con mayor rapidez al
-ser en gran medida *stateless*.
+#### Configurar application.yml
 
-Los *tokens* en Joko siguen el standard :abbr:`JWT (JSON Web Tokens)` [#]_
-. Existen dos tipos de token:
+```yaml
+joko:
+  security:
+    jwt:
+      secret: ${JWT_SECRET} # Mínimo 256 bits
+      issuer: my-app
+      audience: my-app-users
+    storage:
+      type: postgres # postgres | redis | in-memory
+    web:
+      enabled: false # Deshabilitar controllers de joko (usar los propios)
+```
 
-### Refresh Token 
-Cuando un usuario se autentica al sistema recibe un `refresh
-token`.  Este *token* permite al usuario acceder al sistema por un tiempo
-prolongado pero con pocos permisos de acceso.  #### Un `refresh token` tiene
-información necesaria para obtener un nuevo `access token`.  #### Un `access
-token` sirve para realizar operaciones.
- 
-Dependiendo del `security profile` el sistema devolverá un *refresh token* con
-mayor o menor tiempo de vida. Por ejemplo si el usuario accede desde una
-aplicación web se podría dar un token de una semana, y si accede desde la web en
-términos de horas. Si el usuario no utiliza la aplicación por 1 (una) semana,
-entonces necesitará realizar un nuevo login (esto es aceptable desde el punto de
-vista UX). Los refresh token son especialmente útiles para las aplicaciones
-móviles en las cuales es molesto pedir el usuario en cada momento la
-autenticación.
+> **Nota**: Los TTL (Time To Live) de los tokens NO se configuran en `application.yml`.
+> Se configuran en la base de datos a través de la tabla `security_profile`.
 
-##Guardar el token de refresh de manera segura
+Ver [docs/INTEGRATION_GUIDE.md](./docs/INTEGRATION_GUIDE.md) para guía completa de integración.
 
-En el caso de una aplicación móvil se tendría que guardar en el *key store*, y
-en el caso de una aplicación Web en los :term:`cookies` (NO guardarlos en *WEB
-storage*)
+### 2. Desarrollo Local (Compilar desde código fuente)
 
-### Access Token 
-Un :term:`access token` permite al usuario realizar todas las
-operaciones que su perfil permita.
+#### Pre-requisitos
 
-Un token de acceso tiene un tiempo de vida corto, y la aplicación tendrá que
-renovar el token de acceso antes de que este fenezca.Esto crea la sensación al
-usuario de estar siempre conectado, mientras que también brinda un mayor nivel
-de seguridad.
+- Java 21
+- Maven 3.8+
+- PostgreSQL 9.4+ (o H2 para testing)
 
-Para mayor seguridad el token de acceso se debería de sostener solo en memoria.
-     
+#### Clonar y compilar
+
+```bash
+git clone https://github.com/jokoframework/security.git
+cd security
+git checkout feature/modular-refactor
+
+# Opción 1: Usar script de ayuda (recomendado)
+./publish.sh local
+
+# Opción 2: Usar Maven Wrapper directamente
+./mvnw clean install
+
+# Opción 3: Usar Maven instalado globalmente
+mvn clean install
+```
+
+**Recomendación**: Usar `./mvnw` (Maven Wrapper) para garantizar consistencia de versiones.
+
+#### Configurar entorno de desarrollo
+
+1. **Crear directorio de configuración**:
+
+```bash
+mkdir -p /opt/joko-security/dev
+cp src/main/resources/application.properties.example /opt/joko-security/dev/application.properties
+```
+
+2. **Editar application.properties** con tus credenciales de BD
+
+3. **Configurar variables de entorno**:
+
+```bash
+export ENV_VARS="/opt/joko-security/development.vars"
+```
+
+4. **Inicializar base de datos**:
+
+```bash
+# Crear schema y tablas
+./scripts/updater fresh
+
+# Cargar datos iniciales
+./scripts/updater seed src/main/resources/db/sql/seed-data.sql
+```
+
+5. **Ejecutar aplicación**:
+
+```bash
+# Con Maven Wrapper (recomendado)
+./mvnw spring-boot:run
+
+# O con Maven global
+mvn spring-boot:run
+```
+
+La aplicación estará disponible en `http://localhost:8080/security`
+
+## Publicar como Dependencia
+
+### Publicar en GitHub Packages
+
+```bash
+# Configurar ~/.m2/settings.xml con tu GitHub token
+cp settings.xml.example ~/.m2/settings.xml
+# Editar y agregar tu token
+
+# Opción 1: Usar script de ayuda (recomendado)
+./publish.sh github
+
+# Opción 2: Usar Maven Wrapper
+./mvnw clean deploy
+
+# Opción 3: Usar Maven global
+mvn clean deploy
+```
+
+### Publicar en Artifactory Interno
+
+```bash
+# Configurar credenciales
+export ARTIFACTORY_USER="your-username"
+export ARTIFACTORY_PASSWORD="tu-password"
+
+# Publicar snapshot (desarrollo)
+./publish-artifactory.sh snapshot
+
+# Publicar release (producción)
+./publish.sh version 2.0.0
+./publish-artifactory.sh release
+```
+
+Ver [docs/PACKAGING_GUIDE.md](./docs/PACKAGING_GUIDE.md) y [docs/ARTIFACTORY.md](./docs/ARTIFACTORY.md) para instrucciones detalladas.
+
+## Conceptos Clave
+
+### Tokens
+
+**Refresh Token**:
+
+- Tiempo de vida largo (días/semanas)
+- Permisos limitados
+- Solo para obtener access tokens
+- Almacenado de forma segura (cookies HTTP-only, keystore móvil)
+
+**Access Token**:
+
+- Tiempo de vida corto (minutos)
+- Permisos completos
+- Se renueva antes de expirar
+- Almacenado en memoria (no en localStorage)
+
+### Security Profiles
+
+Configuran tiempos de vida de tokens según el canal:
+
+- **Web**: Refresh token de horas
+- **Mobile**: Refresh token de semanas
+- **Admin**: Tokens más restrictivos
+
+### Flujo de Autenticación
+
+```
+1. Login → Refresh Token (24h, permisos limitados)
+2. Refresh → Access Token (15min, permisos completos)
+3. API Calls → Authorization: Bearer {access_token}
+4. Renovar antes de expirar → Repetir paso 2
+```
+
 ## Personalización
-Joko-security no posee utilidad por si solo, sino que
-presenta un conjunto de genérico de funcionalidades que deben de ser
-especializadas y de esta manera permite ahorrar tiempo a un programador.  Son
-dos las clases que se deben implementar para configurar joko-security, estas
-son: JokoAuthenticationManager, JokoAuthorizationManager, para configurar la
-autenticación y la autorización respectivamente.
 
-### JokoAuthenticationManager 
-Para determinar si ciertas credenciales son o no
-correctas el sistema que utilice Joko-security debe extender
-JokoAuthenticationManager o la correspondiente clase de Spring
-org.springframework.security.authentication.AuthenticationManager.  En el caso
-que se realice una especialización nueva la recomendación es utilizar
-JokoAuthenticationManager. La compatibilidad con spring debería de utilizarse
-solo para soportar AuthenticationManager que ya fueron anteriormente implementados.
+Dos interfaces principales para implementar:
+
+### JokoAuthenticationManager
+
+Valida credenciales y retorna usuarios autenticados:
+
+```java
+@Service
+public class CustomAuthManager implements JokoAuthenticationManager {
+    @Override
+    public JwtUserDetails authenticate(String username, String password) {
+        // Validar contra tu BD o servicio externo
+        User user = userRepository.findByUsername(username);
+        if (user != null && passwordMatches(password, user.getPassword())) {
+            return new JwtUserDetails(user.getId(), user.getUsername(), user.getRoles());
+        }
+        throw new BadCredentialsException("Invalid credentials");
+    }
+}
+```
 
 ### JokoAuthorizationManager
-Se debe implementar esta interfaz para:
-- Determinar las autorizaciones para un request en particular.
-	- Esto debe hacerse examinando el token y tratando de no tocar la BD en
-	lo posible. Recordemos que este método será invocada con cada request.
-- Determinar los URLs a los que se tiene acceso en base a las autorizaciones
-	- Se configura utilizando spring-security con la ventaja de que joko ya
-	realiza las configuraciones básicas requeridas en proyectos de este tipo.
- 
-## Ejemplos
-Se recomienda tomar como modelo de ejemplo el proyecto [joko_backend_starter_kit](https://github.com/jokoframework/joko_backend_starter_kit)
 
-## Obtener el jar
-El proyecto no está publicado actualmente en ningún maven repository. Por lo tanto, se requiere bajar el código fuente y realizar la instalación del jar. En la instalación del jar se correran los Unit Tests por defecto, se debe prepara la BD como se define en la sección "Unit Tests"
+Configura reglas de seguridad y permisos por URL:
 
+```java
+@Service
+public class CustomAuthzManager implements JokoAuthorizationManager {
+    @Override
+    public void configureAuthorization(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/public/**").permitAll()
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        );
+    }
+}
+```
 
-	mvn -Dext.prop.dir=/opt/joko-security/test -Dspring.config.location=file:///opt/joko-security/dev/application.properties install
+Ver ejemplo completo en [joko_backend_starter_kit](https://github.com/jokoframework/joko_backend_starter_kit)
 
-Un archivo de ejemplo de application.properties puede obtenerse en src/main/resources/application.properties.example	
-## Funcionalidades proveídas por Joko
-Se listan a continuación las configuraciones básicas y funcionalidades proveídas por Joko:
+## Testing
 
-- Error básico de forbidden devuelve código de error 403 Forbidden.
-- Error básico al no estar autenticado devuelve código de error http 401 Unauthorized
-- Se pueden lanzar las excepciones JokoUnauthorizedException y
-- JokoUnauthenticatedException desde cualquier lugar, el sistema devolverá 403 y
-- 401 respectivamente. 
-- La configuración del tiempo de vida de los tokens es en base al security profile
-- Los tokens de refresh se pueden revocar
-- Configuracion de spring-security especializada para aplicaciones stateless 
+### Ejecutar tests
 
-# Unit Tests
-joko-security cuenta con una clase que contiene tests unitarios, para las funcionalidades principales de módulo: 
+```bash
+# Preparar BD de test
+./scripts/updater seed src/main/resources/db/sql/seed-test.sql
 
-- Creación de tokens
-- Parseo
-- Refresh
+# Opción 1: Usar script de ayuda
+./publish.sh test
 
-Se puede correr los tests mediante maven
+# Opción 2: Usar Maven Wrapper
+./mvnw test
 
-   1) Actualizar los datos de una BD fresca con: 
-  $ ./scripts/updater seed src/main/resources/db/sql/seed-test.sql
-     
-   2) Correr MVN	
-	mvn -Dext.prop.dir=/opt/joko-security/dev -Dspring.config.location=file:///opt/joko-security/dev/application.properties test
+# Opción 3: Test específico
+./mvnw test -Dtest=TokenServiceTest
 
-# Configuraciones
-En esta sección describimos la configuracion que se debería de tener en 
-cuenta para que funcione correctamente joko-security
+# Con Maven global
+mvn test -Dtest=TokenServiceTest
+```
 
-Toda la configuración se realiza en el archivo application.properties y el 
-archivo `src/main/resources/application.properties` contiene un ejemplo 
-comentado con las opciones
+### Coverage de tests
 
-## Configuraciones Basicas 
-El sistema necesita un secreto para firmar los tokens. Este secreto puede ser
- guradado en dos lugares:
- * BD: Si se guarda en la Base de datos va a la tabla joko_security.keychain
- * FILE: Si va al filesystem se debe configurar la propiedad joko.secret.file
+- Token creation y parsing
+- Refresh token flow
+- Token revocation
+- Security filters
+- JWT signature verification
 
-ATENCIÓN: Es MUY importante que este secreto no sea accedido por terceras 
-personas. La recomendacion para esto es:
-* BD: En este caso asigne permisos a la tabla con solo lectura y solamente 
-para el usuario que se utiliza en la aplicacion
-* FILE: Asigne permisos de lecutra y solo para el usuario que se utiliza al 
-momento de levantar la aplicacion.
+## Configuración
 
-Obs.:En modo BD puede dejarse sin crear un archivo y el sistema va a crear 
-un secreto la primera vez que se levanta.
+### Variables de entorno requeridas
 
-## Uso del OTP
+```bash
+# JWT Secret (mínimo 32 caracteres, 256 bits)
+JWT_SECRET=tu-secreto-muy-largo-y-aleatorio-importante
 
-Primeramente hay que ver si quiere registrar en el usuario la semilla que seria utilizada para generar el OTP que sera comparado
-con el OTP que ingresa:
- * Ingresar Semilla: si quiere ingresar una semilla, debe ir a la pagina https://freeotp.github.io/qrcode.html. En esa pagina debe completar
-   los datos opcionales como el nombre de la cuenta relacionada a la semilla, y poner la opcion "TIMEOUT" para que funcione como Timed-OTP.
-   Esta aplicacion genera un QR que debe ser escaneado por su telefono, utilizando el programa FreeOTP que se puede descargar para Android.
-   La semilla solo se ingresa una vez por lo que en nuevos logins, el usuario solo debe completar el campo de "user" y "password", y eliminar
-   el campo de semilla.
- * No ingresar una semilla: si no desea en el momento ingresar una semilla, puede simplemente eliminar el campo de "seed" y el token sera
-   generado.
+# Base de datos
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/joko_db
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=password
+```
 
-Luego de tener una semilla en la DB, se procede al siguiente paso, el cual tendran 2 opciones:
- * Sin semilla guardada: solo debe ingresar un "0" en la linea de OTP, si realmente no tiene una semilla guardada, entonces se le consedera
-   el token, de lo contrario se le dira que el OTP assignado no concuerda con el OTP generado en el programa.
- * Con semilla guardada: en la aplicacion FreeOTP en el celular podra ver el codigo de 6 digitos que debe ingresar para el parametro de OTP
-   en el servidor.
+### Opciones de configuración avanzadas
 
-## Configuraciones del POM file Asegurese que las versiones de las dependencias
-en los archivos pom.xml tengan la misma version, esto le generara problemas a la
-hora de querer levantar el servicio.
+Ver `application.properties.example` para todas las opciones disponibles:
 
+- Tiempo de vida de tokens por perfil
+- Modo de almacenamiento de secret (BD vs FILE)
+- Habilitación de autenticación
+- Rutas públicas (sin autenticación)
+- Configuración de CORS
 
-# Changelog
-Para una descripcion detallada de las versiones ver el archivo de [Changelog](CHANGELOG.md)
+## Base de Datos
 
+### Esquema
 
+Todas las tablas en schema `joko_security`:
+
+- `security_profile` - Configuración de tiempos de vida
+- `keychain` - Claves secretas para firma JWT
+- `token` - Refresh tokens activos/revocados
+- `principal_session` - Sesiones de usuario
+- `audit_session` - Auditoría de accesos
+- `seed` - Semillas para OTP/TOTP
+- `consumer_api` - Registro de consumidores API
+
+### Migraciones
+
+El proyecto usa **Liquibase** para migraciones automáticas.
+
+```bash
+# Crear BD desde cero
+./scripts/updater fresh
+
+# Actualizar schema existente
+./scripts/updater update
+
+# Generar diff SQL
+mvn liquibase:diff
+```
+
+## Seguridad
+
+### Protecciones implementadas
+
+- Verificación de algoritmo JWT (evita el ataque `none`)
+- Validación de firma y expiración de tokens
+- Rotación de secretos
+- HTTPS y CORS configurables
+- Consultas parametrizadas (prevención de inyección SQL)
+
+### Seguridad de dependencias
+
+El parent corre [OWASP](https://owasp.org/) (*Open Worldwide Application Security Project*) Dependency-Check **13** en la fase `verify` (`aggregate` de los cinco módulos).
+
+**Default del build: solo warning.** `failBuildOnCVSS` vale `11` (el plugin no corta el build; 11 está fuera de la escala CVSS 0–10). Los hallazgos salen en consola y en el HTML. Un `./mvnw clean install` termina en SUCCESS aunque haya CVE de score 9.
+
+Clave de la [NVD](https://nvd.nist.gov/) (*National Vulnerability Database*):
+
+```bash
+# Pedirla en https://nvd.nist.gov/developers/request-an-api-key
+export NVD_API_KEY='…'
+```
+
+El POM lee `NVD_API_KEY` vía `nvdApiKeyEnvironmentVariable`. Sin esa variable el 13.0.0 no puede actualizar la NVD y el análisis no sirve.
+
+```bash
+# Build normal (scan en warning; no falla)
+./mvnw clean verify
+
+# Saltar el scan (CI rápido / sin red NVD)
+./mvnw clean verify -Ddependency-check.skip=true
+
+# Gate estricto: falla si hay CVE con CVSS >= 8
+./mvnw clean verify -Ddependency-check.failBuildOnCVSS=8
+```
+
+No uses `mvn dependency-check:check` en un módulo suelto (por ejemplo `joko-security-starter`) si querés el informe del reactor: ese goal **no hereda** la config del parent (`inherited=false`) y no aplica el umbral. El reporte “oficial” es el `aggregate` de la raíz.
+
+Informes:
+
+- `target/dependency-check-report.html`
+- `target/dependency-check-report.xml`
+
+La consola *identified with known vulnerabilities* lista CVE **sin score**. El score (CVSS v3/v4) está en el HTML, CVE por CVE. El umbral 8 solo se evalúa con `-Ddependency-check.failBuildOnCVSS=8`.
+
+El JAR `joko-security-storage-postgres-*-SNAPSHOT` puede aparecer como CPE de PostgreSQL servidor: es un falso positivo por el nombre del artefacto, no por el driver.
+
+Suppressions: `dependency-check-suppressions.xml` en la raíz del parent.
+
+## Documentación Adicional
+
+- **[docs/INTEGRATION_GUIDE.md](./docs/INTEGRATION_GUIDE.md)** - Guía completa de integración en otro proyecto
+- **[docs/PACKAGING_GUIDE.md](./docs/PACKAGING_GUIDE.md)** - Guía completa de empaquetado y publicación
+- **[docs/GITHUB_ACTIONS.md](./docs/GITHUB_ACTIONS.md)** - Guía completa de CI/CD con GitHub Actions
+- **[CHANGELOG.md](./CHANGELOG.md)** - Historial de versiones
+
+## Scripts de Ayuda
+
+```bash
+./publish.sh local         # Compilar e instalar localmente
+./publish.sh test          # Ejecutar tests
+./publish.sh github        # Publicar en GitHub Packages
+./publish.sh version X.Y.Z # Actualizar versión
+```
+
+## Stack Tecnológico
+
+- **Spring Boot**: 3.5.16
+- **Spring Security**: 6.5.x (incluido en Spring Boot 3.5.16)
+- **Java**: 21
+- **JJWT**: 0.12.6
+- **PostgreSQL**: 9.4+ (desarrollo y producción)
+- **H2**: 2.2.224 (testing)
+- **Liquibase**: Migraciones de BD
+- **Maven**: 3.8+
+
+## Versionamiento
+
+Seguimos [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** (2.x.x): Cambios incompatibles (breaking changes)
+- **MINOR** (x.1.x): Nueva funcionalidad compatible
+- **PATCH** (x.x.1): Bug fixes
+
+**Versión actual**: 2.0.0
+
+## Licencia
+
+[Especificar licencia - MIT/Apache/etc]
+
+## Contribuir
+
+1. Fork del proyecto
+2. Crear feature branch (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -m 'feat: Agregar nueva funcionalidad'`)
+4. Push al branch (`git push origin feature/nueva-funcionalidad`)
+5. Abrir Pull Request
+
+## Soporte
+
+- **Issues**: https://github.com/jokoframework/security/issues
+- **Documentación**: Ver archivos .md en el repositorio
+- **Ejemplo de uso**: [joko_backend_starter_kit](https://github.com/jokoframework/joko_backend_starter_kit)
+
+## Roadmap
+
+- [ ] Soporte para Redis como storage alternativo
+- [ ] GitHub Actions CI/CD automatizado
+- [ ] Docker compose para desarrollo
+- [ ] Métricas y monitoring con Micrometer
+- [ ] Documentación Swagger/OpenAPI mejorada
+
+---
+
+**Última actualización**: 2024-12-22
+**Branch actual**: feature/modular-refactor
+**Versión**: 2.0.0-SNAPSHOT
